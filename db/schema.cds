@@ -75,7 +75,7 @@ entity Projects : cuid {
     client                    : Association to Clients not null;
     employeesAssigned         : Composition of many EmployeesAssigned
                                     on employeesAssigned.project = $self;
-    managerOnCharge           : Association to Manager not null;
+    managerOnCharge           : Association to Managers not null;
     status                    : String enum {
         projectStatusOpen = 'Open';
         projectStatusDevelopment = 'Development';
@@ -95,7 +95,7 @@ entity Clients : cuid {
                              on contractedProjects.client = $self;
 }
 
-entity Manager : Employees {
+entity Managers : Employees {
     @readonly position {
         positionName : String default 'Manager';
         billing      : Int16 default 50;
