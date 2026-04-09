@@ -62,6 +62,9 @@ entity LoggedHours : cuid {
         rejectionReasonNoProgress = 'There is no progress generated in the project by this hours';
         rejectionReasonUnauthorizedOvertime = 'Unauthorized overtime';
     } default 'Not rejected' not null;
+    isLocked : Boolean default false;
+    isModifiedByAdmin : Boolean default false;
+    modificationDate : DateTime;
 }
 
 // intermediate table between employees and projects for the n:n relation
@@ -86,6 +89,8 @@ entity Projects : cuid {
     initialBudget             : Int32 not null;
     @readonly remainingBudget : Int32 not null;
     @readonly projectedBudget : Int32 not null;
+    closedAt : DateTime;
+    reportSentToClient : Boolean default false;
 }
 
 entity Clients : cuid {
