@@ -138,7 +138,18 @@ service CapService {
                                      quantity * worker.position.billing
                                  )
                         else 0
-                    end)   as currentSpent         : Integer,
+                    end)   as currentSpent           : Integer,
+
+                (
+                    project.initialBudget - sum(case
+                                                    status
+                                                    when 'Approved'
+                                                         then(
+                                                                 quantity * worker.position.billing
+                                                             )
+                                                    else 0
+                                                end)
+                )          as currentRemainingBudget : Integer,
 
                 sum(case
                         status
@@ -147,16 +158,18 @@ service CapService {
                                      quantity * worker.position.billing
                                  )
                         else 0
-                    end)   as pendingSpentQuantity : Integer,
+                    end)   as pendingSpentQuantity   : Integer,
 
-                sum(case
-                        when status = 'Approved'
-                             or status = 'Pending'
-                             then(
-                                     quantity * worker.position.billing
-                                 )
-                        else 0
-                    end)   as projectedSpentBudget : Integer
+                (
+                    project.initialBudget - sum(case
+                                                    when status = 'Approved'
+or status                                 = 'Pending'
+                                                         then(
+                                                                 quantity * worker.position.billing
+                                                             )
+                                                    else 0
+                                                end)
+                )          as projectedSpentBudget   : Integer
         }
         group by
             project.ID,

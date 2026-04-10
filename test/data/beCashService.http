@@ -1,6 +1,21 @@
 @server=http://localhost:4004
 @service=/odata/v4/cap
 
+//EMPLOYEES
+
 ### Total hours per project
 GET {{server}}{{service}}/EmployeeProjectHoursView
 
+### Status of logged hours per project
+GET {{server}}{{service}}/EmployeeHoursStatusView
+
+//MANAGERS
+
+### Total spent and budget of the projects
+GET {{server}}{{service}}/ManagerProjectFinancesView
+
+### Project budget spent per employee position
+GET {{server}}{{service}}/SpentPerPorsitionView
+
+### Project budget projection on what the budget will be when all hours set by the employees are approved
+GET {{server}}{{service}}/ProjectBudgetProjectionView
