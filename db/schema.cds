@@ -36,9 +36,9 @@ entity Employees : cuid {
     loggedHoursToday : loggedHoursToday;
     position         : Position not null;
     loggedHours      : Composition of many LoggedHours
-                           on loggedHours.worker = $self;
+                           on loggedHours.worker.ID = ID;
     projects         : Composition of many EmployeesAssigned
-                           on projects.employee = $self;
+                           on projects.employee.ID = ID;
 }
 
 entity LoggedHours : cuid {

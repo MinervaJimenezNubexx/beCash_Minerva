@@ -1,2 +1,6 @@
 @server=http://localhost:4004
+@service=/odata/v4/cap
+
+### Total hours per project
+GET {{server}}{{service}}/EmployeeProjectHoursView
 
