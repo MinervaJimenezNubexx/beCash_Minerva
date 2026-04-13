@@ -18,7 +18,7 @@ service CapService {
 
     entity EmployeesAssigned           as select from db.EmployeesAssigned;
 
-    entity Position                    as select from db.Position;
+    entity Positions                    as select from db.Positions;
 
 
     /*---------------------------------------------

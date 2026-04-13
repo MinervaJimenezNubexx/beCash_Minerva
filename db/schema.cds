@@ -44,7 +44,7 @@ type PositionBilling      : Decimal(5, 2) enum {
     managerBilling = 50.00;
 }
 
-entity Position {
+entity Positions {
     key name      : PositionName;
         billing   : PositionBilling;
         employees : Association to many Employees
@@ -58,7 +58,7 @@ entity Employees : cuid {
     email             : Email not null;
     isActive          : Boolean default true;
     weeklyTargetHours : Decimal(4, 2);
-    position          : Association to Position not null;
+    position          : Association to Positions not null;
     loggedHours       : Composition of many LoggedHours
                             on loggedHours.employee.ID = ID;
     projects          : Composition of many EmployeesAssigned
