@@ -6,46 +6,19 @@ service CapService {
     entity Employees                   as
         select from db.Employees {
             *,
-            Employees.ID as EmployeeID,
-            fullName     as EmployeeName
+            firstName || ' ' || lastName as employeeName : String
         };
 
-    entity Managers                    as
-        select from db.Managers {
-            *,
-            Managers.ID as ManagerID,
-            fullName    as ManagerName
-        };
+    entity Projects                    as select from db.Projects;
 
-    entity Projects                    as
-        select from db.Projects {
-            *,
-            Projects.ID as ProjectsID,
-            name        as ProjectName
-        };
-
-    entity Clients                     as
-        select from db.Clients {
-            *,
-            Clients.ID as ClientsID,
-            name       as ClientName
-        };
+    entity Clients                     as select from db.Clients;
 
     @cds.redirection.target
-    entity LoggedHours                 as
-        select from db.LoggedHours {
-            *,
-            LoggedHours.ID as LoggedHoursID
-        };
+    entity LoggedHours                 as select from db.LoggedHours;
 
-    entity EmployeesAssigned           as
-        select from db.EmployeesAssigned {
-            *,
-            employee          as EmployeeID,
-            project           as ProjectID,
-            employee.fullName as EmployeeName,
-            project.name      as ProjectName
-        };
+    entity EmployeesAssigned           as select from db.EmployeesAssigned;
+
+    entity Position                    as select from db.Position;
 
 
     /*---------------------------------------------
@@ -58,13 +31,13 @@ service CapService {
     @readonly
     entity EmployeeProjectHoursView    as
         select from db.LoggedHours {
-            key worker.ID     as employeeID,
+            key employee.ID   as employeeID,
             key project.ID    as projectID,
                 project.name  as projectName,
-                sum(quantity) as totalHours : Integer
+                sum(quantity) as totalHours : Double
         }
         group by
-            worker.ID,
+            employee.ID,
             project.ID,
             project.name;
 
@@ -72,14 +45,14 @@ service CapService {
     @readonly
     entity EmployeeHoursStatusView     as
         select from db.LoggedHours {
-            key worker.ID     as employeeID,
+            key employee.ID   as employeeID,
             key project.ID    as projectID,
             key status,
                 project.name,
-                sum(quantity) as hoursByStatus : Integer
+                sum(quantity) as hoursByStatus : Double
         }
         group by
-            worker.ID,
+            employee.ID,
             project.ID,
             status,
             project.name;
@@ -90,12 +63,12 @@ service CapService {
     @readonly
     entity ManagerProjectFinancesView  as
         select from db.LoggedHours {
-            key project.ID                                                      as projectID,
-                project.name                                                    as projectName,
+            key project.ID                                                        as projectID,
+                project.name                                                      as projectName,
                 project.initialBudget,
-                sum(quantity)                                                   as totalApprovedHours : Integer,
-                sum(quantity * worker.position.billing)                         as totalSpent         : Integer,
-                project.initialBudget - sum(quantity * worker.position.billing) as remainingBudget    : Integer
+                sum(quantity)                                                     as totalApprovedHours : Double,
+                sum(quantity * employee.position.billing)                         as totalSpent         : Decimal(15, 2),
+                project.initialBudget - sum(quantity * employee.position.billing) as remainingBudget    : Decimal(15, 2)
         }
         where
             status = 'Approved'
@@ -106,22 +79,22 @@ service CapService {
 
     //Project budget spent per employee position
     @readonly
-    entity SpentPerPorsitionView       as
+    entity SpentPerPositionView        as
         select from db.LoggedHours {
-            key project.ID                              as projectID,
-            key worker.position.positionName            as position,
-                project.name                            as projectName,
-                worker.position.billing                 as billingPerHour,
-                sum(quantity)                           as totalHours : Integer,
-                sum(quantity * worker.position.billing) as totalCost  : Integer
+            key project.ID                                as projectID,
+            key employee.position.name                    as position,
+                project.name                              as projectName,
+                employee.position.billing                 as billingPerHour,
+                sum(quantity)                             as totalHours : Double,
+                sum(quantity * employee.position.billing) as totalCost  : Decimal(15, 2)
         }
         where
             status = 'Approved'
         group by
             project.ID,
             project.name,
-            worker.position.positionName,
-            worker.position.billing;
+            employee.position.name,
+            employee.position.billing;
 
     //Project budget projection on what the budget will be when all hours set by the employees are approved
 
@@ -135,46 +108,45 @@ service CapService {
                         status
                         when 'Approved'
                              then(
-                                     quantity * worker.position.billing
+                                     quantity * employee.position.billing
                                  )
                         else 0
-                    end)   as currentSpent           : Integer,
+                    end)   as currentSpent           : Decimal(15, 2),
 
                 (
                     project.initialBudget - sum(case
                                                     status
                                                     when 'Approved'
                                                          then(
-                                                                 quantity * worker.position.billing
+                                                                 quantity * employee.position.billing
                                                              )
                                                     else 0
                                                 end)
-                )          as currentRemainingBudget : Integer,
+                )          as currentRemainingBudget : Decimal(15, 2),
 
                 sum(case
                         status
                         when 'Pending'
                              then(
-                                     quantity * worker.position.billing
+                                     quantity * employee.position.billing
                                  )
                         else 0
-                    end)   as pendingSpentQuantity   : Integer,
+                    end)   as pendingSpentQuantity   : Decimal(15, 2),
 
                 (
                     project.initialBudget - sum(case
                                                     when status = 'Approved'
 or status                                 = 'Pending'
                                                          then(
-                                                                 quantity * worker.position.billing
+                                                                 quantity * employee.position.billing
                                                              )
                                                     else 0
                                                 end)
-                )          as projectedSpentBudget   : Integer
+                )          as projectedSpentBudget   : Decimal(15, 2)
         }
         group by
             project.ID,
             project.name,
             project.initialBudget;
-
 
 }
