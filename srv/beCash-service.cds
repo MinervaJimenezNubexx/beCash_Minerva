@@ -1,6 +1,6 @@
 using {my.beCash as db} from '../db/schema';
 
-service CapService {
+service beCashService {
 
     @cds.redirection.target
     entity Employees                   as
@@ -18,7 +18,7 @@ service CapService {
 
     entity EmployeesAssigned           as select from db.EmployeesAssigned;
 
-    entity Positions                    as select from db.Positions;
+    entity Positions                   as select from db.Positions;
 
 
     /*---------------------------------------------
