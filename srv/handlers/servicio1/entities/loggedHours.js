@@ -1,20 +1,17 @@
 function ValidHours(req) {
-
     const num = req.data.quantity;
-    if (!num) return
-    const decimal = num - Math.floor(num);
+    if (!num) return;
 
-    let isValid = [0.00, 0.25, 0.50, 0.75].includes(decimal.toFixed(2));
-
-    if (!isValid) {
-        req.error(400, 'Invalid number of hours.')
+    if (num % 0.25 !== 0) {
+        req.error(400, 'Invalid number of hours, decimals need to be quarters only.')
     }
 }
 
-function ActiveProject(req){
-    const status = req.data.project.status;
-    if (!status) return
-    if(status == 'Closed'){
+async function ActiveProject(req){
+    const projectId = req.data.project_ID;
+    if (!projectId) return;
+    const project = await SELECT.one('my.beCash.Projects').where({ ID: projectId });
+    if(project && project.status === 'Closed'){
         req.error(400, 'The selected project is closed.')
     }
 

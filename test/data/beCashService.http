@@ -1,5 +1,5 @@
 @server=http://localhost:4004
-@service=/odata/v4/cap
+@service=/odata/v4/be-cash
 
 //EMPLOYEES
 
@@ -19,3 +19,20 @@ GET {{server}}{{service}}/SpentPerPorsitionView
 
 ### Project budget projection on what the budget will be when all hours set by the employees are approved
 GET {{server}}{{service}}/ProjectBudgetProjectionView
+
+//CREATE LOGGED HOURS
+
+###
+POST {{server}}{{service}}/LoggedHours
+Content-Type: application/json
+
+{
+    "quantity": 1.00, 
+    "employee_ID": "11111111-1111-1111-1111-111111111111",
+    "project_ID": "p1111111-1111-1111-1111-111111111111",
+    "imputationDate": "2026-04-15",
+    "status": "Not sent",
+    "rejectionReason": "Not rejected",
+    "isLocked": false,
+    "isModifiedByAdmin": false
+}
