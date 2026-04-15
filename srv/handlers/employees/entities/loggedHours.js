@@ -20,18 +20,8 @@ function employeeNotUpdateWhenSent(req) {
     
 }
 
-function managerNotUpdateWhenResolved(req) {
-
-}
-
-function modifiedByAdmin(req) {
-    
-}
-
 module.exports = { 
     ValidHours,
     ActiveProject,
-    employeeNotUpdateWhenSent,
-    managerNotUpdateWhenResolved,
-    modifiedByAdmin
+    employeeNotUpdateWhenSent
 };

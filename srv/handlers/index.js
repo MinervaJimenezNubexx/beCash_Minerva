@@ -1,4 +1,8 @@
-const servicio1 = require("./servicio1")
+const employees = require("./employees")
+const managers = require("./managers")
+const admins = require("./admins")
 module.exports = {
-    servicio1
+    employees,
+    managers,
+    admins
 }

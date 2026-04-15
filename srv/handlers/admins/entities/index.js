@@ -1,9 +1,9 @@
 const employees = require ("./employees")
-const clients = require ("./clients")
 const loggedHours = require ("./loggedHours")
+const clients = require ("./clients")
 
 module.exports = {
     employees,
-    clients,
-    loggedHours
-}
+    loggedHours,
+    clients
+};
