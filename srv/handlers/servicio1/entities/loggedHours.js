@@ -14,10 +14,24 @@ async function ActiveProject(req){
     if(project && project.status === 'Closed'){
         req.error(400, 'The selected project is closed.')
     }
+}
 
+function employeeNotUpdateWhenSent(req) {
+    
+}
+
+function managerNotUpdateWhenResolved(req) {
+
+}
+
+function modifiedByAdmin(req) {
+    
 }
 
 module.exports = { 
     ValidHours,
-    ActiveProject
+    ActiveProject,
+    employeeNotUpdateWhenSent,
+    managerNotUpdateWhenResolved,
+    modifiedByAdmin
 };

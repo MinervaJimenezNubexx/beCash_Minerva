@@ -22,7 +22,7 @@ GET {{server}}{{service}}/ProjectBudgetProjectionView
 
 //CREATE LOGGED HOURS
 
-###
+### Data Validation for LoggedHours
 POST {{server}}{{service}}/LoggedHours
 Content-Type: application/json
 
