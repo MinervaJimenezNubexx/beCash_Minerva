@@ -10,30 +10,39 @@ service EmployeesService {
             firstName || ' ' || lastName as employeeName : String
         }; */
 
-    @restrict: [
-        { grant: ['READ'], to: 'employee' }
-    ]
-    entity Projects                    as select from db.Projects;
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'employee',
+        where: 'employeesAssigned.employee_ID = $user.id'
+    }]
+    entity Projects                 as select from db.Projects;
 
-    @restrict: [
-        { grant: ['READ', 'CREATE', 'UPDATE'], to: 'employee' }
-    ]
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'employee',
+        where: 'employee_ID = $user.id'
+    }]
     @cds.redirection.target
-    entity LoggedHours                 as select from db.LoggedHours;
-
+    entity LoggedHours              as select from db.LoggedHours;
 
 
     //*****************VIEWS FOR EMPLOYEES*******************
 
     //Total hours per project
     @readonly
-    entity EmployeeProjectHoursView    as
+    entity EmployeeProjectHoursView as
         select from db.LoggedHours {
             key employee.ID   as employeeID,
             key project.ID    as projectID,
                 project.name  as projectName,
                 sum(quantity) as totalHours : Double
-        }
+        } 
+        where
+            employee.ID = $user.id
         group by
             employee.ID,
             project.ID,
@@ -41,7 +50,7 @@ service EmployeesService {
 
     //Status of logged hours per project
     @readonly
-    entity EmployeeHoursStatusView     as
+    entity EmployeeHoursStatusView  as
         select from db.LoggedHours {
             key employee.ID   as employeeID,
             key project.ID    as projectID,
@@ -49,10 +58,12 @@ service EmployeesService {
                 project.name,
                 sum(quantity) as hoursByStatus : Double
         }
+        where
+            employee.ID = $user.id
         group by
             employee.ID,
             project.ID,
             status,
             project.name;
-    
+
 }

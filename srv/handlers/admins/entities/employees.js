@@ -9,9 +9,14 @@ function EmployeeEmailFormat(req) {
     if (!emailFormat.test(email)) {
         req.error(400, 'Invalid email format.')
     }
+}
+
+function notDeleteEmployees(req) {
+
 
 }
 
 module.exports = { 
-    EmployeeEmailFormat
+    EmployeeEmailFormat,
+    notDeleteEmployees
 };

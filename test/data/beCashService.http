@@ -5,9 +5,9 @@
 
 ### Mocked users
 @userAdmin=alice
-@userManager=carlos
-@userEmp1=ana
-@userEmp2=david
+@userManager=11111111-1111-1111-1111-111111111111
+@userEmp1=22222222-2222-2222-2222-222222222222
+@userEmp2=33333333-3333-3333-3333-333333333333
 @password=
 
 
@@ -31,7 +31,7 @@ Authorization: Basic {{userEmp1}}:{{password}}
 ### Status of logged hours per project
 //Managers can also access this views because they also have the employee role
 GET {{server}}{{employeeService}}/EmployeeHoursStatusView
-Authorization: Basic {{userManager}}:{{password}}
+Authorization: Basic {{userEmp2}}:{{password}}
 
 
 //MANAGERS

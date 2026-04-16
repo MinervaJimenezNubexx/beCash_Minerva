@@ -12,6 +12,12 @@ function ClientEmailFormat(req) {
 
 }
 
+function notDeleteClients(req) {
+
+
+}
+
 module.exports = { 
-    ClientEmailFormat
+    ClientEmailFormat,
+    notDeleteClients
 };

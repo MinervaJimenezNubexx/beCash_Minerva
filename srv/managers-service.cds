@@ -15,7 +15,8 @@ service ManagersService {
             'READ',
             'CREATE'
         ],
-        to   : 'manager'
+        to   : 'manager',
+        where: 'employeesAssigned.employee_ID = $user.id'
     }]
     entity Projects                    as select from db.Projects;
 
@@ -31,7 +32,8 @@ service ManagersService {
             'CREATE',
             'UPDATE'
         ],
-        to   : 'manager'
+        to   : 'manager',
+        where: 'employee_ID = $user.id'
     }]
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours;
@@ -51,7 +53,8 @@ service ManagersService {
                 project.initialBudget - sum(quantity * employee.position.billing) as remainingBudget    : Decimal(15, 2)
         }
         where
-            status = 'Approved'
+                status                     = 'Approved'
+            and project.managerOnCharge.ID = $user.id
         group by
             project.ID,
             project.name,
@@ -69,7 +72,8 @@ service ManagersService {
                 sum(quantity * employee.position.billing) as totalCost  : Decimal(15, 2)
         }
         where
-            status = 'Approved'
+                status                     = 'Approved'
+            and project.managerOnCharge.ID = $user.id
         group by
             project.ID,
             project.name,
@@ -124,10 +128,11 @@ or status                                 = 'Pending'
                                                 end)
                 )          as projectedSpentBudget   : Decimal(15, 2)
         }
+        where
+            project.managerOnCharge.ID = $user.id
         group by
             project.ID,
             project.name,
             project.initialBudget;
-
 
 }
