@@ -11,11 +11,19 @@ module.exports = cds.service.impl(async function (srv) {
     
     //Employees
     srv.before(['CREATE', 'UPDATE'], "Employees", handlers.admins.entities.employees.EmployeeEmailFormat);
-    srv.before(['DELETE'], "Employees", handlers.admins.entities.employees.notDeleteEmployees);
 
     //Clients
     srv.before(['CREATE', 'UPDATE'], "Clients", handlers.admins.entities.clients.ClientEmailFormat);
-    srv.before(['DELETE'], "Clients", handlers.admins.entities.clients.notDeleteClients);
 
+    /*
+        ACTIONS
+    */
+
+
+    //Employees
+    srv.on("deactivateEmployees", handlers.admins.actions.employees.deactivateEmployees);
+
+    //Clients
+    srv.on("deactivateClients", handlers.admins.actions.clients.deactivateClients);
 
 })

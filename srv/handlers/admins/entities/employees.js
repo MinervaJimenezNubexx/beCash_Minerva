@@ -11,12 +11,6 @@ function EmployeeEmailFormat(req) {
     }
 }
 
-function notDeleteEmployees(req) {
-
-
-}
-
 module.exports = { 
-    EmployeeEmailFormat,
-    notDeleteEmployees
+    EmployeeEmailFormat
 };

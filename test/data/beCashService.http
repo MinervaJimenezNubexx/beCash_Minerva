@@ -64,3 +64,17 @@ Content-Type: application/json
     "isLocked": false,
     "isModifiedByAdmin": false
 }
+
+### Deactivate employee
+POST {{server}}{{adminService}}/Employees(33333333-3333-3333-3333-333333333333)/AdminsService.deactivateEmployees
+Authorization: Basic {{userAdmin}}:{{password}}
+Content-Type: application/json
+
+{}
+
+### Deactivate client
+POST {{server}}{{adminService}}/Clients(c1111111-1111-1111-1111-111111111111)/AdminsService.deactivateClients
+Authorization: Basic {{userAdmin}}:{{password}}
+Content-Type: application/json
+
+{}

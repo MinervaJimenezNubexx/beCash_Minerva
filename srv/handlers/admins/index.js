@@ -1,5 +1,7 @@
 const entities = require ("./entities")
+const actions = require ("./actions")
 
 module.exports = {
-    entities
+    entities,
+    actions
 };

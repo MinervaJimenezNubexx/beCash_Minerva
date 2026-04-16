@@ -4,21 +4,76 @@ using {my.beCash as db} from '../db/schema';
 service AdminsService {
 
     @cds.redirection.target
-    entity Employees                   as
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE',
+            'deactivateEmployees'
+        ],
+        to   : 'admin'
+    }]
+    entity Employees         as
         select from db.Employees {
             *,
             firstName || ' ' || lastName as employeeName : String
+        }
+        actions {
+            action deactivateEmployees() returns {
+                msg : String
+            };
         };
 
-    entity Projects                    as select from db.Projects;
+    @restrict: [{
+        grant: [
+            'READ'
+        ],
+        to   : 'admin'
+    }]
+    entity Projects          as select from db.Projects;
 
-    entity Clients                     as select from db.Clients;
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE',
+            'deactivateClients'
+        ],
+        to   : 'admin'
+    }]
+    entity Clients           as select from db.Clients
+        actions {
+            action deactivateClients() returns {
+                msg : String
+            };
+        };
 
     @cds.redirection.target
-    entity LoggedHours                 as select from db.LoggedHours;
+    @restrict: [{
+        grant: [
+            'READ',
+            'UPDATE'
+        ],
+        to   : 'admin'
+    }]
+    entity LoggedHours       as select from db.LoggedHours;
 
-    entity EmployeesAssigned           as select from db.EmployeesAssigned;
+    @restrict: [{
+        grant: [
+            'READ'
+        ],
+        to   : 'admin'
+    }]
+    entity EmployeesAssigned as select from db.EmployeesAssigned;
 
-    entity Positions                   as select from db.Positions;
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'admin'
+    }]
+    entity Positions         as select from db.Positions;
 
 }
