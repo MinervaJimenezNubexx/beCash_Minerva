@@ -15,7 +15,23 @@
   "private": true,
   "cds": {
     "requires": {
-      "auth": "dummy"
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "alice": {
+            "roles": ["admin"]
+          },
+          "carlos": {
+            "roles": ["manager", "employee"]
+          },
+          "ana": {
+            "roles": ["employee"]
+          },
+          "david": {
+            "roles": ["employee"]
+          }
+        }
+      }
     }
   }
 }

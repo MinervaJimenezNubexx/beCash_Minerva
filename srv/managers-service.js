@@ -1,20 +1,32 @@
 const cds = require('@sap/cds')
 const handlers = require('./handlers')
+const src = require('./src')
 
 module.exports = cds.service.impl(async function (srv) {
     /*
         ENTITIES
     */
 
-    //Logged Hours
-    srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerNotUpdateWhenResolved);
+    //Logged Hours: all shared between manager and employee
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.loggedHours.ValidHours); //done
 
-    //Projects
-    //srv.before(['CREATE'], "Projects", handlers.managers.entities.projects.validInitialBudget);
-    //srv.before(['UPDATE'], "Projects", handlers.managers.entities.projects.notUpdateBudgetToLowerQuantity);
-    //srv.before(['CREATE'], "Projects", handlers.managers.entities.projects.validProjectStatus);
-    //srv.before(['CREATE'], "Projects", handlers.managers.entities.projects.autoAssignManager);
-    //srv.before(['CREATE', 'UPDATE'], "Projects", handlers.managers.entities.projects.managerOnChargeIsManager);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.loggedHours.ActiveProject); //done
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.employeeNotUpdateWhenSent);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.blockNewIfAlreadySentThisMonth);
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.onlySendLastLaboralDayThisMonth);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.employeeAssignedToThisProject);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notMoreThanEstablishedWorkHours);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notMoreThanEightHoursPerDay);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notLogHoursOnPastOrFututeMonths);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notLogHoursOnWeekend);
 
 
     /*

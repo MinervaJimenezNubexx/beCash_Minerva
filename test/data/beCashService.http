@@ -1,33 +1,61 @@
 @server=http://localhost:4004
-@service=/odata/v4/be-cash
+@adminService=/odata/v4/admins
+@managerService=/odata/v4/managers
+@employeeService=/odata/v4/employees
 
-//EMPLOYEES
+### Mocked users
+@userAdmin=alice
+@userManager=carlos
+@userEmp1=ana
+@userEmp2=david
+@password=
 
+
+
+### 1. Admin tries to see the Clients Table
+GET {{server}}{{adminService}}/Clients
+Authorization: Basic {{userAdmin}}:{{password}}
+
+### 2. Employee tries to see the Clients Table
+GET {{server}}{{adminService}}/Clients
+Authorization: Basic {{userEmp1}}:{{password}}
+
+//************* VIEWS ***************
+
+
+// EMPLOYEES
 ### Total hours per project
-GET {{server}}{{service}}/EmployeeProjectHoursView
+GET {{server}}{{employeeService}}/EmployeeProjectHoursView
+Authorization: Basic {{userEmp1}}:{{password}}
 
 ### Status of logged hours per project
-GET {{server}}{{service}}/EmployeeHoursStatusView
+//Managers can also access this views because they also have the employee role
+GET {{server}}{{employeeService}}/EmployeeHoursStatusView
+Authorization: Basic {{userManager}}:{{password}}
+
 
 //MANAGERS
-
 ### Total spent and budget of the projects
-GET {{server}}{{service}}/ManagerProjectFinancesView
+GET {{server}}{{managerService}}/ManagerProjectFinancesView
+Authorization: Basic {{userManager}}:{{password}}
 
 ### Project budget spent per employee position
-GET {{server}}{{service}}/SpentPerPorsitionView
+GET {{server}}{{managerService}}/SpentPerPositionView
+Authorization: Basic {{userManager}}:{{password}}
 
 ### Project budget projection on what the budget will be when all hours set by the employees are approved
-GET {{server}}{{service}}/ProjectBudgetProjectionView
+GET {{server}}{{managerService}}/ProjectBudgetProjectionView
+Authorization: Basic {{userManager}}:{{password}}
 
 //CREATE LOGGED HOURS
 
 ### Data Validation for LoggedHours
-POST {{server}}{{service}}/LoggedHours
+POST {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp1}}:{{password}}
 Content-Type: application/json
 
 {
-    "quantity": 1.00, 
+    "quantity": 1.25, 
     "employee_ID": "11111111-1111-1111-1111-111111111111",
     "project_ID": "p1111111-1111-1111-1111-111111111111",
     "imputationDate": "2026-04-15",

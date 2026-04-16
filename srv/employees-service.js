@@ -1,23 +1,32 @@
 const cds = require('@sap/cds')
 const handlers = require('./handlers')
+const src = require('./src')
 
 module.exports = cds.service.impl(async function (srv) {
     /*
         ENTITIES
     */
 
-    //Logged Hours: all of this ones are shared with manager so they would go to /domain or /utils
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", handlers.employees.entities.loggedHours.ValidHours); //done
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", handlers.employees.entities.loggedHours.ActiveProject); //done
-    srv.before(['UPDATE'], "LoggedHours", handlers.employees.entities.loggedHours.employeeNotUpdateWhenSent);
+    //Logged Hours: all shared between manager and employee
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.loggedHours.ValidHours); //done
 
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.blockNewIfAlreadySentThisMonth);
-    //srv.before(['UPDATE'], "LoggedHours", handlers.employees.entities.loggedHours.onlySendLastLaboralDayThisMonth);
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.employeeAssignedToThisProject);
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.notMoreThanEstablishedWorkHours);
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.notMoreThanEightHoursPerDay);
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
-    //srv.before(['CREATE'], "LoggedHours", handlers.employees.entities.loggedHours.notLogHoursOnWeekend);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.loggedHours.ActiveProject); //done
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.employeeNotUpdateWhenSent);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.blockNewIfAlreadySentThisMonth);
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.onlySendLastLaboralDayThisMonth);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.employeeAssignedToThisProject);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notMoreThanEstablishedWorkHours);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notMoreThanEightHoursPerDay);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notLogHoursOnPastOrFututeMonths);
+
+    srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.notLogHoursOnWeekend);
 
 
     /*
