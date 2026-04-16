@@ -10,8 +10,14 @@ service EmployeesService {
             firstName || ' ' || lastName as employeeName : String
         }; */
 
+    @restrict: [
+        { grant: ['READ'], to: 'employee' }
+    ]
     entity Projects                    as select from db.Projects;
 
+    @restrict: [
+        { grant: ['READ', 'CREATE', 'UPDATE'], to: 'employee' }
+    ]
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours;
 
@@ -48,6 +54,5 @@ service EmployeesService {
             project.ID,
             status,
             project.name;
-
     
 }

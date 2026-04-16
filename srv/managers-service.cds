@@ -3,20 +3,38 @@ using {my.beCash as db} from '../db/schema';
 @requires: 'manager'
 service ManagersService {
 
-/*     @cds.redirection.target
-    entity Employees                   as
-        select from db.Employees {
-            *,
-            firstName || ' ' || lastName as employeeName : String
-        }; */
+    /*     @cds.redirection.target
+        entity Employees                   as
+            select from db.Employees {
+                *,
+                firstName || ' ' || lastName as employeeName : String
+            }; */
 
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE'
+        ],
+        to   : 'manager'
+    }]
     entity Projects                    as select from db.Projects;
 
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'manager'
+    }]
     entity Clients                     as select from db.Clients;
 
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'manager'
+    }]
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours;
-
 
 
     //*********VIEWS FOR MANAGERS**********
