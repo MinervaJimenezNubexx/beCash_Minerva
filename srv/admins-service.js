@@ -7,13 +7,13 @@ module.exports = cds.service.impl(async function (srv) {
     */
 
     //LoggedHours
-    srv.before(['UPDATE'], "LoggedHours", handlers.admins.entities.loggedHours.modifiedByAdmin);
+    srv.before(['UPDATE'], "LoggedHours", handlers.admins.entities.loggedHours.modifiedByAdmin); //done
     
     //Employees
-    srv.before(['CREATE', 'UPDATE'], "Employees", handlers.admins.entities.employees.EmployeeEmailFormat);
+    srv.before(['CREATE', 'UPDATE'], "Employees", handlers.admins.entities.employees.EmployeeEmailFormat); //done
 
     //Clients
-    srv.before(['CREATE', 'UPDATE'], "Clients", handlers.admins.entities.clients.ClientEmailFormat);
+    srv.before(['CREATE', 'UPDATE'], "Clients", handlers.admins.entities.clients.ClientEmailFormat); //done
 
     /*
         ACTIONS
@@ -21,9 +21,9 @@ module.exports = cds.service.impl(async function (srv) {
 
 
     //Employees
-    srv.on("deactivateEmployees", handlers.admins.actions.employees.deactivateEmployees);
+    srv.on("deactivateEmployees", handlers.admins.actions.employees.deactivateEmployees); //done
 
     //Clients
-    srv.on("deactivateClients", handlers.admins.actions.clients.deactivateClients);
+    srv.on("deactivateClients", handlers.admins.actions.clients.deactivateClients); //done
 
 })

@@ -78,3 +78,16 @@ Authorization: Basic {{userAdmin}}:{{password}}
 Content-Type: application/json
 
 {}
+### Change the rejected status to approved on a log by the Admin
+PATCH {{server}}{{adminService}}/LoggedHours(22222222-2222-2222-2222-222222222222)
+Authorization: Basic {{userAdmin}}:{{password}}
+Content-Type: application/json
+
+{
+  "status": "Approved",
+  "rejectionReason": "Not rejected"
+}
+
+### See the Logs to see if the update by admin worked
+GET {{server}}{{adminService}}/LoggedHours
+Authorization: Basic {{userAdmin}}:{{password}}
