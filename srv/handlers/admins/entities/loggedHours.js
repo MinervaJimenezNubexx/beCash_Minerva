@@ -9,15 +9,15 @@ async function modifiedByAdmin(req) {
         return req.error(404, 'Logged Hours not found.')
     }
 
-    if (currentLog.status === 'Not sent' || currentLog.status === 'Pending') {
+    if (currentLog.status_ID === 'N' || currentLog.status_ID === 'P') {
         return req.error(400, 'Admins cannot edit hours that have not been sent and resolved yet.');
     }
 
     req.data.isModifiedByAdmin = true;
     req.data.modificationDate = new Date().toISOString();
 
-    if (req.data.status === 'Approved') {
-        req.data.rejectionReason = 'Not rejected';
+    if (req.data.status_ID === 'A') {
+        req.data.rejectionReason_ID = 'NR';
     }
 
 }

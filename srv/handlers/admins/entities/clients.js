@@ -1,6 +1,6 @@
 function ClientEmailFormat(req) {
 
-    const email = req.data.Email
+    const email = req.data.email
 
     if (!email) return
 

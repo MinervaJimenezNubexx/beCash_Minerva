@@ -12,7 +12,9 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.loggedHours.ActiveProject); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.employeeNotUpdateWhenSent);
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.employeeNotUpdateWhenSent); //done
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.loggedHours.employeeNotUpdateStatusOfLog);
 
     srv.before(['CREATE'], "LoggedHours", src.domain.loggedHours.blockNewIfAlreadySentThisMonth);
 

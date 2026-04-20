@@ -1,4 +1,6 @@
-ID;firstName;lastName;email;isActive;weeklyTargetHours;position_name
-11111111-1111-1111-1111-111111111111;Carlos;Gomez;carlos.gomez@nubexx.com;true;40.00;Manager
-22222222-2222-2222-2222-222222222222;Ana;Lopez;ana.lopez@nubexx.com;true;30.00;Mid-level
-33333333-3333-3333-3333-333333333333;David;Perez;david.perez@nubexx.com;true;40.00;Senior
+ID;firstName;lastName;email;loginName;isActive;weeklyTargetHours;position_ID
+00000000-0000-0000-0000-000000000000;Alice;Admin;alice@becash.com;alice;true;40.00;L
+22222222-2222-2222-2222-222222222222;Pedro;Manager;pedro@becash.com;pedro;true;40.00;MGR
+33333333-3333-3333-3333-333333333333;Juan;Perez;juan@becash.com;juan;true;40.00;J
+44444444-4444-4444-4444-444444444444;Maria;Gomez;maria@becash.com;maria;true;30.00;MID
+55555555-5555-5555-5555-555555555555;Laura;Lopez;laura@becash.com;laura;true;40.00;S

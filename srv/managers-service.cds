@@ -16,7 +16,7 @@ service ManagersService {
             'CREATE'
         ],
         to   : 'manager',
-        where: 'employeesAssigned.employee_ID = $user.id'
+        where: 'managerOnCharge.loginName = $user.id'
     }]
     entity Projects                    as select from db.Projects;
 
@@ -33,7 +33,7 @@ service ManagersService {
             'UPDATE'
         ],
         to   : 'manager',
-        where: 'employee_ID = $user.id'
+        where: 'project.managerOnCharge.loginName = $user.id'
     }]
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours;
@@ -53,8 +53,8 @@ service ManagersService {
                 project.initialBudget - sum(quantity * employee.position.billing) as remainingBudget    : Decimal(15, 2)
         }
         where
-                status                     = 'Approved'
-            and project.managerOnCharge.ID = $user.id
+                status.ID                         = 'A'
+            and project.managerOnCharge.loginName = $user.id
         group by
             project.ID,
             project.name,
@@ -65,19 +65,19 @@ service ManagersService {
     entity SpentPerPositionView        as
         select from db.LoggedHours {
             key project.ID                                as projectID,
-            key employee.position.name                    as position,
+            key employee.position.nameDescription         as position,
                 project.name                              as projectName,
                 employee.position.billing                 as billingPerHour,
                 sum(quantity)                             as totalHours : Double,
                 sum(quantity * employee.position.billing) as totalCost  : Decimal(15, 2)
         }
         where
-                status                     = 'Approved'
-            and project.managerOnCharge.ID = $user.id
+                status.ID                         = 'A'
+            and project.managerOnCharge.loginName = $user.id
         group by
             project.ID,
             project.name,
-            employee.position.name,
+            employee.position.nameDescription,
             employee.position.billing;
 
     //Project budget projection on what the budget will be when all hours set by the employees are approved
@@ -89,8 +89,8 @@ service ManagersService {
                 project.name,
                 project.initialBudget,
                 sum(case
-                        status
-                        when 'Approved'
+                        status.ID
+                        when 'A'
                              then(
                                      quantity * employee.position.billing
                                  )
@@ -99,8 +99,8 @@ service ManagersService {
 
                 (
                     project.initialBudget - sum(case
-                                                    status
-                                                    when 'Approved'
+                                                    status.ID
+                                                    when 'A'
                                                          then(
                                                                  quantity * employee.position.billing
                                                              )
@@ -109,8 +109,8 @@ service ManagersService {
                 )          as currentRemainingBudget : Decimal(15, 2),
 
                 sum(case
-                        status
-                        when 'Pending'
+                        status.ID
+                        when 'P'
                              then(
                                      quantity * employee.position.billing
                                  )
@@ -119,8 +119,8 @@ service ManagersService {
 
                 (
                     project.initialBudget - sum(case
-                                                    when status = 'Approved'
-or status                                 = 'Pending'
+                                                    when status.ID = 'A'
+or status.ID                              = 'P'
                                                          then(
                                                                  quantity * employee.position.billing
                                                              )
@@ -129,7 +129,7 @@ or status                                 = 'Pending'
                 )          as projectedSpentBudget   : Decimal(15, 2)
         }
         where
-            project.managerOnCharge.ID = $user.id
+            project.managerOnCharge.loginName = $user.id
         group by
             project.ID,
             project.name,

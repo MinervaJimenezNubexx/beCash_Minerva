@@ -1,3 +1,2 @@
-ID;name;email;isActive
-11111111-1111-1111-1111-111111111111;TechCorp;contact@techcorp.com;true
-12222222-2222-2222-2222-222222222222;GlobalBank;billing@globalbank.com;true
+ID;name;email;isActive;nif
+11111111-1111-1111-1111-111111111111;TechCorp SA;contact@techcorp.com;true;B12345678

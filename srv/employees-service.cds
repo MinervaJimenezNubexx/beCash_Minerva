@@ -13,7 +13,7 @@ service EmployeesService {
     @restrict: [{
         grant: ['READ'],
         to   : 'employee',
-        where: 'employeesAssigned.employee_ID = $user.id'
+        where: 'employeesAssigned.employee.loginName = $user.id'
     }]
     entity Projects                 as select from db.Projects;
 
@@ -24,7 +24,7 @@ service EmployeesService {
             'UPDATE'
         ],
         to   : 'employee',
-        where: 'employee_ID = $user.id'
+        where: 'employee.loginName = $user.id'
     }]
     @cds.redirection.target
     entity LoggedHours              as select from db.LoggedHours;
@@ -42,7 +42,7 @@ service EmployeesService {
                 sum(quantity) as totalHours : Double
         } 
         where
-            employee.ID = $user.id
+            employee.loginName = $user.id
         group by
             employee.ID,
             project.ID,
@@ -54,16 +54,16 @@ service EmployeesService {
         select from db.LoggedHours {
             key employee.ID   as employeeID,
             key project.ID    as projectID,
-            key status,
+            key status.ID     as statusID,
                 project.name,
                 sum(quantity) as hoursByStatus : Double
         }
         where
-            employee.ID = $user.id
+            employee.loginName = $user.id
         group by
             employee.ID,
             project.ID,
-            status,
+            status.ID,
             project.name;
 
 }

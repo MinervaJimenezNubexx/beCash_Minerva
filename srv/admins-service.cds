@@ -26,7 +26,9 @@ service AdminsService {
 
     @restrict: [{
         grant: [
-            'READ'
+            'READ',
+            'CREATE',
+            'UPDATE'
         ],
         to   : 'admin'
     }]
@@ -59,9 +61,7 @@ service AdminsService {
     entity LoggedHours       as select from db.LoggedHours;
 
     @restrict: [{
-        grant: [
-            'READ'
-        ],
+        grant: ['READ'],
         to   : 'admin'
     }]
     entity EmployeesAssigned as select from db.EmployeesAssigned;
