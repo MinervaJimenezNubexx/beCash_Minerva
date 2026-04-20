@@ -26,7 +26,7 @@ async function employeeNotUpdateWhenSent(req) {
 }
 
 function employeeNotUpdateStatusOfLog(req){
-    
+
 }
 
 function blockNewIfAlreadySentThisMonth(req) {

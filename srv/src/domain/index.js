@@ -1,5 +1,7 @@
-const loggedHours = require("./loggedHours")
+const entities = require("./entities")
+const actions = require("./actions")
 
 module.exports = {
-    loggedHours
+    entities,
+    actions
 };
