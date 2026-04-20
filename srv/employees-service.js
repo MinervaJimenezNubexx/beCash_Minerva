@@ -24,7 +24,7 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEstablishedWorkHours);
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay);
+    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
 

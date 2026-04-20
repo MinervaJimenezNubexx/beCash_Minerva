@@ -7,15 +7,10 @@ module.exports = cds.service.impl(async function (srv) {
         ENTITIES
     */
 
-    //Logged Hours: all shared between manager and employee
+    //Logged Hours: shared between manager and employee
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidHours); //done
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ActiveProject); //done
-
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done
-
-    // this has to be different for the manager, allow to change the status once, if it is already in the Pending status
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog);
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth);
 
@@ -25,11 +20,14 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEstablishedWorkHours);
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay);
+    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend);
+
+    //Logged Hours: exclusive for managers only
+    srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //done
 
 
     /*

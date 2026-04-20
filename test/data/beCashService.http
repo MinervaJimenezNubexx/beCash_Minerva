@@ -124,3 +124,46 @@ Content-Type: application/json
 {
   "quantity": 3.5
 }
+
+// Manager tries to update hours already resolved -> FAIL
+###
+PATCH {{server}}{{managerService}}/LoggedHours(8888bbbb-8888-bbbb-8888-bbbb8888bbbb)
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "R",
+    "rejectionReason_ID": "TI"
+}
+
+// Manager approves hours pending -> OK
+###
+PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "A"
+}
+
+// (RESTART SERVER FIRST) Manager rejects hours pending with no reason -> FAIL
+###
+PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "R",
+    "rejectionReason_ID": "NR"
+}
+
+// Manager rejects hours pending with a reason -> OK
+###
+PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "R",
+    "rejectionReason_ID": "LOH"
+}
