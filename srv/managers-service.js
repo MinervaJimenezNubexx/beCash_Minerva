@@ -14,6 +14,7 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done
 
+    // this has to be different for the manager, allow to change the status once, if it is already in the Pending status
     srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog);
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth);

@@ -102,6 +102,18 @@ Content-Type: application/json
 GET {{server}}{{adminService}}/LoggedHours
 Authorization: Basic {{userAdmin}}:{{password}}
 
+//Employee tries to modifify status of resolved hours
+###
+PATCH {{server}}{{employeeService}}/LoggedHours(ffff6666-ffff-6666-ffff-6666ffff6666)
+Authorization: Basic {{userEmp1}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "A",
+    "rejectionReason_ID": "NR"
+}
+
+
 // Employee cannot update hours when already sent
 
 ### Update hours quantity on sent register

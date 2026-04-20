@@ -20,13 +20,21 @@ async function employeeNotUpdateWhenSent(req) {
     const logId = req.params[0].ID
     if (!logId) return;
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
-    if (log && log.status_ID !== 'N'){
+    if (log && log.status_ID !== 'N') {
         req.error(400, 'You cannot edit a register of hours that has already been sent.')
     }
 }
 
-function employeeNotUpdateStatusOfLog(req){
-
+async function employeeNotUpdateStatusOfLog(req) {
+    const logId = req.params[0].ID;
+    if (!logId) return;
+    const altStatus = req.data.status_ID;
+    const rejReason = req.data.rejectionReason_ID;
+    if (!rejReason && !altStatus) return;
+    const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
+    if (log && (log.status_ID !== altStatus) || log && (log.rejectionReason_ID !== rejReason)) {
+        req.error(400, 'You are not allowed to modify the status or rejection reason of a register of hours.');
+    }
 }
 
 function blockNewIfAlreadySentThisMonth(req) {
@@ -45,8 +53,51 @@ function notMoreThanEstablishedWorkHours(req) {
 
 }
 
-function notMoreThanEightHoursPerDay(req) {
+async function notMoreThanEightHoursPerDay(req) {
+    let logId = null;
+    if (req.data && req.data.ID) {
+        logId = req.data.ID;
+    } else if (req.params && req.params[0]) {
+        logId = req.params[0].ID ? req.params[0].ID : req.params[0];
+    }
+    let employeeId = req.data.employee_ID,
+        date = req.data.imputationDate,
+        incomingQuantity = req.data.quantity,
+        totalExistingHours = 0,
+        currentLog = null;
 
+    if (logId) {
+        currentLog = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
+    }
+
+    if (!employeeId && currentLog) {
+        employeeId = currentLog.employee_ID;
+    }
+    if (!date && currentLog) {
+        date = currentLog.imputationDate;
+    }
+    if (incomingQuantity === undefined && currentLog) {
+        incomingQuantity = currentLog.quantity;
+    }
+
+    if (!employeeId || !date || incomingQuantity === undefined) return;
+
+    const hoursThatDay = SELECT.from('my.beCash.LoggedHours')
+        .where({ employee_ID: employeeId, imputationDate: date });
+
+    if (logId) { //except the log that is being updated so we don't sum both the old and the new value of this log
+        hoursThatDay.and({ ID: { '!=': logId } });
+    }
+
+    const existingLogs = await hoursThatDay;
+
+    for (let i = 0; i < existingLogs.length; i++) {
+        totalExistingHours = totalExistingHours + existingLogs[i].quantity;
+    }
+
+    if (totalExistingHours + incomingQuantity > 8) {
+        req.error(400, `You cannot log more than 8 hours per day. You already have ${totalExistingHours} hours on ${date}.`);
+    }
 }
 
 function notLogHoursOnPastOrFututeMonths(req) {
