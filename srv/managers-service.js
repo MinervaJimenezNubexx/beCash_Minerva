@@ -29,7 +29,6 @@ module.exports = cds.service.impl(async function (srv) {
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend);
 
     //Logged Hours: exclusive for managers only
-    //REVISE, MANAGER CAN ACCEPT OR REJECT THE SAME LOG INFINITE TIMES WHEN THE STATUS IS THE SAME AS THE ONE IN DB
     srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //done
 
     srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerNotUpdateBasicInfoWhenSent); //done

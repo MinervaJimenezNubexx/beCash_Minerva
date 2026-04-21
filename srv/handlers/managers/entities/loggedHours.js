@@ -10,33 +10,27 @@ async function managerReviewLogStatus(req) {
     const currentLog = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
     if (!currentLog) return;
 
-    const isChangingStatus = newStatus && (currentLog.status_ID !== newStatus),
-        isChangingReason = newReason && (currentLog.rejectionReason_ID !== newReason);
+    if (currentLog.status_ID !== 'P') {
+        return req.error(400, 'Managers can only modify the status of hours that are currently Pending.');
+    }
 
-    if (isChangingStatus || isChangingReason) {
+    if (newStatus === 'R') {
 
-        if (currentLog.status_ID !== 'P') {
-            return req.error(400, 'Managers can only modify the status of hours that are currently Pending.');
+        let finalReason;
+        if (newReason) {
+            finalReason = newReason;
+        }
+        else {
+            finalReason = currentLog.rejectionReason_ID;
         }
 
-        if (newStatus === 'R') {
-
-            let finalReason;
-            if (newReason) {
-                finalReason = newReason;
-            }
-            else {
-                finalReason = currentLog.rejectionReason_ID;
-            }
-
-            if (finalReason === 'NR') {
-                return req.error(400, 'You must provide a valid rejection reason when rejecting logged hours.');
-            }
+        if (finalReason === 'NR') {
+            return req.error(400, 'You must provide a valid rejection reason when rejecting logged hours.');
         }
+    }
 
-        if (newStatus === 'A') {
-            req.data.rejectionReason_ID = 'NR';
-        }
+    if (newStatus === 'A') {
+        req.data.rejectionReason_ID = 'NR';
     }
 }
 

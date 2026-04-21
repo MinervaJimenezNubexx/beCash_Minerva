@@ -151,8 +151,8 @@ Content-Type: application/json
 
 {
     "imputationDate": "2026-04-21",
-    "status_ID": "R",
-    "rejectionReason_ID": "LOH"
+    "status_ID": "A",
+    "rejectionReason_ID": "NR"
 }
 
 // Manager approves hours pending -> OK
