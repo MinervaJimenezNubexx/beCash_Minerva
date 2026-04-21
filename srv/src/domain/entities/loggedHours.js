@@ -108,7 +108,18 @@ async function notMoreThanEightHoursPerDay(req) {
 }
 
 function notLogHoursOnPastOrFututeMonths(req) {
+    const stringImpDate = req.data.imputationDate;
+    if (!stringImpDate) return;
+    const impDate = new Date(stringImpDate),
+        currentDate = new Date(),
+        impMonth = impDate.getMonth(),
+        impYear = impDate.getFullYear(),
+        currentMonth = currentDate.getMonth(),
+        currentYear = currentDate.getFullYear();
 
+        if (impMonth !== currentMonth || impYear !== currentYear) {
+        req.error(400, 'It is not allowed to log hours outside of the current month.');
+    }
 }
 
 function notLogHoursOnWeekend(req) {
@@ -117,7 +128,7 @@ function notLogHoursOnWeekend(req) {
     const impDate = new Date(stringImpDate),
         dayOfTheWeek = impDate.getDay();
     if (dayOfTheWeek == 6 || dayOfTheWeek == 0) {
-        req.error(400, 'It is not allowed to imputate hours on weekends.')
+        req.error(400, 'It is not allowed to log hours on weekends.')
     }
 }
 
