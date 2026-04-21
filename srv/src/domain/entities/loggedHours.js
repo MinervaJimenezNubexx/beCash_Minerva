@@ -38,7 +38,8 @@ async function employeeNotUpdateStatusOfLog(req) {
 }
 
 function defaultNotSentStatusOnCreateLog(req) {
-
+    req.data.status_ID = 'N';
+    req.data.rejectionReason_ID = 'NR';
 }
 
 function blockNewIfAlreadySentThisMonth(req) {

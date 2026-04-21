@@ -9,10 +9,10 @@ module.exports = cds.service.impl(async function (srv) {
 
     //Logged Hours: shared between manager and employee
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidHours); //done
-    
+
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ActiveProject); //done
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog);
+    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth);
 

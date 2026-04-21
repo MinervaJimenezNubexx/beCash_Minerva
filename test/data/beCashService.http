@@ -63,15 +63,19 @@ Authorization: Basic {{userEmp1}}:{{password}}
 Content-Type: application/json
 
 {
-    "quantity": 1.50, 
+    "quantity": 1.00, 
     "employee_ID": "33333333-3333-3333-3333-333333333333",
     "project_ID": "aaaa1111-aaaa-1111-aaaa-1111aaaa1111",
-    "imputationDate": "2026-04-15",
-    "status_ID": "N",
-    "rejectionReason_ID": "NR",
+    "imputationDate": "2026-04-21",
+    "status_ID":"",
+    "rejectionReason_ID":"",
     "isLocked": false,
     "isModifiedByAdmin": false
 }
+
+### See the Log Result
+GET {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp1}}:{{password}}
 
 // Deactivating employees and clients
 
