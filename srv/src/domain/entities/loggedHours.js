@@ -37,6 +37,10 @@ async function employeeNotUpdateStatusOfLog(req) {
     }
 }
 
+function defaultNotSentStatusOnCreateLog(req) {
+
+}
+
 function blockNewIfAlreadySentThisMonth(req) {
 
 }
@@ -113,6 +117,7 @@ module.exports = {
     ActiveProject,
     employeeNotUpdateWhenSent,
     employeeNotUpdateStatusOfLog,
+    defaultNotSentStatusOnCreateLog,
     blockNewIfAlreadySentThisMonth,
     onlySendLastLaboralDayThisMonth,
     employeeAssignedToThisProject,
