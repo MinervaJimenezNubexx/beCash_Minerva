@@ -143,6 +143,18 @@ Content-Type: application/json
     "rejectionReason_ID": "TI"
 }
 
+//Manager tries to change other data of a log other than status and rej reason -> FAIL
+###
+PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "imputationDate": "2026-04-21",
+    "status_ID": "R",
+    "rejectionReason_ID": "LOH"
+}
+
 // Manager approves hours pending -> OK
 ###
 PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
@@ -152,6 +164,7 @@ Content-Type: application/json
 {
     "status_ID": "A"
 }
+
 
 // (RESTART SERVER FIRST) Manager rejects hours pending with no reason -> FAIL
 ###

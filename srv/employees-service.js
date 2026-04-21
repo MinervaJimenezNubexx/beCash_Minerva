@@ -7,18 +7,18 @@ module.exports = cds.service.impl(async function (srv) {
         ENTITIES
     */
 
-    //Logged Hours: all shared between manager and employee
+    //Logged Hours: (almost) all shared between manager and employee
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidHours); //done
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ActiveProject); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done, not for managers
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done, not for managers
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth); 
+    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth);
 
     srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.onlySendLastLaboralDayThisMonth);
 

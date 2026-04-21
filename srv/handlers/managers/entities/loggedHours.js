@@ -40,6 +40,23 @@ async function managerReviewLogStatus(req) {
     }
 }
 
+async function managerNotUpdateBasicInfoWhenSent(req) {
+    const logId = req.params[0].ID;
+    if (!logId) return;
+    const newQuantity = req.data.quantity,
+        newEmp = req.data.employee_ID,
+        newProj = req.data.project_ID,
+        newImpDate = req.data.imputationDate;
+
+    if (!newQuantity && !newEmp && !newProj && !newImpDate) return;
+
+    const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
+    if (log && (log.quantity !== newQuantity) || log && (log.employee_ID !== newEmp) || log && (log.project_ID !== newProj) || log && (log.imputationDate !== newImpDate)) {
+        req.error(400, 'You are not allowed to modify the data other than the status and rejection reason of a register of hours.');
+    }
+}
+
 module.exports = {
-    managerReviewLogStatus
+    managerReviewLogStatus,
+    managerNotUpdateBasicInfoWhenSent
 };
