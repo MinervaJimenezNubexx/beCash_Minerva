@@ -1,4 +1,6 @@
-function ValidHours(req) {
+const { day } = require("@cap-js/hana/lib/cql-functions");
+
+function ValidateHours(req) {
     const num = req.data.quantity;
     if (!num) return;
 
@@ -7,7 +9,7 @@ function ValidHours(req) {
     }
 }
 
-async function ActiveProject(req) {
+async function ValidateActiveProject(req) {
     const projectId = req.data.project_ID;
     if (!projectId) return;
     const project = await SELECT.one('my.beCash.Projects').where({ ID: projectId });
@@ -110,12 +112,18 @@ function notLogHoursOnPastOrFututeMonths(req) {
 }
 
 function notLogHoursOnWeekend(req) {
-
+    const stringImpDate = req.data.imputationDate;
+    if (!stringImpDate) return;
+    const impDate = new Date(stringImpDate),
+        dayOfTheWeek = impDate.getDay();
+    if (dayOfTheWeek == 6 || dayOfTheWeek == 0) {
+        req.error(400, 'It is not allowed to imputate hours on weekends.')
+    }
 }
 
 module.exports = {
-    ValidHours,
-    ActiveProject,
+    ValidateHours,
+    ValidateActiveProject,
     employeeNotUpdateWhenSent,
     employeeNotUpdateStatusOfLog,
     defaultNotSentStatusOnCreateLog,

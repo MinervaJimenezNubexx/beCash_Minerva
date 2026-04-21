@@ -8,9 +8,9 @@ module.exports = cds.service.impl(async function (srv) {
     */
 
     //Logged Hours: shared between manager and employee
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidHours); //done
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateHours); //done
 
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ActiveProject); //done
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateActiveProject); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
@@ -24,9 +24,9 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay); //done
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend);
 
     //Logged Hours: exclusive for managers only
     srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //done
