@@ -44,8 +44,37 @@ function defaultNotSentStatusOnCreateLog(req) {
     req.data.rejectionReason_ID = 'NR';
 }
 
-function blockNewIfAlreadySentThisMonth(req) {
+async function blockNewIfAlreadySentThisMonth(req) {
+    let logId = req.params[0].ID,
+        employeeId = req.data.employee_ID,
+        dateString = req.data.imputationDate;
 
+    if (logId && (!employeeId || !dateString)) {
+        const currentLog = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
+        if (currentLog) {
+            employeeId = employeeId || currentLog.employee_ID;
+            dateString = dateString || currentLog.imputationDate;
+        }
+    }
+
+    if (!employeeId || !dateString) return;
+
+    const date = new Date(dateString),
+        year = date.getFullYear(),
+        month = date.getMonth(),
+        firstDayStr = new Date(year, month, 1).toISOString().split('T')[0],
+        lastDayStr = new Date(year, month + 1, 0).toISOString().split('T')[0];
+
+    const sentLogsExist = await SELECT.one('my.beCash.LoggedHours')
+        .where({
+            employee_ID: employeeId,
+            imputationDate: { 'between': firstDayStr, 'and': lastDayStr },
+            status_ID: { '!=': 'N' }
+        });
+
+    if (sentLogsExist) {
+        return req.error(400, 'MONTH_ALREADY_SENT_ERROR');
+    }
 }
 
 function onlySendLastLaboralDayThisMonth(req) {
@@ -192,7 +221,7 @@ function notLogHoursOnPastOrFututeMonths(req) {
         currentYear = currentDate.getFullYear();
 
     if (impMonth !== currentMonth || impYear !== currentYear) {
-        req.error(400, 'NOT_LOG_OUTSID_THIS_MONTH_ERROR');
+        req.error(400, 'NOT_LOG_OUTSIDE_THIS_MONTH_ERROR');
     }
 }
 
