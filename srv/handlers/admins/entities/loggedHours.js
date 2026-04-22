@@ -6,11 +6,11 @@ async function modifiedByAdmin(req) {
     const currentLog = await SELECT.one('my.beCash.LoggedHours').where({ ID: logHoursId });
 
     if(!currentLog){
-        return req.error(404, 'Logged Hours not found.')
+        return req.error(404, 'LOG_NOT_FOUND_ERROR')
     }
 
     if (currentLog.status_ID === 'N' || currentLog.status_ID === 'P') {
-        return req.error(400, 'Admins cannot edit hours that have not been sent and resolved yet.');
+        return req.error(400, 'CANT_EDIT_NOT_RESOLVED_LOG_ERROR');
     }
 
     req.data.isModifiedByAdmin = true;

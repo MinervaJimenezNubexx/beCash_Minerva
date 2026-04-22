@@ -20,7 +20,7 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth);
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.onlySendLastLaboralDayThisMonth);
+    //srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.onlySendLastLaboralDayThisMonth);
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.employeeAssignedToThisProject);
 
@@ -28,14 +28,15 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEightHoursPerDay); //done
 
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths); //done
 
-    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend); //done
 
 
     /*
         ACTIONS
     */
 
-    //Employees
+    //LoggedHours
+    srv.on("sendThisMonthHours", src.domain.actions.loggedHours.sendThisMonthHours);
 })

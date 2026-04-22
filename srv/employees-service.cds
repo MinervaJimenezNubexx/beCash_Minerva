@@ -29,6 +29,10 @@ service EmployeesService {
     @cds.redirection.target
     entity LoggedHours              as select from db.LoggedHours;
 
+    action sendThisMonthHours() returns {
+        message : String
+    };
+
 
     //*****************VIEWS FOR EMPLOYEES*******************
 
@@ -40,7 +44,7 @@ service EmployeesService {
             key project.ID    as projectID,
                 project.name  as projectName,
                 sum(quantity) as totalHours : Double
-        } 
+        }
         where
             employee.loginName = $user.id
         group by

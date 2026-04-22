@@ -63,10 +63,10 @@ Authorization: Basic {{userEmp1}}:{{password}}
 Content-Type: application/json
 
 {
-    "quantity": 1.00, 
+    "quantity": 3.00, 
     "employee_ID": "33333333-3333-3333-3333-333333333333",
     "project_ID": "aaaa1111-aaaa-1111-aaaa-1111aaaa1111",
-    "imputationDate": "2026-04-21",
+    "imputationDate": "2026-04-22",
     "status_ID":"",
     "rejectionReason_ID":"",
     "isLocked": false,
@@ -94,7 +94,8 @@ Content-Type: application/json
 {}
 
 // Admin modification
-
+// id of not sent log: ffff6666-ffff-6666-ffff-6666ffff6666
+//id of rejected log: 9999cccc-9999-cccc-9999-cccc9999cccc
 ### Change the rejected status to approved on a log by the Admin -> OK
 PATCH {{server}}{{adminService}}/LoggedHours(9999cccc-9999-cccc-9999-cccc9999cccc)
 Authorization: Basic {{userAdmin}}:{{password}}
@@ -187,3 +188,14 @@ Content-Type: application/json
     "status_ID": "R",
     "rejectionReason_ID": "LOH"
 }
+// Employee sends all hours for the current month
+###
+POST {{server}}{{employeeService}}/sendThisMonthHours
+Authorization: Basic {{userEmp1}}:{{password}}
+Content-Type: application/json
+
+{}
+
+### See the Log Result
+GET {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp1}}:{{password}}

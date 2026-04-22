@@ -5,7 +5,7 @@ function ValidateHours(req) {
     if (!num) return;
 
     if (num % 0.25 !== 0) {
-        req.error(400, 'Invalid number of hours, decimals need to be quarters only.')
+        req.error(400, 'NOT_VALID_HOURS_NUM_ERROR')
     }
 }
 
@@ -14,7 +14,7 @@ async function ValidateActiveProject(req) {
     if (!projectId) return;
     const project = await SELECT.one('my.beCash.Projects').where({ ID: projectId });
     if (project && project.status_ID === 'C') {
-        req.error(400, 'The selected project is closed.')
+        req.error(400, 'NOT_VALID_SELECTED_PROJECT_ERROR')
     }
 }
 
@@ -23,7 +23,7 @@ async function employeeNotUpdateWhenSent(req) {
     if (!logId) return;
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
     if (log && log.status_ID !== 'N') {
-        req.error(400, 'You cannot edit a register of hours that has already been sent.')
+        req.error(400, 'NOT_EDIT_LOG_ALREADY_SENT_ERROR')
     }
 }
 
@@ -35,7 +35,7 @@ async function employeeNotUpdateStatusOfLog(req) {
     if (!rejReason && !altStatus) return;
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
     if (log && (log.status_ID !== altStatus) || log && (log.rejectionReason_ID !== rejReason)) {
-        req.error(400, 'You are not allowed to modify the status or rejection reason of a register of hours.');
+        req.error(400, 'NOT_EDIT_STATUS_OF_LOG_ERROR');
     }
 }
 
@@ -103,7 +103,7 @@ async function notMoreThanEightHoursPerDay(req) {
     }
 
     if (totalExistingHours + incomingQuantity > 8) {
-        req.error(400, `You cannot log more than 8 hours per day. You already have ${totalExistingHours} hours on ${date}.`);
+        req.error(400, 'NOT_LOG_MORE_THAN_8_HOURS_PER_DAY_ERROR', [totalExistingHours, date]);
     }
 }
 
@@ -118,7 +118,7 @@ function notLogHoursOnPastOrFututeMonths(req) {
         currentYear = currentDate.getFullYear();
 
         if (impMonth !== currentMonth || impYear !== currentYear) {
-        req.error(400, 'It is not allowed to log hours outside of the current month.');
+        req.error(400, 'NOT_LOG_OUTSID_THIS_MONTH_ERROR');
     }
 }
 
@@ -128,7 +128,7 @@ function notLogHoursOnWeekend(req) {
     const impDate = new Date(stringImpDate),
         dayOfTheWeek = impDate.getDay();
     if (dayOfTheWeek == 6 || dayOfTheWeek == 0) {
-        req.error(400, 'It is not allowed to log hours on weekends.')
+        req.error(400, 'NOT_LOG_ON_WEEKENDS_ERROR')
     }
 }
 

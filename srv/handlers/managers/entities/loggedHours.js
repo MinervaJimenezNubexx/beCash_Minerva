@@ -11,7 +11,7 @@ async function managerReviewLogStatus(req) {
     if (!currentLog) return;
 
     if (currentLog.status_ID !== 'P') {
-        return req.error(400, 'Managers can only modify the status of hours that are currently Pending.');
+        return req.error(400, 'ONLY_MODIFY_PENDING_LOG_ERROR');
     }
 
     if (newStatus === 'R') {
@@ -25,7 +25,7 @@ async function managerReviewLogStatus(req) {
         }
 
         if (finalReason === 'NR') {
-            return req.error(400, 'You must provide a valid rejection reason when rejecting logged hours.');
+            return req.error(400, 'MUST_PROVIDE_VALID_REJREASON_ERROR');
         }
     }
 
@@ -46,7 +46,7 @@ async function managerNotUpdateBasicInfoWhenSent(req) {
 
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
     if (log && (log.quantity !== newQuantity) || log && (log.employee_ID !== newEmp) || log && (log.project_ID !== newProj) || log && (log.imputationDate !== newImpDate)) {
-        req.error(400, 'You are not allowed to modify the data other than the status and rejection reason of a register of hours.');
+        req.error(400, 'NOT_MODIFY_OTHER_DATA_ERROR');
     }
 }
 

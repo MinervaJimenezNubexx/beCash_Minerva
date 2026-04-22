@@ -7,7 +7,7 @@ function EmployeeEmailFormat(req) {
     const emailFormat = /^[A-Za-z0-9._]+@nubexx\.(es|com)$/
 
     if (!emailFormat.test(email)) {
-        req.error(400, 'Invalid email format.')
+        req.error(400, 'INVALID_EMAIL_FORMAT_ERROR')
     }
 }
 

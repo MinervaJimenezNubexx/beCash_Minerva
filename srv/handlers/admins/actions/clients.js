@@ -2,7 +2,7 @@ async function deactivateClients(req) {
     const clientId = req.params[0].ID
 
     if (!clientId) {
-        return req.error(400, 'There is no client ID.')
+        return req.error(400, 'NO_CLIENT_ID_ERROR')
     }
 
     const updated = await UPDATE('my.beCash.Clients')
@@ -10,10 +10,12 @@ async function deactivateClients(req) {
         .where({ ID: clientId });
 
     if (updated === 0) {
-        return req.error(404, 'Client not found.');
+        return req.error(404, 'CLIENT_NOT_FOUND_ERROR');
     }
 
-    return { msg: 'Client deactivated.' };
+    req.notify('CLIENT_DEACTIVATED');
+
+    return { msg: 'OK' };
 
 }
 

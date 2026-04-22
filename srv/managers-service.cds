@@ -38,6 +38,10 @@ service ManagersService {
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours;
 
+    action sendThisMonthHours() returns {
+        message : String
+    };
+
 
     //*********VIEWS FOR MANAGERS**********
 
