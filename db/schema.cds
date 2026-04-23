@@ -60,7 +60,7 @@ type PositionName         : String(5) enum {
 } */
 
 entity Positions {
-    key ID      : PositionName;
+    key ID              : PositionName;
         nameDescription : String(30) not null;
         billing         : Decimal(5, 2) not null; // managed on a table that can be modified easily
         employees       : Association to many Employees
@@ -97,8 +97,9 @@ entity LoggedHours : cuid {
 
 // intermediate table between employees and projects for the n:n relation
 entity EmployeesAssigned {
-    key employee : Association to Employees not null;
-    key project  : Association to Projects not null;
+    key employee              : Association to Employees not null;
+    key project               : Association to Projects not null;
+        isActiveOnThisProject : Boolean default true;
 }
 
 entity Projects : cuid {

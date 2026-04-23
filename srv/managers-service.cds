@@ -14,7 +14,9 @@ service ManagersService {
         grant: [
             'READ',
             'CREATE',
-            'resolveEmployeeHoursByDateRange'
+            'resolveEmployeeHoursByDateRange',
+            'managerAddEmployeeToProject',
+            'managerRemoveEmployeeFromProject'
         ],
         to   : 'manager',
         where: 'managerOnCharge.loginName = $user.id'
@@ -30,6 +32,9 @@ service ManagersService {
                 updatedCount : Integer;
             };
 
+            action managerAddEmployeeToProject(employee_ID: UUID) returns { message: String };
+
+            action managerRemoveEmployeeFromProject(employee_ID: UUID) returns { message: String };
         };
 
     @restrict: [{

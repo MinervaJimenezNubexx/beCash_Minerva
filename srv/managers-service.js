@@ -20,7 +20,7 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth); //done
 
-    srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.employeeAssignedToThisProject);
+    srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.checkIfEmployeeAssignedToThisProject); //done
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notMoreThanEstablishedWorkHours); //done
 
@@ -50,7 +50,9 @@ module.exports = cds.service.impl(async function (srv) {
 
     //Bound Actions
     srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done, only for managers
-
     
+    srv.on("managerAddEmployeeToProject", handlers.managers.actions.projects.managerAddEmployeeToProject) //done, only for managers
+
+    srv.on("managerRemoveEmployeeFromProject", handlers.managers.actions.projects.managerRemoveEmployeeFromProject) //done, only for managers
 
 })

@@ -1,6 +1,6 @@
 async function resolveEmployeeHoursByDateRange(req) {
     const project_ID = req.params[0]?.ID || req.params[0],
-    { startDate, endDate, status_ID, rejectionReason_ID } = req.data;
+        { startDate, endDate, status_ID, rejectionReason_ID } = req.data;
 
     if (!project_ID || !startDate || !endDate || !status_ID) {
         return req.error(400, 'MISSING_PARAMETERS_ERROR');
@@ -12,13 +12,13 @@ async function resolveEmployeeHoursByDateRange(req) {
     const currentManager = await SELECT.one('my.beCash.Employees').where({ loginName: req.user.id });
     if (!currentManager) return req.error(404, 'MANAGER_NOT_FOUND_ERROR');
 
-    const targetProject = await SELECT.one('my.beCash.Projects').where({ 
+    const targetProject = await SELECT.one('my.beCash.Projects').where({
         ID: project_ID,
-        managerOnCharge_ID: currentManager.ID 
+        managerOnCharge_ID: currentManager.ID
     });
 
     if (!targetProject) {
-        return req.error(403, 'CANNOT_MANAGE_THIS_PROJECT_ERROR'); 
+        return req.error(403, 'CANNOT_MANAGE_THIS_PROJECT_ERROR');
     }
 
     const updateData = { status_ID: status_ID };
@@ -26,13 +26,13 @@ async function resolveEmployeeHoursByDateRange(req) {
     if (status_ID === 'R') {
         updateData.rejectionReason_ID = rejectionReason_ID;
     } else if (status_ID === 'A') {
-        updateData.rejectionReason_ID = 'NR'; 
+        updateData.rejectionReason_ID = 'NR';
     }
 
     const updatedCount = await UPDATE('my.beCash.LoggedHours')
         .set(updateData)
         .where({
-            project_ID: project_ID, 
+            project_ID: project_ID,
             status_ID: 'P',
             imputationDate: { 'between': startDate, 'and': endDate }
         });
@@ -46,6 +46,71 @@ async function resolveEmployeeHoursByDateRange(req) {
     return { message: `Successfully resolved ${updatedCount} logs for this project.`, updatedCount };
 }
 
-module.exports = { 
-    resolveEmployeeHoursByDateRange 
+async function managerAddEmployeeToProject(req) {
+    const project_ID = req.params[0]?.ID || req.params[0],
+        { employee_ID } = req.data;
+
+    if (!employee_ID) return req.error(400, 'EMPLOYEE_ID_REQUIRED_ERROR');
+
+    const currentManager = await SELECT.one('my.beCash.Employees').where({ loginName: req.user.id }),
+        project = await SELECT.one('my.beCash.Projects')
+            .where({ ID: project_ID, managerOnCharge_ID: currentManager.ID });
+
+    if (!project) return req.error(403, 'CANNOT_MANAGE_THIS_PROJECT_ERROR');
+
+    const existingAssignment = await SELECT.one('my.beCash.EmployeesAssigned')
+        .where({ employee_ID: employee_ID, project_ID: project_ID });
+
+    if (existingAssignment) {
+        if (existingAssignment.isActiveOnThisProject) {
+            return req.error(400, 'EMPLOYEE_ALREADY_ACTIVE_IN_PROJECT');
+        }
+        await UPDATE('my.beCash.EmployeesAssigned')
+            .set({ isActiveOnThisProject: true })
+            .where({ employee_ID: employee_ID, project_ID: project_ID });
+
+        return { message: "Employee successfully reactivated in the project." };
+    } else {
+        await INSERT.into('my.beCash.EmployeesAssigned').entries({
+            employee_ID: employee_ID,
+            project_ID: project_ID,
+            isActiveOnThisProject: true
+        });
+
+        return { message: "Employee successfully added to the project." };
+    }
+}
+
+async function managerRemoveEmployeeFromProject(req) {
+    const project_ID = req.params[0]?.ID || req.params[0],
+        { employee_ID } = req.data;
+
+    if (!employee_ID) return req.error(400, 'EMPLOYEE_ID_REQUIRED_ERROR');
+
+    const currentManager = await SELECT.one('my.beCash.Employees').where({ loginName: req.user.id }),
+        project = await SELECT.one('my.beCash.Projects')
+            .where({ ID: project_ID, managerOnCharge_ID: currentManager.ID });
+
+    if (!project) return req.error(403, 'CANNOT_MANAGE_THIS_PROJECT_ERROR');
+
+    const updatedCount = await UPDATE('my.beCash.EmployeesAssigned')
+        .set({ isActiveOnThisProject: false })
+        .where({ 
+            employee_ID: employee_ID, 
+            project_ID: project_ID,
+            isActiveOnThisProject: true
+        });
+
+    if (updatedCount === 0) {
+        return req.error(404, 'EMPLOYEE_NOT_FOUND_OR_ALREADY_INACTIVE');
+    }
+
+    return { message: "Employee successfully removed from the project." };
+}
+
+
+module.exports = {
+    resolveEmployeeHoursByDateRange,
+    managerAddEmployeeToProject,
+    managerRemoveEmployeeFromProject
 };

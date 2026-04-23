@@ -84,12 +84,20 @@ async function blockNewIfAlreadySentThisMonth(req) {
     }
 }
 
-function onlySendLastLaboralDayThisMonth(req) {
+async function checkIfEmployeeAssignedToThisProject(req) {
+    const employeeId = req.data.employee_ID,
+    projectId = req.data.project_ID;
 
-}
+    if (!employeeId || !projectId) return;
 
-function employeeAssignedToThisProject(req) {
+    const assignment = await SELECT.one('my.beCash.EmployeesAssigned').where({
+        employee_ID: employeeId,
+        project_ID: projectId
+    });
 
+    if (!assignment || assignment.isActiveOnThisProject === false) {
+        return req.error(403, 'EMPLOYEE_NOT_ACTIVE_IN_PROJECT_ERROR');
+    }
 }
 
 function getWeekBoundaries(dateString) { // aux function
@@ -249,8 +257,7 @@ module.exports = {
     employeeNotUpdateStatusOfLog,
     defaultNotSentStatusOnCreateLog,
     blockNewIfAlreadySentThisMonth,
-    onlySendLastLaboralDayThisMonth,
-    employeeAssignedToThisProject,
+    checkIfEmployeeAssignedToThisProject,
     notMoreThanEstablishedWorkHours,
     notMoreThanEightHoursPerDay,
     notLogHoursOnPastOrFututeMonths,

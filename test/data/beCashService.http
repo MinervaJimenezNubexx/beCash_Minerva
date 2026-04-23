@@ -201,3 +201,25 @@ Content-Type: application/json
 GET {{server}}{{employeeService}}/LoggedHours
 Authorization: Basic {{userEmp2}}:{{password}}
 
+### Manager adds an employee to a project
+POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.managerAddEmployeeToProject
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "employee_ID": "66666666-6666-6666-6666-666666666666"
+}
+
+### Manager removes an employee from a project
+POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.managerRemoveEmployeeFromProject
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "employee_ID": "66666666-6666-6666-6666-666666666666"
+}
+
+### See if it worked
+GET {{server}}{{adminService}}/EmployeesAssigned
+Authorization: Basic {{userAdmin}}:{{password}}
+
