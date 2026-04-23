@@ -1,6 +1,4 @@
-const { Object_keys } = require("@sap/cds/lib/utils/cds-utils");
-
-function getLastTwoWorkingDays(year, month) {
+function getLastTwoWorkingDays(year, month) { // aux function
     const lastDay = new Date(year, month + 1, 0),
         dayOfWeek = lastDay.getDay();
 
@@ -30,9 +28,9 @@ async function sendThisMonthHours(req) {
         validDays = getLastTwoWorkingDays(year, month),
         todayStr = today.toISOString().split('T')[0];
 
-    if (todayStr !== validDays.lastDayStr && todayStr !== validDays.secondToLastStr) {
+    /* if (todayStr !== validDays.lastDayStr && todayStr !== validDays.secondToLastStr) {
         return req.error(400, 'ONLY_SEND_LAST_TWO_WORKING_DAYS_ERROR', [validDays.secondToLastStr, validDays.lastDayStr]);
-    }
+    } */
 
     const loginName = req.user.id,
         employee = await SELECT.one('my.beCash.Employees').where({ loginName: loginName });
@@ -58,7 +56,7 @@ async function sendThisMonthHours(req) {
     }
 
     req.notify('HOURS_SENT_SUCCESSFULLY', [updatedCount]);
-    return { message: 'OK. SENT'};
+    return { message: 'OK. SENT' };
 }
 
 module.exports = {

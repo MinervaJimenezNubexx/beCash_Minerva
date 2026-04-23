@@ -45,8 +45,15 @@ function defaultNotSentStatusOnCreateLog(req) {
 }
 
 async function blockNewIfAlreadySentThisMonth(req) {
-    let logId = req.params[0].ID,
-        employeeId = req.data.employee_ID,
+    let logId = null;
+    if (req.data && req.data.ID) {
+        logId = req.data.ID;
+    } 
+    else if (req.params && req.params.length > 0) { //update
+        logId = req.params[0].ID ? req.params[0].ID : req.params[0];
+    }
+
+    let employeeId = req.data.employee_ID,
         dateString = req.data.imputationDate;
 
     if (logId && (!employeeId || !dateString)) {

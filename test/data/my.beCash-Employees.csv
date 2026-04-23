@@ -4,3 +4,4 @@ ID;firstName;lastName;email;loginName;isActive;weeklyTargetHours;position_ID
 33333333-3333-3333-3333-333333333333;Juan;Perez;juan@becash.com;juan;true;40.00;J
 44444444-4444-4444-4444-444444444444;Maria;Gomez;maria@becash.com;maria;true;30.00;MID
 55555555-5555-5555-5555-555555555555;Laura;Lopez;laura@becash.com;laura;true;40.00;S
+66666666-6666-6666-6666-666666666666;Liam;Garcia;liam@becash.com;liam;true;40.00;S

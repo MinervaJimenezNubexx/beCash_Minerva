@@ -1,4 +1,4 @@
-async function managerReviewLogStatus(req) {
+/* async function managerReviewLogStatus(req) {
     const logId = req.params[0].ID
     if (!logId) return;
 
@@ -53,4 +53,4 @@ async function managerNotUpdateBasicInfoWhenSent(req) {
 module.exports = {
     managerReviewLogStatus,
     managerNotUpdateBasicInfoWhenSent
-};
+}; */

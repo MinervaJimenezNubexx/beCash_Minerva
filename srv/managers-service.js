@@ -12,6 +12,10 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateActiveProject); //done
 
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done, not for managers
+
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done, not for managers
+
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.blockNewIfAlreadySentThisMonth); //done
@@ -27,9 +31,9 @@ module.exports = cds.service.impl(async function (srv) {
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend); //done
 
     //Logged Hours: exclusive for managers only
-    srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //done
+    //srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //deleted
 
-    srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerNotUpdateBasicInfoWhenSent); //done
+    //srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerNotUpdateBasicInfoWhenSent); //deleted
 
 
     /*
@@ -38,5 +42,12 @@ module.exports = cds.service.impl(async function (srv) {
 
     //LoggedHours
     srv.on("sendThisMonthHours", src.domain.actions.loggedHours.sendThisMonthHours); //done
+
+    //Projects
+
+    //Bound Actions
+    srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done
+
+    // srv.on("resolveEmployeeHoursOneByOne", handlers.managers.actions.projects.resolveEmployeeHoursOneByOne);
 
 })

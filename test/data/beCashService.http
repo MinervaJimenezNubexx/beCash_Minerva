@@ -9,6 +9,7 @@
 @userEmp1=juan
 @userEmp2=maria
 @userEmp3=laura
+@userEmp4=liam
 @password=
 
 
@@ -133,61 +134,6 @@ Content-Type: application/json
   "quantity": 3.5
 }
 
-// Manager tries to update hours already resolved -> FAIL
-###
-PATCH {{server}}{{managerService}}/LoggedHours(8888bbbb-8888-bbbb-8888-bbbb8888bbbb)
-Authorization: Basic {{userManager}}:{{password}}
-Content-Type: application/json
-
-{
-    "status_ID": "R",
-    "rejectionReason_ID": "TI"
-}
-
-//Manager tries to change other data of a log other than status and rej reason -> FAIL
-###
-PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
-Authorization: Basic {{userManager}}:{{password}}
-Content-Type: application/json
-
-{
-    "imputationDate": "2026-04-21",
-    "status_ID": "A",
-    "rejectionReason_ID": "NR"
-}
-
-// Manager approves hours pending -> OK
-###
-PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
-Authorization: Basic {{userManager}}:{{password}}
-Content-Type: application/json
-
-{
-    "status_ID": "A"
-}
-
-
-// (RESTART SERVER FIRST) Manager rejects hours pending with no reason -> FAIL
-###
-PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
-Authorization: Basic {{userManager}}:{{password}}
-Content-Type: application/json
-
-{
-    "status_ID": "R",
-    "rejectionReason_ID": "NR"
-}
-
-// Manager rejects hours pending with a reason -> OK
-###
-PATCH {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)
-Authorization: Basic {{userManager}}:{{password}}
-Content-Type: application/json
-
-{
-    "status_ID": "R",
-    "rejectionReason_ID": "LOH"
-}
 // Employee sends all hours for the current month
 ###
 POST {{server}}{{employeeService}}/sendThisMonthHours
@@ -199,3 +145,45 @@ Content-Type: application/json
 ### See the Log Result
 GET {{server}}{{employeeService}}/LoggedHours
 Authorization: Basic {{userEmp1}}:{{password}}
+
+### To create some logs
+POST {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp4}}:{{password}}
+Content-Type: application/json
+
+{
+    "quantity": 8.00, 
+    "employee_ID": "66666666-6666-6666-6666-666666666666",
+    "project_ID": "aaaa1111-aaaa-1111-aaaa-1111aaaa1111",
+    "imputationDate": "2026-04-07",
+    "status_ID":"",
+    "rejectionReason_ID":"",
+    "isLocked": false,
+    "isModifiedByAdmin": false
+}
+
+// Employee sends all hours for the current month
+###
+POST {{server}}{{employeeService}}/sendThisMonthHours
+Authorization: Basic {{userEmp4}}:{{password}}
+Content-Type: application/json
+
+{}
+
+// Manager approves all pending hours of the first 2 weeks of the month
+###
+POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.resolveEmployeeHoursByDateRange
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "startDate": "2026-04-01",
+    "endDate": "2026-04-15",
+    "status_ID": "A",
+    "rejectionReason_ID": ""
+}
+
+### See the Log Result
+GET {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp4}}:{{password}}
+

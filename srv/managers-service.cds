@@ -13,12 +13,24 @@ service ManagersService {
     @restrict: [{
         grant: [
             'READ',
-            'CREATE'
+            'CREATE',
+            'resolveEmployeeHoursByDateRange'
         ],
         to   : 'manager',
         where: 'managerOnCharge.loginName = $user.id'
     }]
-    entity Projects                    as select from db.Projects;
+    entity Projects                    as select from db.Projects
+        actions {
+
+            action resolveEmployeeHoursByDateRange(startDate: Date,
+                                           endDate: Date,
+                                           status_ID: String,
+                                           rejectionReason_ID: String) returns {
+                message      : String;
+                updatedCount : Integer;
+            };
+
+        };
 
     @restrict: [{
         grant: ['READ'],

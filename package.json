@@ -32,6 +32,9 @@
           },
           "laura": {
             "roles": ["employee"]
+          },
+          "liam": {
+            "roles": ["employee"]
           }
         }
       }
