@@ -48,6 +48,6 @@ module.exports = cds.service.impl(async function (srv) {
     //Bound Actions
     srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done
 
-    // srv.on("resolveEmployeeHoursOneByOne", handlers.managers.actions.projects.resolveEmployeeHoursOneByOne);
+    srv.on("resolveEmployeeHoursOneByOne", handlers.managers.actions.loggedHours.resolveEmployeeHoursOneByOne);
 
 })

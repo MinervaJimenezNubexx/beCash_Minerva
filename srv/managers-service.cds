@@ -42,13 +42,21 @@ service ManagersService {
         grant: [
             'READ',
             'CREATE',
-            'UPDATE'
+            'UPDATE',
+            'resolveEmployeeHoursOneByOne'
         ],
         to   : 'manager',
         where: 'project.managerOnCharge.loginName = $user.id'
     }]
     @cds.redirection.target
-    entity LoggedHours                 as select from db.LoggedHours;
+    entity LoggedHours                 as select from db.LoggedHours
+    actions {
+        action resolveEmployeeHoursOneByOne(
+            status_ID: String, 
+            rejectionReason_ID: String 
+        ) returns { message: String; };
+        
+    };
 
     action sendThisMonthHours() returns {
         message : String

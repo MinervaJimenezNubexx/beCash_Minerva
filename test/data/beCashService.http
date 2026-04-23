@@ -146,7 +146,7 @@ Content-Type: application/json
 GET {{server}}{{employeeService}}/LoggedHours
 Authorization: Basic {{userEmp1}}:{{password}}
 
-### To create some logs
+### To create some logs -> OK
 POST {{server}}{{employeeService}}/LoggedHours
 Authorization: Basic {{userEmp4}}:{{password}}
 Content-Type: application/json
@@ -162,7 +162,7 @@ Content-Type: application/json
     "isModifiedByAdmin": false
 }
 
-// Employee sends all hours for the current month
+// Employee sends all hours for the current month -> OK
 ###
 POST {{server}}{{employeeService}}/sendThisMonthHours
 Authorization: Basic {{userEmp4}}:{{password}}
@@ -170,7 +170,7 @@ Content-Type: application/json
 
 {}
 
-// Manager approves all pending hours of the first 2 weeks of the month
+// Manager approves all pending hours of the first 2 weeks of the month -> OK
 ###
 POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.resolveEmployeeHoursByDateRange
 Authorization: Basic {{userManager}}:{{password}}
@@ -186,4 +186,18 @@ Content-Type: application/json
 ### See the Log Result
 GET {{server}}{{employeeService}}/LoggedHours
 Authorization: Basic {{userEmp4}}:{{password}}
+
+### Manager rejects a single log -> OK
+POST {{server}}{{managerService}}/LoggedHours(7777aaaa-7777-aaaa-7777-aaaa7777aaaa)/ManagersService.resolveEmployeeHoursOneByOne
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "status_ID": "R",
+    "rejectionReason_ID": "LOH"
+}
+
+### See the Log Result
+GET {{server}}{{employeeService}}/LoggedHours
+Authorization: Basic {{userEmp2}}:{{password}}
 
