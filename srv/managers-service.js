@@ -12,9 +12,9 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateActiveProject); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done, not for managers
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done, not for managers
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
@@ -43,11 +43,14 @@ module.exports = cds.service.impl(async function (srv) {
     //LoggedHours
     srv.on("sendThisMonthHours", src.domain.actions.loggedHours.sendThisMonthHours); //done
 
+    //Bound Actions
+    srv.on("resolveEmployeeHoursOneByOne", handlers.managers.actions.loggedHours.resolveEmployeeHoursOneByOne); //done, only for managers
+
     //Projects
 
     //Bound Actions
-    srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done
+    srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done, only for managers
 
-    srv.on("resolveEmployeeHoursOneByOne", handlers.managers.actions.loggedHours.resolveEmployeeHoursOneByOne);
+    
 
 })
