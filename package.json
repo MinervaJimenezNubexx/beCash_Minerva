@@ -7,10 +7,17 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2",
-    "@sap/cds-dk": "^9"
+    "@sap/cds-dk": "^9",
+    "cds-plugin-ui5": "^0.13.0",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-manager_app": "cds watch --open com.nbx.managerapp/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy beCash --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "private": true,
   "cds": {
@@ -19,25 +26,41 @@
         "kind": "mocked",
         "users": {
           "alice": {
-            "roles": ["admin"]
+            "roles": [
+              "admin"
+            ]
           },
           "pedro": {
-            "roles": ["manager", "employee"]
+            "roles": [
+              "manager",
+              "employee"
+            ]
           },
           "juan": {
-            "roles": ["employee"]
+            "roles": [
+              "employee"
+            ]
           },
           "maria": {
-            "roles": ["employee"]
+            "roles": [
+              "employee"
+            ]
           },
           "laura": {
-            "roles": ["employee"]
+            "roles": [
+              "employee"
+            ]
           },
           "liam": {
-            "roles": ["employee"]
+            "roles": [
+              "employee"
+            ]
           }
         }
       }
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ]
 }

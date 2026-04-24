@@ -30,12 +30,17 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend); //done
 
+
     //Logged Hours: exclusive for managers only
+
     //srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerReviewLogStatus); //deleted
 
     //srv.before(['UPDATE'], "LoggedHours", handlers.managers.entities.loggedHours.managerNotUpdateBasicInfoWhenSent); //deleted
 
+    srv.before(['CREATE'], "Projects", handlers.managers.entities.projects.autoAssignManagerToNewProject); //done
 
+    srv.before(['CREATE'], "Projects", handlers.managers.entities.projects.validateReasonableBudget); //done
+    
     /*
         ACTIONS
     */

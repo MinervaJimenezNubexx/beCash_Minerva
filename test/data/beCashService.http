@@ -223,3 +223,15 @@ Content-Type: application/json
 GET {{server}}{{adminService}}/EmployeesAssigned
 Authorization: Basic {{userAdmin}}:{{password}}
 
+### Manager creates new project
+POST {{server}}{{managerService}}/Projects
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "name": "Trial",
+    "client_ID": "11111111-1111-1111-1111-111111111111",
+    "status_ID": "O",
+    "initialBudget": 100000
+}
+

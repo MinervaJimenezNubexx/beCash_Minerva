@@ -1,0 +1,1 @@
+using ManagersService as service from '../../srv/managers-service';

@@ -61,7 +61,11 @@ service AdminsService {
     entity LoggedHours       as select from db.LoggedHours;
 
     @restrict: [{
-        grant: ['READ'],
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
         to   : 'admin'
     }]
     entity EmployeesAssigned as select from db.EmployeesAssigned;

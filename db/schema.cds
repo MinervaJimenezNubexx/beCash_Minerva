@@ -102,6 +102,7 @@ entity EmployeesAssigned {
         isActiveOnThisProject : Boolean default true;
 }
 
+@assert.unique: {uniqueProjectName: [name]}
 entity Projects : cuid {
     name               : Name not null;
     client             : Association to Clients not null;
