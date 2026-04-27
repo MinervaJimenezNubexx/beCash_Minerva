@@ -43,7 +43,7 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.147.1",
       "libs": {
@@ -88,15 +88,21 @@
         "type": "View",
         "viewType": "XML",
         "path": "com.nbx.managerapp.view",
-        "async": true,
-        "viewPath": "com.nbx.managerapp.view"
+        "async": true
       },
       "routes": [
         {
           "name": "RouteMain",
-          "pattern": ":?query:",
+          "pattern": "",
           "target": [
             "TargetMain"
+          ]
+        },
+        {
+          "name": "RouteProjectDetail",
+          "pattern": "Projects({projectId})",
+          "target": [
+            "TargetProjectDetail"
           ]
         }
       ],
@@ -104,6 +110,10 @@
         "TargetMain": {
           "id": "Main",
           "name": "Main"
+        },
+        "TargetProjectDetail": {
+          "id": "ProjectDetail",
+          "name": "ProjectDetail"
         }
       }
     },

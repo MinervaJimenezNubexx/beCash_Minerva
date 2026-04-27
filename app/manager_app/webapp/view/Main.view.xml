@@ -1,6 +1,54 @@
-<mvc:View controllerName="com.nbx.managerapp.controller.Main"
+<mvc:View
+    controllerName="com.nbx.managerapp.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
     xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    
+    <Page 
+        id="page" 
+        title="{i18n>MainTitle}">
+        
+        <headerContent>
+            <Button icon="sap-icon://add" text="{i18n>AddProject}" type="Emphasized" press=".onCreateProject" />
+        </headerContent>
+
+        <content>
+            <Table id="projectsTable"
+                   items="{
+                       path: '/Projects',
+                       parameters: {
+                           $expand: 'status'
+                       }
+                   }"
+                   noDataText="{i18n>NoProjectsAssigned}"
+                   growing="true" 
+                   growingThreshold="20">
+                
+                <columns>
+                    <Column><Text text="{i18n>ProjectName}" /></Column>
+                    <Column hAlign="End"><Text text="{i18n>Budget}" /></Column>
+                    <Column hAlign="Center"><Text text="{i18n>Status}" /></Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem type="Navigation" press=".onPressProject">
+                        <cells>
+                            <ObjectIdentifier title="{name}" />
+                            
+                            <ObjectNumber number="{initialBudget}" unit="€" />
+                            
+                            <ObjectStatus 
+                                text="{status/description}" 
+                                state="{= 
+                                    ${status_ID} === 'O' || ${status_ID} === 'D' ? 'Success' : 
+                                    ${status_ID} === 'Q' || ${status_ID} === 'T' ? 'Information' : 
+                                    ${status_ID} === 'C' ? 'Error' : 
+                                    'None' 
+                                }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
     </Page>
 </mvc:View>

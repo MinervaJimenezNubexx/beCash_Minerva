@@ -1,0 +1,57 @@
+<mvc:View
+    controllerName="com.nbx.managerapp.controller.ProjectDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout">
+    
+    <Page id="detailPage" title="{i18n>projectDetailTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        
+        <content>
+            <ObjectHeader
+                id="objHeader"
+                title="{projectName}"
+                number="{
+                    path: 'initialBudget',
+                    type: 'sap.ui.model.type.Float',
+                    formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}
+                }"
+                numberUnit="€">
+                
+                <statuses>
+                    <ObjectStatus 
+                        title="{i18n>remainingBudget}" 
+                        text="{remainingBudget} €" 
+                        state="{= ${remainingBudget} >= 0 ? 'Success' : 'Error' }" />
+                </statuses>
+                
+                <attributes>
+                    <ObjectAttribute title="{i18n>approvedHours}" text="{totalApprovedHours} h" />
+                    <ObjectAttribute title="{i18n>totalSpent}" text="{totalSpent} €" />
+                </attributes>
+            </ObjectHeader>
+
+            <IconTabBar id="iconTabBar" class="sapUiResponsiveContentPadding">
+                <items>
+                    
+                    <IconTabFilter key="info" text="{i18n>ProjectInfo}" icon="sap-icon://hint">
+                        <Text text="" />
+                    </IconTabFilter>
+
+                    <IconTabFilter key="team" text="{i18n>TeamInfo}" icon="sap-icon://group">
+                        <Text text="" />
+                    </IconTabFilter>
+
+                    <IconTabFilter key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
+                        <Text text="" />
+                    </IconTabFilter>
+
+                    <IconTabFilter key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
+                        <Text text="" />
+                    </IconTabFilter>
+
+                </items>
+            </IconTabBar>
+        </content>
+    </Page>
+</mvc:View>

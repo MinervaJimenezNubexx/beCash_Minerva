@@ -25,16 +25,20 @@ service ManagersService {
         actions {
 
             action resolveEmployeeHoursByDateRange(startDate: Date,
-                                           endDate: Date,
-                                           status_ID: String,
-                                           rejectionReason_ID: String) returns {
+                                                   endDate: Date,
+                                                   status_ID: String,
+                                                   rejectionReason_ID: String) returns {
                 message      : String;
                 updatedCount : Integer;
             };
 
-            action managerAddEmployeeToProject(employee_ID: UUID) returns { message: String };
+            action managerAddEmployeeToProject(employee_ID: UUID)              returns {
+                message      : String
+            };
 
-            action managerRemoveEmployeeFromProject(employee_ID: UUID) returns { message: String };
+            action managerRemoveEmployeeFromProject(employee_ID: UUID)         returns {
+                message      : String
+            };
         };
 
     @restrict: [{
@@ -42,6 +46,12 @@ service ManagersService {
         to   : 'manager'
     }]
     entity Clients                     as select from db.Clients;
+
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'manager'
+    }]
+    entity PjStatus                    as select from db.PjStatus;
 
     @restrict: [{
         grant: [
@@ -55,13 +65,13 @@ service ManagersService {
     }]
     @cds.redirection.target
     entity LoggedHours                 as select from db.LoggedHours
-    actions {
-        action resolveEmployeeHoursOneByOne(
-            status_ID: String, 
-            rejectionReason_ID: String 
-        ) returns { message: String; };
-        
-    };
+        actions {
+            action resolveEmployeeHoursOneByOne(status_ID: String,
+                                                rejectionReason_ID: String) returns {
+                message : String;
+            };
+
+        };
 
     action sendThisMonthHours() returns {
         message : String
@@ -73,21 +83,24 @@ service ManagersService {
     //Total spent and budget of the projects
     @readonly
     entity ManagerProjectFinancesView  as
-        select from db.LoggedHours {
-            key project.ID                                                        as projectID,
-                project.name                                                      as projectName,
-                project.initialBudget,
-                sum(quantity)                                                     as totalApprovedHours : Double,
-                sum(quantity * employee.position.billing)                         as totalSpent         : Decimal(15, 2),
-                project.initialBudget - sum(quantity * employee.position.billing) as remainingBudget    : Decimal(15, 2)
+        select from db.Projects as P
+        left join db.LoggedHours as L
+            on  L.project.ID = P.ID
+            and L.status.ID  = 'A'
+        {
+            key P.ID                                                  as ID,
+                P.name                                                as projectName,
+                P.initialBudget,
+                sum(L.quantity)                                       as totalApprovedHours : Double,
+                sum(L.quantity * L.employee.position.billing)         as totalSpent         : Decimal(15, 2),
+                P.initialBudget - sum(L.quantity * L.employee.position.billing) as remainingBudget : Decimal(15, 2)
         }
         where
-                status.ID                         = 'A'
-            and project.managerOnCharge.loginName = $user.id
+            P.managerOnCharge.loginName = $user.id
         group by
-            project.ID,
-            project.name,
-            project.initialBudget;
+            P.ID,
+            P.name,
+            P.initialBudget;
 
     //Project budget spent per employee position
     @readonly
