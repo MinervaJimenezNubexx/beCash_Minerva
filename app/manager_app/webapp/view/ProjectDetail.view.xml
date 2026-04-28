@@ -5,8 +5,18 @@
     xmlns="sap.m"
     xmlns:layout="sap.ui.layout">
     
-    <Page id="detailPage" title="{i18n>projectDetailTitle}" showNavButton="true" navButtonPress=".onNavBack">
+    <Page id="detailPage" title="{i18n>projectDetailTitle}" showNavButton="true" navButtonPress=".onNavBack" >
         
+        <headerContent>
+            <Button 
+                id="changeStatusButton" 
+                text="{i18n>nextStatusButton}" 
+                icon="sap-icon://process" 
+                type="Emphasized" 
+                press=".onChangeStatus"
+                visible="{= ${projectStatus} !== 'C' }" />
+        </headerContent>
+
         <content>
             <ObjectHeader
                 id="objHeader"
@@ -19,6 +29,7 @@
                 numberUnit="€">
                 
                 <statuses>
+                    <ObjectStatus title="{i18n>StatusInfo}" text="{status_description}" state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
                     <ObjectStatus 
                         title="{i18n>remainingBudget}" 
                         text="{remainingBudget} €" 

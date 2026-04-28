@@ -95,8 +95,8 @@ async function managerRemoveEmployeeFromProject(req) {
 
     const updatedCount = await UPDATE('my.beCash.EmployeesAssigned')
         .set({ isActiveOnThisProject: false })
-        .where({ 
-            employee_ID: employee_ID, 
+        .where({
+            employee_ID: employee_ID,
             project_ID: project_ID,
             isActiveOnThisProject: true
         });
@@ -108,11 +108,46 @@ async function managerRemoveEmployeeFromProject(req) {
     return { message: "Employee successfully removed from the project." };
 }
 
+async function advanceStatus(req) {
+    try {
+        const Projects = req.target;
+        let projectId = typeof req.params[0] === 'object' ? req.params[0].ID : req.params[0];
 
+        if (!projectId) {
+            return req.reject(400, 'PROJECT_NOT_IDENTIFIED_ERROR');
+        }
+
+        let project = await SELECT.one.from(Projects).where({ ID: projectId });
+
+        if (!project) {
+            return req.reject(404, 'PROJECT_NOT_FOUND_ERROR');
+        }
+
+        let nextStatus;
+        switch (project.status_ID) {
+            case 'O': nextStatus = 'D'; break;
+            case 'D': nextStatus = 'Q'; break;
+            case 'Q': nextStatus = 'T'; break;
+            case 'T': nextStatus = 'C'; break;
+            case 'C':
+                return req.reject(400, 'STATUS_CLOSED_CANNOT_BE_CHANGED');
+            default:
+                return req.reject(400, 'UNKNOWN_PROJECT_STATUS_ERROR');
+        }
+
+        await UPDATE(Projects).set({ status_ID: nextStatus }).where({ ID: projectId });
+        return;
+
+    } catch (error) {
+        console.error('UPDATE_STATUS_CRITICAL_ERROR', error);
+        return req.reject(500, 'UPDATE_STATUS_SYSTEM_ERROR');
+    }
+}
 
 
 module.exports = {
     resolveEmployeeHoursByDateRange,
     managerAddEmployeeToProject,
-    managerRemoveEmployeeFromProject
+    managerRemoveEmployeeFromProject,
+    advanceStatus
 };

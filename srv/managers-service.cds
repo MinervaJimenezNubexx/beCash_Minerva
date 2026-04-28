@@ -16,12 +16,17 @@ service ManagersService {
             'CREATE',
             'resolveEmployeeHoursByDateRange',
             'managerAddEmployeeToProject',
-            'managerRemoveEmployeeFromProject'
+            'managerRemoveEmployeeFromProject',
+            'advanceStatus'
         ],
         to   : 'manager',
         where: 'managerOnCharge.loginName = $user.id'
     }]
-    entity Projects                    as select from db.Projects
+    entity Projects                    as
+        select from db.Projects {
+            *,
+            status.ID as projectStatus : String
+        }
         actions {
 
             action resolveEmployeeHoursByDateRange(startDate: Date,
@@ -39,6 +44,8 @@ service ManagersService {
             action managerRemoveEmployeeFromProject(employee_ID: UUID)         returns {
                 message      : String
             };
+
+            action advanceStatus();
         };
 
     @restrict: [{
@@ -88,12 +95,20 @@ service ManagersService {
             on  L.project.ID = P.ID
             and L.status.ID  = 'A'
         {
-            key P.ID                                                  as ID,
-                P.name                                                as projectName,
+            key P.ID                 as ID,
+                P.name               as projectName,
                 P.initialBudget,
-                sum(L.quantity)                                       as totalApprovedHours : Double,
-                sum(L.quantity * L.employee.position.billing)         as totalSpent         : Decimal(15, 2),
-                P.initialBudget - sum(L.quantity * L.employee.position.billing) as remainingBudget : Decimal(15, 2)
+                P.status.ID          as status_ID,
+                P.status.description as status_description,
+                coalesce(
+                    sum(L.quantity), 0
+                )                    as totalApprovedHours : Double,
+                coalesce(
+                    sum(L.quantity * L.employee.position.billing), 0
+                )                    as totalSpent         : Decimal(15, 2),
+                P.initialBudget - coalesce(
+                    sum(L.quantity * L.employee.position.billing), 0
+                )                    as remainingBudget    : Decimal(15, 2)
         }
         where
             P.managerOnCharge.loginName = $user.id
