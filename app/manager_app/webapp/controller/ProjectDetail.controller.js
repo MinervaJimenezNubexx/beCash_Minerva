@@ -27,6 +27,11 @@ sap.ui.define([
             oObjHeader.bindElement({
                 path: "/ManagerProjectFinancesView(" + sProjectId + ")"
             });
+
+            let oIconTapBar = this.byId("iconTabBar");
+            oIconTapBar.bindElement({
+                path: "/ProjectDetailsView(" + sProjectId + ")"
+            });
         },
 
         onNavBack: function () {
@@ -72,6 +77,6 @@ sap.ui.define([
                 sap.m.MessageBox.error(sErrorMsg);
             });
         }
-        
+
     });
 });

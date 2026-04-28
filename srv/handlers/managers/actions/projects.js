@@ -128,7 +128,10 @@ async function advanceStatus(req) {
             case 'O': nextStatus = 'D'; break;
             case 'D': nextStatus = 'Q'; break;
             case 'Q': nextStatus = 'T'; break;
-            case 'T': nextStatus = 'C'; break;
+            case 'T': 
+            closingDate = new Date().toISOString();
+            await UPDATE(Projects).set({ closedAt: closingDate }).where({ ID: projectId });
+            nextStatus = 'C'; break;
             case 'C':
                 return req.reject(400, 'STATUS_CLOSED_CANNOT_BE_CHANGED');
             default:

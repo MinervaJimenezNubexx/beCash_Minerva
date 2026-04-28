@@ -3,7 +3,9 @@
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     xmlns="sap.m"
-    xmlns:layout="sap.ui.layout">
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
     
     <Page id="detailPage" title="{i18n>projectDetailTitle}" showNavButton="true" navButtonPress=".onNavBack" >
         
@@ -44,9 +46,29 @@
 
             <IconTabBar id="iconTabBar" class="sapUiResponsiveContentPadding">
                 <items>
-                    
                     <IconTabFilter key="info" text="{i18n>ProjectInfo}" icon="sap-icon://hint">
-                        <Text text="" />
+                        <VBox id="idInfoContainer" class="sapUiSmallMargin">
+                            <Label text="{i18n>ProjectNameInfo}:" />
+                            <Text text="{projectName}" />
+
+                            <Label text="{i18n>ClientInfo}:" />
+                            <Text text="{clientName}" />
+                            
+                            <Label text="{i18n>BudgetInfo}:" />
+                            <Text text="{initialBudget}" />
+
+                            <Label text="{i18n>ManagerInfo}:" />
+                            <Text text="{manager}" />
+
+                            <Label text="{i18n>StatusInfo2}:" />
+                            <Text text="{status_description}" />
+                            
+                            <Label text="{i18n>CloseDateInfo}:" />
+                            <Text text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }"/>
+
+                            <Label text="{i18n>SentReportInfo}:" />
+                            <Text text="{reportSentToClient}" />
+                        </VBox>
                     </IconTabFilter>
 
                     <IconTabFilter key="team" text="{i18n>TeamInfo}" icon="sap-icon://group">

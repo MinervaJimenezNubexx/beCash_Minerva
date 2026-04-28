@@ -235,3 +235,6 @@ Content-Type: application/json
     "initialBudget": 100000
 }
 
+### See projects
+GET {{server}}{{adminService}}/Projects
+Authorization: Basic {{userAdmin}}:{{password}}

@@ -192,4 +192,34 @@ or status.ID                              = 'P'
             project.name,
             project.initialBudget;
 
+    @readonly
+    entity ProjectDetailsView          as
+        select from db.Projects as P
+        left join db.LoggedHours as L
+            on  L.project.ID = P.ID
+            and L.status.ID  = 'A'
+        {
+            key P.ID                 as ID,
+                P.name               as projectName,
+                P.client.name        as clientName,
+                P.initialBudget,
+                P.status.ID          as status_ID,
+                P.status.description as status_description,
+                P.closedAt,
+                P.managerOnCharge.firstName as manager,
+                P.reportSentToClient
+        }
+        where
+            P.managerOnCharge.loginName = $user.id
+        group by
+            P.ID,
+            P.name,
+            P.client.name,
+            P.initialBudget,
+            P.status.ID,
+            P.status.description,
+            P.closedAt,
+            P.managerOnCharge,
+            P.reportSentToClient;
+
 }
