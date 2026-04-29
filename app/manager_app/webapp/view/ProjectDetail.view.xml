@@ -16,7 +16,7 @@
                 icon="sap-icon://process" 
                 type="Emphasized" 
                 press=".onChangeStatus"
-                visible="{= ${projectStatus} !== 'C' }" />
+                visible="{= %{projectStatus} !== 'C' }" />
         </headerContent>
 
         <content>
@@ -58,7 +58,7 @@
                             <Text text="{initialBudget}" />
 
                             <Label text="{i18n>ManagerInfo}:" />
-                            <Text text="{manager}" />
+                            <Text text="{managerFirstName} {managerLastName}" />
 
                             <Label text="{i18n>StatusInfo2}:" />
                             <Text text="{status_description}" />
@@ -72,7 +72,42 @@
                     </IconTabFilter>
 
                     <IconTabFilter key="team" text="{i18n>TeamInfo}" icon="sap-icon://group">
-                        <Text text="" />
+                        <Table id="idTeamTable" items="{employeesAssigned}"> 
+
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>TeamMembersTitle}" />
+                                    <ToolbarSpacer />
+                                    <Button 
+                                        id="addEmployeeButton" 
+                                        icon="sap-icon://add" 
+                                        text="{i18n>addEmployee}" 
+                                        press=".onAddEmployee" 
+                                        type="Transparent"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+
+                            <columns>
+                                <Column><Text text="Nombre" /></Column>
+                                <Column><Text text="Email" /></Column>
+                                <Column><Text text="Position" /></Column>
+                                <Column hAlign="End"><Text text="" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{firstName} {lastName}" />
+                                        <Text text="{email}" />
+                                        <Text text="{position}" />
+                                        <Button 
+                                            icon="sap-icon://sys-minus" 
+                                            text= "Remove Employee"
+                                            type="Reject" 
+                                            press=".onRemoveEmployee" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </IconTabFilter>
 
                     <IconTabFilter key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">

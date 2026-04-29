@@ -28,9 +28,17 @@ sap.ui.define([
                 path: "/ManagerProjectFinancesView(" + sProjectId + ")"
             });
 
-            let oIconTapBar = this.byId("iconTabBar");
-            oIconTapBar.bindElement({
+            let oIconTabFilterINFO = this.byId("idInfoContainer");
+            oIconTabFilterINFO.bindElement({
                 path: "/ProjectDetailsView(" + sProjectId + ")"
+            });
+
+            let oIconTabFilterTEAM = this.byId("idTeamTable");
+            oIconTabFilterTEAM.bindElement({
+                path: "/ProjectTeamView(" + sProjectId + ")",
+                parameters: {
+                    "$expand": "employeesAssigned($filter=isActiveOnThisProject eq true)"
+                }
             });
         },
 

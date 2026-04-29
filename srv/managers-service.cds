@@ -22,6 +22,7 @@ service ManagersService {
         to   : 'manager',
         where: 'managerOnCharge.loginName = $user.id'
     }]
+    @cds.redirection.target
     entity Projects                    as
         select from db.Projects {
             *,
@@ -145,45 +146,17 @@ service ManagersService {
             key project.ID as projectID,
                 project.name,
                 project.initialBudget,
-                sum(case
-                        status.ID
-                        when 'A'
-                             then(
-                                     quantity * employee.position.billing
-                                 )
-                        else 0
-                    end)   as currentSpent           : Decimal(15, 2),
+                sum(case status.ID when 'A' then(quantity * employee.position.billing)
+                        else 0 end) as currentSpent : Decimal(15, 2),
 
-                (
-                    project.initialBudget - sum(case
-                                                    status.ID
-                                                    when 'A'
-                                                         then(
-                                                                 quantity * employee.position.billing
-                                                             )
-                                                    else 0
-                                                end)
-                )          as currentRemainingBudget : Decimal(15, 2),
+                (project.initialBudget - sum(case status.ID when 'A' then(quantity * employee.position.billing)
+                                                else 0 end)) as currentRemainingBudget : Decimal(15, 2),
 
-                sum(case
-                        status.ID
-                        when 'P'
-                             then(
-                                     quantity * employee.position.billing
-                                 )
-                        else 0
-                    end)   as pendingSpentQuantity   : Decimal(15, 2),
+                sum(case status.ID when 'P' then(quantity * employee.position.billing)
+                        else 0 end)   as pendingSpentQuantity   : Decimal(15, 2),
 
-                (
-                    project.initialBudget - sum(case
-                                                    when status.ID = 'A'
-or status.ID                              = 'P'
-                                                         then(
-                                                                 quantity * employee.position.billing
-                                                             )
-                                                    else 0
-                                                end)
-                )          as projectedSpentBudget   : Decimal(15, 2)
+                (project.initialBudget - sum(case when status.ID = 'A'or status.ID = 'P' then(quantity * employee.position.billing)
+                                                else 0 end)) as projectedSpentBudget : Decimal(15, 2)
         }
         where
             project.managerOnCharge.loginName = $user.id
@@ -194,32 +167,50 @@ or status.ID                              = 'P'
 
     @readonly
     entity ProjectDetailsView          as
-        select from db.Projects as P
+        select from db.Projects as Projects
         left join db.LoggedHours as L
-            on  L.project.ID = P.ID
+            on  L.project.ID = Projects.ID
             and L.status.ID  = 'A'
         {
-            key P.ID                 as ID,
-                P.name               as projectName,
-                P.client.name        as clientName,
-                P.initialBudget,
-                P.status.ID          as status_ID,
-                P.status.description as status_description,
-                P.closedAt,
-                P.managerOnCharge.firstName as manager,
-                P.reportSentToClient
+            key Projects.ID                        as ID,
+                Projects.name                      as projectName,
+                Projects.client.name               as clientName,
+                Projects.initialBudget,
+                Projects.status.ID                 as status_ID,
+                Projects.status.description        as status_description,
+                Projects.closedAt,
+                Projects.managerOnCharge.firstName as managerFirstName,
+                Projects.managerOnCharge.lastName  as managerLastName,
+                Projects.reportSentToClient
         }
         where
-            P.managerOnCharge.loginName = $user.id
+            Projects.managerOnCharge.loginName = $user.id
         group by
-            P.ID,
-            P.name,
-            P.client.name,
-            P.initialBudget,
-            P.status.ID,
-            P.status.description,
-            P.closedAt,
-            P.managerOnCharge,
-            P.reportSentToClient;
+            Projects.ID,
+            Projects.name,
+            Projects.client.name,
+            Projects.initialBudget,
+            Projects.status.ID,
+            Projects.status.description,
+            Projects.closedAt,
+            Projects.managerOnCharge,
+            Projects.reportSentToClient;
+
+    @readonly
+    entity ProjectTeamView as projection on db.Projects {
+        key ID,
+            employeesAssigned : redirected to TeamMembers
+    };
+
+    @readonly
+    entity TeamMembers as projection on db.EmployeesAssigned {
+        key project,
+        key employee,
+        employee.firstName as firstName,
+        employee.lastName as lastName,
+        employee.email as email,
+        employee.position.nameDescription as position,
+        isActiveOnThisProject
+    };
 
 }
