@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <SelectDialog
+        id="addEmployeeDialog"
+        title="{i18n>selectEmployeeTitle}"
+        noDataText="{i18n>noEmployeesFound}"
+        search=".onSearchEmployee"
+        confirm=".onConfirmAddEmployee"
+        cancel=".onCancelDialog"
+        items="{path: '/Employees'}">
+        <StandardListItem
+            title="{firstName} {lastName}"
+            description="{email}"
+            type="Active" />
+    </SelectDialog>
+</core:FragmentDefinition>

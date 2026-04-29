@@ -84,6 +84,27 @@ sap.ui.define([
 
                 sap.m.MessageBox.error(sErrorMsg);
             });
+        },
+
+        onRemoveEmployee: function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext(),
+                sEmployeeId = oContext.getProperty("employee_ID"),
+                oTable = this.byId("idTeamTable"),
+                oProjectContext = oTable.getBindingContext();
+
+            if (!oProjectContext) return;
+
+            const oModel = oProjectContext.getModel(),
+                oActionOData = oModel.bindContext("ManagersService.managerRemoveEmployeeFromProject(...)", oProjectContext);
+            oActionOData.setParameter("employee_ID", sEmployeeId);
+
+            oActionOData.execute().then(() => {
+                sap.m.MessageToast.show("Empleado eliminado correctamente");
+                oProjectContext.refresh();
+
+            }).catch((oError) => {
+                sap.m.MessageBox.error(oError.message);
+            });
         }
 
     });

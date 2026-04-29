@@ -91,32 +91,32 @@ service ManagersService {
     //Total spent and budget of the projects
     @readonly
     entity ManagerProjectFinancesView  as
-        select from db.Projects as P
-        left join db.LoggedHours as L
-            on  L.project.ID = P.ID
-            and L.status.ID  = 'A'
+        select from db.Projects as Projects
+        left join db.LoggedHours as LoggedHours
+            on  LoggedHours.project.ID = Projects.ID
+            and LoggedHours.status.ID  = 'A'
         {
-            key P.ID                 as ID,
-                P.name               as projectName,
-                P.initialBudget,
-                P.status.ID          as status_ID,
-                P.status.description as status_description,
+            key Projects.ID                 as ID,
+                Projects.name               as projectName,
+                Projects.initialBudget,
+                Projects.status.ID          as status_ID,
+                Projects.status.description as status_description,
                 coalesce(
-                    sum(L.quantity), 0
+                    sum(LoggedHours.quantity), 0
                 )                    as totalApprovedHours : Double,
                 coalesce(
-                    sum(L.quantity * L.employee.position.billing), 0
+                    sum(LoggedHours.quantity * LoggedHours.employee.position.billing), 0
                 )                    as totalSpent         : Decimal(15, 2),
-                P.initialBudget - coalesce(
-                    sum(L.quantity * L.employee.position.billing), 0
+                Projects.initialBudget - coalesce(
+                    sum(LoggedHours.quantity * LoggedHours.employee.position.billing), 0
                 )                    as remainingBudget    : Decimal(15, 2)
         }
         where
-            P.managerOnCharge.loginName = $user.id
+            Projects.managerOnCharge.loginName = $user.id
         group by
-            P.ID,
-            P.name,
-            P.initialBudget;
+            Projects.ID,
+            Projects.name,
+            Projects.initialBudget;
 
     //Project budget spent per employee position
     @readonly
@@ -168,9 +168,9 @@ service ManagersService {
     @readonly
     entity ProjectDetailsView          as
         select from db.Projects as Projects
-        left join db.LoggedHours as L
-            on  L.project.ID = Projects.ID
-            and L.status.ID  = 'A'
+        left join db.LoggedHours as LoggedHours
+            on  LoggedHours.project.ID = Projects.ID
+            and LoggedHours.status.ID  = 'A'
         {
             key Projects.ID                        as ID,
                 Projects.name                      as projectName,
@@ -197,10 +197,19 @@ service ManagersService {
             Projects.reportSentToClient;
 
     @readonly
-    entity ProjectTeamView as projection on db.Projects {
-        key ID,
-            employeesAssigned : redirected to TeamMembers
-    };
+    entity ProjectTeamView             as
+        projection on db.Projects {
+            key ID,
+                employeesAssigned : redirected to TeamMembers
+        }
+        actions {
+            action managerAddEmployeeToProject(employee_ID: UUID)      returns {
+                message : String
+            };
+            action managerRemoveEmployeeFromProject(employee_ID: UUID) returns {
+                message : String
+            };
+        };
 
     @readonly
     entity TeamMembers as projection on db.EmployeesAssigned {
