@@ -99,7 +99,7 @@ sap.ui.define([
             oActionOData.setParameter("employee_ID", sEmployeeId);
 
             oActionOData.execute().then(() => {
-                sap.m.MessageToast.show("Empleado eliminado correctamente");
+                sap.m.MessageToast.show(this._o18n.getText("EmployeeRemovedSuccess"));
                 oProjectContext.refresh();
 
             }).catch((oError) => {

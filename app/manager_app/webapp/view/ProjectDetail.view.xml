@@ -76,21 +76,21 @@
 
                             <headerToolbar>
                                 <OverflowToolbar>
-                                    <Title text="{i18n>TeamMembersTitle}" />
+                                    <Title text="{i18n>assignedEmployeesTitle}" />
                                     <ToolbarSpacer />
                                     <Button 
                                         id="addEmployeeButton" 
                                         icon="sap-icon://add" 
-                                        text="{i18n>addEmployee}" 
+                                        text="{i18n>addEmployeeBtn}" 
                                         press=".onAddEmployee" 
                                         type="Transparent"/>
                                 </OverflowToolbar>
                             </headerToolbar>
 
                             <columns>
-                                <Column><Text text="Nombre" /></Column>
-                                <Column><Text text="Email" /></Column>
-                                <Column><Text text="Position" /></Column>
+                                <Column><Text text="{i18n>employeeName}" /></Column>
+                                <Column><Text text="{i18n>employeeEmail}" /></Column>
+                                <Column><Text text="{i18n>employeePosition}" /></Column>
                                 <Column hAlign="End"><Text text="" /></Column>
                             </columns>
                             <items>
@@ -101,7 +101,7 @@
                                         <Text text="{position}" />
                                         <Button 
                                             icon="sap-icon://sys-minus" 
-                                            text= "Remove Employee"
+                                            text= "{i18n>removeEmployeeBtn}"
                                             type="Reject" 
                                             press=".onRemoveEmployee" />
                                     </cells>
