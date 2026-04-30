@@ -3,6 +3,10 @@ using {my.beCash as db} from '../db/schema';
 @requires: 'manager'
 service ManagersService {
 
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'manager'
+    }]
     @cds.redirection.target
     entity Employees                   as
         select from db.Employees {
