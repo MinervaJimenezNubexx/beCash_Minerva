@@ -3,12 +3,12 @@ using {my.beCash as db} from '../db/schema';
 @requires: 'manager'
 service ManagersService {
 
-    /*     @cds.redirection.target
-        entity Employees                   as
-            select from db.Employees {
-                *,
-                firstName || ' ' || lastName as employeeName : String
-            }; */
+    @cds.redirection.target
+    entity Employees                   as
+        select from db.Employees {
+            *,
+            firstName || ' ' || lastName as employeeName : String
+        };
 
     @restrict: [{
         grant: [
@@ -200,6 +200,7 @@ service ManagersService {
     entity ProjectTeamView             as
         projection on db.Projects {
             key ID,
+                status.ID as projectStatus,
                 employeesAssigned : redirected to TeamMembers
         }
         actions {
@@ -215,6 +216,7 @@ service ManagersService {
     entity TeamMembers as projection on db.EmployeesAssigned {
         key project,
         key employee,
+        project.status.ID as projectStatus,
         employee.firstName as firstName,
         employee.lastName as lastName,
         employee.email as email,

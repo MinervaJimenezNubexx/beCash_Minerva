@@ -1,17 +1,29 @@
 <core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
-    <SelectDialog
+    <Dialog
         id="addEmployeeDialog"
         title="{i18n>selectEmployeeTitle}"
-        noDataText="{i18n>noEmployeesFound}"
-        search=".onSearchEmployee"
-        confirm=".onConfirmAddEmployee"
-        cancel=".onCancelDialog"
-        items="{path: '/Employees'}">
-        <StandardListItem
-            title="{firstName} {lastName}"
-            description="{email}"
-            type="Active" />
-    </SelectDialog>
+        contentWidth="600px"
+        contentHeight="500px">
+        <content>
+            <List
+                id="idAddEmployeeList"
+                items="{
+                    path: '/Employees',
+                    parameters: { $select: 'ID,firstName,lastName,email,isActive' }
+                }"
+                mode="SingleSelectMaster"
+                selectionChange=".onConfirmAddEmployee">
+                <StandardListItem
+                    title="{firstName} {lastName}"
+                    description="{email}"
+                    icon="sap-icon://person-placeholder"
+                    type="Active" />
+            </List>
+        </content>
+        <beginButton>
+            <Button text="{i18n>cancelBtn}" press=".onCancelDialog" />
+        </beginButton>
+    </Dialog>
 </core:FragmentDefinition>

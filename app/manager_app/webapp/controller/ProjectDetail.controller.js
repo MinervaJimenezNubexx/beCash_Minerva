@@ -37,6 +37,7 @@ sap.ui.define([
             oIconTabFilterTEAM.bindElement({
                 path: "/ProjectTeamView(" + sProjectId + ")",
                 parameters: {
+                    "$select": "projectStatus",
                     "$expand": "employeesAssigned($filter=isActiveOnThisProject eq true)"
                 }
             });
@@ -105,6 +106,83 @@ sap.ui.define([
             }).catch((oError) => {
                 sap.m.MessageBox.error(oError.message);
             });
+        },
+
+        onAddEmployee: function () {
+            if (!this._oAddEmployeeDialog) {
+                this._oAddEmployeeDialog = sap.ui.xmlfragment(
+                    this.getView().getId(),
+                    "com.nbx.managerapp.view.fragment.AddEmployeeDialog",
+                    this
+                );
+                this.getView().addDependent(this._oAddEmployeeDialog);
+            }
+
+            const oTable = this.byId("idTeamTable"),
+                oItemsBinding = oTable.getBinding("items");
+            let aCurrentEmployeeIds = [];
+
+            if (oItemsBinding) {
+                const aContexts = oItemsBinding.getContexts();
+                aCurrentEmployeeIds = aContexts.map(function (oContext) {
+                    return oContext.getProperty("employee_ID");
+                });
+            }
+
+            const aFilters = [
+                new sap.ui.model.Filter("isActive", sap.ui.model.FilterOperator.EQ, true)
+            ];
+
+            aCurrentEmployeeIds.forEach(sId => {
+                if (sId) {
+                    aFilters.push(new sap.ui.model.Filter("ID", sap.ui.model.FilterOperator.NE, sId));
+                }
+            });
+
+            const oList = this.byId("idAddEmployeeList"),
+                oListBinding = oList.getBinding("items");
+
+            if (oListBinding) {
+                oList.removeSelections(true);
+                oListBinding.filter(new sap.ui.model.Filter({
+                    filters: aFilters,
+                    and: true
+                }));
+            }
+
+            this._oAddEmployeeDialog.open();
+        },
+
+        onConfirmAddEmployee: function (oEvent) {
+            let oSelectedItem = oEvent.getParameter("listItem");
+            if (!oSelectedItem) return;
+
+            let sEmployeeId = oSelectedItem.getBindingContext().getProperty("ID"),
+                oTable = this.byId("idTeamTable"),
+                oProjectContext = oTable.getBindingContext();
+
+            if (!oProjectContext) return;
+
+            let oAction = oProjectContext.getModel().bindContext(
+                "ManagersService.managerAddEmployeeToProject(...)",
+                oProjectContext
+            );
+
+            oAction.setParameter("employee_ID", sEmployeeId);
+            oTable.setBusy(true);
+            oAction.execute().then(() => {
+                oTable.setBusy(false);
+                this._oAddEmployeeDialog.close();
+                sap.m.MessageToast.show(this._o18n.getText("EmployeeAddedSuccess"));
+                oProjectContext.refresh();
+            }).catch((oError) => {
+                oTable.setBusy(false);
+                sap.m.MessageBox.error(oError.message);
+            });
+        },
+
+        onCancelDialog: function () {
+            this._oAddEmployeeDialog.close();
         }
 
     });

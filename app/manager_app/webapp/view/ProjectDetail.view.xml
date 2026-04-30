@@ -82,7 +82,8 @@
                                         id="addEmployeeButton" 
                                         icon="sap-icon://add" 
                                         text="{i18n>addEmployeeBtn}" 
-                                        press=".onAddEmployee" 
+                                        press=".onAddEmployee"
+                                        visible="{= %{projectStatus} !== 'C' }" 
                                         type="Transparent"/>
                                 </OverflowToolbar>
                             </headerToolbar>
@@ -103,7 +104,9 @@
                                             icon="sap-icon://sys-minus" 
                                             text= "{i18n>removeEmployeeBtn}"
                                             type="Reject" 
-                                            press=".onRemoveEmployee" />
+                                            press=".onRemoveEmployee"
+                                            visible="{= %{projectStatus} !== 'C' }"
+                                             />
                                     </cells>
                                 </ColumnListItem>
                             </items>
