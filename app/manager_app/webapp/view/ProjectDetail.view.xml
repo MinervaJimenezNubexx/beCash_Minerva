@@ -113,8 +113,70 @@
                         </Table>
                     </IconTabFilter>
 
-                    <IconTabFilter key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
-                        <Text text="" />
+                    <IconTabFilter id="idHoursContainer" key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
+                        <VBox>
+                            <!-- TABLE 1 -->
+                            <Table id="idPendingLogsTable" items="{logs}" mode="MultiSelect">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Horas Pendientes de Aprobar" />
+                                        <ToolbarSpacer />
+                                        <Button text="Resolver Rango" press=".onApproveRange" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="Empleado" /></Column>
+                                    <Column><Text text="Fecha" /></Column>
+                                    <Column><Text text="Horas" /></Column>
+                                    <Column><Text text="Estado" /></Column>
+                                    <Column><Text text="Aprobar" /></Column>
+                                    <Column><Text text="Rechazar" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{employeeName}" />
+                                            <Text text="{date}" />
+                                            <Text text="{hours}" />
+                                            <Text text="{statusDesc}" />
+                                            <HBox>
+                                                <Button icon="sap-icon://accept" press=".onApprove" />
+                                            </HBox>
+                                            <HBox>
+                                                <Button icon="sap-icon://cancel" press=".onReject" />
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+
+                            <!-- TABLE 2 -->
+                            <Table id="idResolvedLogsTable" items="{logs}">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Historial de Horas (Aprobadas/Rechazadas)" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="Empleado" /></Column>
+                                    <Column><Text text="Fecha" /></Column>
+                                    <Column><Text text="Horas" /></Column>
+                                    <Column><Text text="Estado" /></Column>
+                                    <Column><Text text="Motivo rechazo" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{employeeName}" />
+                                            <Text text="{date}" />
+                                            <Text text="{hours}" />
+                                            <Text text="{statusDesc}" />
+                                            <Text text="{rejectionReasonDesc}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
                     </IconTabFilter>
 
                     <IconTabFilter key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">

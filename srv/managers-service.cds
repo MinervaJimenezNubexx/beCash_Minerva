@@ -185,7 +185,9 @@ service ManagersService {
                 Projects.closedAt,
                 Projects.managerOnCharge.firstName as managerFirstName,
                 Projects.managerOnCharge.lastName  as managerLastName,
-                Projects.reportSentToClient
+                Projects.reportSentToClient,
+                logs : Association to many ProjectLoggedHoursView
+                           on logs.project_ID = $self.ID
         }
         where
             Projects.managerOnCharge.loginName = $user.id
@@ -198,7 +200,16 @@ service ManagersService {
             Projects.status.description,
             Projects.closedAt,
             Projects.managerOnCharge,
-            Projects.reportSentToClient;
+            Projects.reportSentToClient
+        actions {
+            action resolveEmployeeHoursByDateRange(startDate: Date,
+                                                   endDate: Date,
+                                                   status_ID: String,
+                                                   rejectionReason_ID: String) returns {
+                message      : String;
+                updatedCount : Integer;
+            };
+        };
 
     @readonly
     entity ProjectTeamView             as
@@ -230,5 +241,27 @@ service ManagersService {
         employee.position.nameDescription as position,
         isActiveOnThisProject
     };
+
+    @readonly
+    entity ProjectLoggedHoursView      as
+        projection on db.LoggedHours {
+            key ID,
+                project.ID                                     as project_ID,
+                employee.ID                                    as employeeID,
+                employee.firstName || ' ' || employee.lastName as employeeName : String,
+                imputationDate                                 as date,
+                quantity                                       as hours,
+                status.ID                                      as status,
+                status.description                             as statusDesc,
+                rejectionReason.ID                             as rejectionReason,
+                rejectionReason.description                    as rejectionReasonDesc,
+                isLocked
+        }
+        actions {
+            action resolveEmployeeHoursOneByOne(status_ID: String,
+                                                rejectionReason_ID: String) returns {
+                message : String;
+            };
+        };
 
 }

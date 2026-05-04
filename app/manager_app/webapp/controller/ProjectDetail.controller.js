@@ -41,6 +41,37 @@ sap.ui.define([
                     "$expand": "employeesAssigned($filter=isActiveOnThisProject eq true)"
                 }
             });
+
+            this.applyLogsFilters();
+
+            let oHoursContainer = this.byId("idHoursContainer");
+            oHoursContainer.bindElement({
+                path: "/ProjectDetailsView(" + sProjectId + ")",
+                parameters: {
+                    "$expand": "logs"
+                },
+                events: {
+                    change: function () {
+                        this.applyLogsFilters();
+                    }.bind(this)
+                }
+            });
+        },
+
+        applyLogsFilters: function () {
+            this.byId("idPendingLogsTable").getBinding("items").filter([
+                new sap.ui.model.Filter("status", "EQ", "P")
+            ]);
+
+            this.byId("idResolvedLogsTable").getBinding("items").filter([
+                new sap.ui.model.Filter({
+                    filters: [
+                        new sap.ui.model.Filter("status", "NE", "P"),
+                        new sap.ui.model.Filter("status", "NE", "N")
+                    ],
+                    and: true
+                })
+            ]);
         },
 
         onNavBack: function () {
