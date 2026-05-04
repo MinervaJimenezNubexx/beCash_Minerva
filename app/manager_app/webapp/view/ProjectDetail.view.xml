@@ -105,7 +105,7 @@
                                             text= "{i18n>removeEmployeeBtn}"
                                             type="Reject" 
                                             press=".onRemoveEmployee"
-                                            visible="{= %{projectStatus} !== 'C' }"
+                                            visible="{= %{projectStatus} !== 'C' &amp;&amp; %{employeeID} !== %{projectManager_ID} }"
                                              />
                                     </cells>
                                 </ColumnListItem>

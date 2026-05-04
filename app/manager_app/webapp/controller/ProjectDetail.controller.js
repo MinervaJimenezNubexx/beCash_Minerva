@@ -37,7 +37,7 @@ sap.ui.define([
             oIconTabFilterTEAM.bindElement({
                 path: "/ProjectTeamView(" + sProjectId + ")",
                 parameters: {
-                    "$select": "projectStatus",
+                    "$select": "projectStatus,projectManager_ID",
                     "$expand": "employeesAssigned($filter=isActiveOnThisProject eq true)"
                 }
             });

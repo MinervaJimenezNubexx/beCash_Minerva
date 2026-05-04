@@ -205,6 +205,7 @@ service ManagersService {
         projection on db.Projects {
             key ID,
                 status.ID as projectStatus,
+                managerOnCharge.ID as projectManager_ID,
                 employeesAssigned : redirected to TeamMembers
         }
         actions {
@@ -220,6 +221,8 @@ service ManagersService {
     entity TeamMembers as projection on db.EmployeesAssigned {
         key project,
         key employee,
+        employee.ID as employeeID,
+        project.managerOnCharge.ID as projectManager_ID,
         project.status.ID as projectStatus,
         employee.firstName as firstName,
         employee.lastName as lastName,
