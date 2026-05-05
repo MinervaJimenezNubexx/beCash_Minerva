@@ -66,6 +66,12 @@ service ManagersService {
     entity PjStatus                    as select from db.PjStatus;
 
     @restrict: [{
+        grant: ['READ'],
+        to   : 'manager'
+    }]
+    entity LogRejReason                as select from db.LogRejReason;
+
+    @restrict: [{
         grant: [
             'READ',
             'CREATE',

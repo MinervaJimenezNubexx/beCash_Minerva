@@ -119,18 +119,18 @@
                             <Table id="idPendingLogsTable" items="{logs}" mode="MultiSelect">
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="Horas Pendientes de Aprobar" />
+                                        <Title text="{i18n>HoursPendingTitle}" />
                                         <ToolbarSpacer />
-                                        <Button text="Resolver Rango" press=".onApproveRange" />
+                                        <Button text="{i18n>ResolveRangeButton}" press=".onApproveRange" type="Emphasized" />
                                     </OverflowToolbar>
                                 </headerToolbar>
                                 <columns>
-                                    <Column><Text text="Empleado" /></Column>
-                                    <Column><Text text="Fecha" /></Column>
-                                    <Column><Text text="Horas" /></Column>
-                                    <Column><Text text="Estado" /></Column>
-                                    <Column><Text text="Aprobar" /></Column>
-                                    <Column><Text text="Rechazar" /></Column>
+                                    <Column><Text text="{i18n>EmployeeTable}" /></Column>
+                                    <Column><Text text="{i18n>DateTable}" /></Column>
+                                    <Column><Text text="{i18n>HoursTable}" /></Column>
+                                    <Column><Text text="{i18n>StatusTable}" /></Column>
+                                    <Column><Text text="{i18n>ApproveButton}" /></Column>
+                                    <Column><Text text="{i18n>RejectButton}" /></Column>
                                 </columns>
                                 <items>
                                     <ColumnListItem>
@@ -140,10 +140,10 @@
                                             <Text text="{hours}" />
                                             <Text text="{statusDesc}" />
                                             <HBox>
-                                                <Button icon="sap-icon://accept" press=".onApprove" />
+                                                <Button icon="sap-icon://accept" press=".onApprove" type = "Success"/>
                                             </HBox>
                                             <HBox>
-                                                <Button icon="sap-icon://cancel" press=".onReject" />
+                                                <Button icon="sap-icon://decline" press=".onReject" type= "Reject" />
                                             </HBox>
                                         </cells>
                                     </ColumnListItem>
@@ -154,15 +154,15 @@
                             <Table id="idResolvedLogsTable" items="{logs}">
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="Historial de Horas (Aprobadas/Rechazadas)" />
+                                        <Title text="{i18n>ResolvedHoursTableTitle}" />
                                     </OverflowToolbar>
                                 </headerToolbar>
                                 <columns>
-                                    <Column><Text text="Empleado" /></Column>
-                                    <Column><Text text="Fecha" /></Column>
-                                    <Column><Text text="Horas" /></Column>
-                                    <Column><Text text="Estado" /></Column>
-                                    <Column><Text text="Motivo rechazo" /></Column>
+                                    <Column><Text text="{i18n>EmployeeTable}" /></Column>
+                                    <Column><Text text="{i18n>DateTable}" /></Column>
+                                    <Column><Text text="{i18n>HoursTable}" /></Column>
+                                    <Column><Text text="{i18n>StatusTable}" /></Column>
+                                    <Column><Text text="{i18n>RejReasonTable}" /></Column>
                                 </columns>
                                 <items>
                                     <ColumnListItem>

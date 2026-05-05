@@ -1,6 +1,13 @@
 async function resolveEmployeeHoursOneByOne (req){
-    const { status_ID, rejectionReason_ID } = req.data,
-    logId = req.params[0]?.ID || req.params[0];
+    const { status_ID, rejectionReason_ID } = req.data;
+
+    let logId;
+    if (req.params.length > 0) {
+        const lastParam = req.params[req.params.length - 1];
+        logId = (typeof lastParam === 'object') ? lastParam.ID : lastParam;
+    }
+
+    if (!logId) return req.error(404, 'LOG_ID_UNDEFINED');
 
     if (!status_ID) return req.error(400, 'STATUS_REQUIRED_ERROR');
 

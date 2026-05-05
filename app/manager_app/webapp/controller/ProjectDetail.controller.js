@@ -214,6 +214,130 @@ sap.ui.define([
 
         onCancelDialog: function () {
             this._oAddEmployeeDialog.close();
+        },
+
+        onApprove: function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext(),
+                oAction = oContext.getModel().bindContext("ManagersService.resolveEmployeeHoursOneByOne(...)", oContext);
+
+            oAction.setParameter("status_ID", "A");
+            oAction.setParameter("rejectionReason_ID", "NR");
+
+            oAction.execute().then(function () {
+                sap.m.MessageToast.show(this._o18n.getText("HoursApprovedSuccess"));
+                oContext.getModel().refresh();
+            }.bind(this));
+        },
+
+        onReject: function (oEvent) {
+            this.oPendingLogContext = oEvent.getSource().getBindingContext();
+
+            if (!this.RejectDialogFragment) {
+                this.RejectDialogFragment = sap.ui.core.Fragment.load({
+                    id: this.getView().getId(),
+                    name: "com.nbx.managerapp.view.fragment.RejectDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                }.bind(this));
+            }
+            this.RejectDialogFragment.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        onCloseRejectDialog: function () {
+            this.byId("rejectDialog").close();
+        },
+
+        onConfirmReject: function () {
+            const sReason = this.byId("rejectionReasonSelect").getSelectedKey(),
+                oContext = this.oPendingLogContext,
+                oModel = oContext.getModel(),
+                oAction = oModel.bindContext("ManagersService.resolveEmployeeHoursOneByOne(...)", oContext);
+
+            oAction.setParameter("status_ID", "R");
+            oAction.setParameter("rejectionReason_ID", sReason);
+
+            this.byId("rejectDialog").setBusy(true);
+
+            oAction.execute().then(function () {
+                this.byId("rejectDialog").setBusy(false);
+                this.onCloseRejectDialog();
+                sap.m.MessageToast.show(this._o18n.getText("HoursRejectedSuccess"));
+                oModel.refresh();
+            }.bind(this)).catch(function (oError) {
+                this.byId("rejectDialog").setBusy(false);
+                sap.m.MessageBox.error(oError.message);
+            }.bind(this));
+        },
+
+        onApproveRange: function () {
+            if (!this.RangeDialogFragment) {
+                this.RangeDialogFragment = sap.ui.core.Fragment.load({
+                    id: this.getView().getId(),
+                    name: "com.nbx.managerapp.view.fragment.DateRangeDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                }.bind(this));
+            }
+            this.RangeDialogFragment.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        onStatusChangeRange: function (oEvent) {
+            const sKey = oEvent.getParameter("selectedItem").getKey();
+            this.byId("idRejectionReasonBox").setVisible(sKey === "R");
+        },
+
+        onCloseRangeDialog: function () {
+            this.byId("idDateRangeDialog").close();
+        },
+
+        onConfirmRange: function () {
+            const oDRS = this.byId("idDRS"),
+                sStatus = this.byId("idStatusSelect").getSelectedKey(),
+                sReason = this.byId("idRangeRejectionSelect").getSelectedKey(),
+                oDateStart = oDRS.getDateValue(),
+                oDateEnd = oDRS.getSecondDateValue();
+
+            if (!oDateStart || !oDateEnd) {
+                sap.m.MessageToast.show(this._o18n.getText("selectDatesError"));
+                return;
+            }
+
+            const oContext = this.byId("idHoursContainer").getBindingContext(),
+                oModel = oContext.getModel(),
+                oAction = oModel.bindContext("ManagersService.resolveEmployeeHoursByDateRange(...)", oContext),
+                formatDate = (oDate) => oDate.toISOString().split('T')[0];
+
+            oAction.setParameter("startDate", formatDate(oDateStart));
+            oAction.setParameter("endDate", formatDate(oDateEnd));
+            oAction.setParameter("status_ID", sStatus);
+            oAction.setParameter("rejectionReason_ID", sStatus === "R" ? sReason : "NR");
+
+            this.byId("idDateRangeDialog").setBusy(true);
+
+            oAction.execute().then(function () {
+                this.byId("idDateRangeDialog").setBusy(false);
+                this.onCloseRangeDialog();
+                const oResults = oAction.getBoundContext().getObject();
+                let numLogs = oResults.updatedCount;
+                //console.log(numLogs)
+                if (numLogs == "0"){
+                    sap.m.MessageToast.show(this._o18n.getText("NotLogsToResolveOnSelectedRange"));
+                }else{
+                    sap.m.MessageBox.success(this._o18n.getText("RangeResolvedSuccessfully", [numLogs]));
+                }
+                oModel.refresh();
+            }.bind(this)).catch(function (oError) {
+                this.byId("idDateRangeDialog").setBusy(false);
+                sap.m.MessageBox.error(oError.message);
+            }.bind(this));
         }
 
     });
