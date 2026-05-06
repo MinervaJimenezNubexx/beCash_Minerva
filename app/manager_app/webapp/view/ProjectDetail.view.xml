@@ -193,8 +193,41 @@
                         </VBox>
                     </IconTabFilter>
 
-                    <IconTabFilter key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
-                        <Text text="" />
+                    <IconTabFilter id="idAnalyticsContainer" key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
+                        <VBox class="sapUiSmallMargin">
+                            <Title text="{i18n>SpentPerPositionTitle}" level="H3" />
+                            <Table id="idSpentPositionTable" items="{/SpentPerPositionView}">
+                                <columns>
+                                    <Column><Text text="{i18n>PositionName}" /></Column>
+                                    <Column hAlign="End"><Text text="{i18n>HoursPerPosition}" /></Column>
+                                    <Column hAlign="End"><Text text="{i18n>CostPerPosition}" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{position}" />
+                                            <Text text="{totalHours} h" />
+                                            <ObjectNumber number="{totalCost}" unit="€" state="Information" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                            <!--
+                            <Title text="{i18n>BudgetProjectionTitle}" level="H3" class="sapUiMediumMarginTop" />
+                                <form:SimpleForm id="idBudgetProjectionForm" editable="false" layout="ResponsiveGridLayout">
+                                    <Label text="{i18n>CurrentSpentAnalytic}" />
+                                    <Text text="{currentSpent} €" />
+
+                                    <Label text="{i18n>PendingToApproveValue}" />
+                                    <Text text="{pendingSpentQuantity} €" />
+
+                                    <Label text="{i18n>ProjectedRemaining}" />
+                                    <ObjectStatus 
+                                        text="{projectedSpentBudget} €" 
+                                        state="{= ${projectedSpentBudget} >= 0 ? 'Success' : 'Error' }"/>
+                                </form:SimpleForm>
+                                -->
+                        </VBox>
                     </IconTabFilter>
 
                 </items>

@@ -56,6 +56,16 @@ sap.ui.define([
                     }.bind(this)
                 }
             });
+            
+            /* //no van
+            this.byId("idSpentPositionTable").bindItems({
+                path: "/SpentPerPositionView",
+                filters: [new sap.ui.model.Filter("projectID", "EQ", sProjectId)]
+            });
+             
+            this.byId("idBudgetProjectionForm").bindElement({
+                path: "/ProjectBudgetProjectionView(projectID='" + sProjectId + "')"
+            }); */
         },
 
         applyLogsFilters: function () {
