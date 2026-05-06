@@ -9,8 +9,8 @@ async function modifiedByAdmin(req) {
         return req.error(404, 'LOG_NOT_FOUND_ERROR')
     }
 
-    if (currentLog.status_ID === 'N' || currentLog.status_ID === 'P') {
-        return req.error(400, 'CANT_EDIT_NOT_RESOLVED_LOG_ERROR');
+    if (currentLog.status_ID === 'N') {
+        return req.error(400, 'CANT_EDIT_NOT_SENT_LOG_ERROR');
     }
 
     let hasActualChanges = false;
