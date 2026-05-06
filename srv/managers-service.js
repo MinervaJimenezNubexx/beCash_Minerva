@@ -60,6 +60,6 @@ module.exports = cds.service.impl(async function (srv) {
 
     srv.on("managerRemoveEmployeeFromProject", handlers.managers.actions.projects.managerRemoveEmployeeFromProject) //done, only for managers
 
-    srv.on("advanceStatus", handlers.managers.actions.projects.advanceStatus)
+    srv.on("advanceStatus", handlers.managers.actions.projects.advanceStatus) //done, only for managers
 
 })

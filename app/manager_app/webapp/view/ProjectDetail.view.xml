@@ -36,11 +36,25 @@
                         title="{i18n>remainingBudget}" 
                         text="{remainingBudget} €" 
                         state="{= ${remainingBudget} >= 0 ? 'Success' : 'Error' }" />
+                    <ObjectStatus 
+                        title= "{i18n>projectedRemainingBudget}"
+                        text="{projectedRemainingBudget} €"
+                        state="{= 
+                            ${projectedConsumptionPercent} > 100 ? 'Error' : 
+                            ${projectedConsumptionPercent} >= 80 ? 'Warning' : 
+                            'Success' 
+                        }" 
+                        icon="{= 
+                            ${projectedConsumptionPercent} > 100 ? 'sap-icon://error' : 
+                            ${projectedConsumptionPercent} >= 80 ? 'sap-icon://message-warning' : 
+                            'sap-icon://sys-enter-2' 
+                        }"/>
                 </statuses>
                 
                 <attributes>
                     <ObjectAttribute title="{i18n>approvedHours}" text="{totalApprovedHours} h" />
                     <ObjectAttribute title="{i18n>totalSpent}" text="{totalSpent} €" />
+                    <ObjectAttribute title="{i18n>projectedSpent}" text="{projectedSpent} €" />
                 </attributes>
             </ObjectHeader>
 

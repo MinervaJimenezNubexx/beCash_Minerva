@@ -103,30 +103,44 @@ service ManagersService {
     entity ManagerProjectFinancesView  as
         select from db.Projects as Projects
         left join db.LoggedHours as LoggedHours
-            on  LoggedHours.project.ID = Projects.ID
-            and LoggedHours.status.ID  = 'A'
+            on LoggedHours.project.ID = Projects.ID
         {
             key Projects.ID                 as ID,
                 Projects.name               as projectName,
                 Projects.initialBudget,
                 Projects.status.ID          as status_ID,
                 Projects.status.description as status_description,
-                coalesce(
-                    sum(LoggedHours.quantity), 0
-                )                    as totalApprovedHours : Double,
-                coalesce(
-                    sum(LoggedHours.quantity * LoggedHours.employee.position.billing), 0
-                )                    as totalSpent         : Decimal(15, 2),
-                Projects.initialBudget - coalesce(
-                    sum(LoggedHours.quantity * LoggedHours.employee.position.billing), 0
-                )                    as remainingBudget    : Decimal(15, 2)
+
+                coalesce(sum(case when LoggedHours.status.ID = 'A' then LoggedHours.quantity
+                                else 0 end), 0) as totalApprovedHours : Double,
+
+                coalesce(sum(case when LoggedHours.status.ID = 'A' then(LoggedHours.quantity * LoggedHours.employee.position.billing)
+                                else 0 end), 0) as totalSpent : Decimal(15, 2),
+
+                Projects.initialBudget - coalesce(sum(case when LoggedHours.status.ID = 'A' 
+                    then(LoggedHours.quantity * LoggedHours.employee.position.billing)
+                        else 0 end), 0) as remainingBudget : Decimal(15, 2),
+
+                coalesce(sum(case when LoggedHours.status.ID = 'A' or LoggedHours.status.ID = 'P'
+                                then(LoggedHours.quantity * LoggedHours.employee.position.billing)
+                                else 0 end), 0) as projectedSpent : Decimal(15, 2),
+
+                Projects.initialBudget - coalesce(sum(case when LoggedHours.status.ID = 'A'or LoggedHours.status.ID = 'P'
+                                then(LoggedHours.quantity * LoggedHours.employee.position.billing)
+                                else 0 end), 0) as projectedRemainingBudget : Decimal(15, 2),
+
+                case when Projects.initialBudget > 0 then (coalesce(sum(case when LoggedHours.status.ID = 'A' or LoggedHours.status.ID = 'P' 
+                    then (LoggedHours.quantity * LoggedHours.employee.position.billing) else 0 end), 0) / Projects.initialBudget) * 100
+                        else 0 end as projectedConsumptionPercent : Integer
         }
         where
             Projects.managerOnCharge.loginName = $user.id
         group by
             Projects.ID,
             Projects.name,
-            Projects.initialBudget;
+            Projects.initialBudget,
+            Projects.status.ID,
+            Projects.status.description;
 
     //Project budget spent per employee position
     @readonly
