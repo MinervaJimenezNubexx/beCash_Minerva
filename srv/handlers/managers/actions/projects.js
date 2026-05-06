@@ -128,10 +128,14 @@ async function advanceStatus(req) {
             case 'O': nextStatus = 'D'; break;
             case 'D': nextStatus = 'Q'; break;
             case 'Q': nextStatus = 'T'; break;
-            case 'T': 
-            closingDate = new Date().toISOString();
-            await UPDATE(Projects).set({ closedAt: closingDate }).where({ ID: projectId });
-            nextStatus = 'C'; break;
+            case 'T':
+                closingDate = new Date().toISOString();
+                await UPDATE(Projects).set({ closedAt: closingDate }).where({ ID: projectId });
+                await UPDATE('my.beCash.LoggedHours')
+                    .set({ status_ID: 'A', rejectionReason_ID: 'NR' })
+                    .where({ project_ID: projectId, status_ID: 'P' });
+                nextStatus = 'C';
+                break;
             case 'C':
                 return req.reject(400, 'STATUS_CLOSED_CANNOT_BE_CHANGED');
             default:

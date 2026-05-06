@@ -34,6 +34,7 @@ function validateReasonableBudget(req) {
     }
 }
 
+
 module.exports = {
     autoAssignManagerToNewProject,
     validateReasonableBudget
