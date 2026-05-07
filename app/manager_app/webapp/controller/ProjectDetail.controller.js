@@ -57,15 +57,20 @@ sap.ui.define([
                 }
             });
             
-            /* //no van
-            this.byId("idSpentPositionTable").bindItems({
+            
+            let oSpentPerPositionTable = this.byId("idSpentPositionTable"),
+                oTemplate = this.byId("idPositionItemTemplate");
+            oSpentPerPositionTable.unbindItems();
+            oSpentPerPositionTable.bindItems({
                 path: "/SpentPerPositionView",
-                filters: [new sap.ui.model.Filter("projectID", "EQ", sProjectId)]
+                filters: [new sap.ui.model.Filter("projectID", "EQ", sProjectId)],
+                template: oTemplate
             });
-             
-            this.byId("idBudgetProjectionForm").bindElement({
+
+            let oBudgetForm = this.byId("idBudgetProjectionForm");
+            oBudgetForm.bindElement({
                 path: "/ProjectBudgetProjectionView(projectID='" + sProjectId + "')"
-            }); */
+            });
         },
 
         applyLogsFilters: function () {

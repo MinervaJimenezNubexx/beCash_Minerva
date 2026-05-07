@@ -130,7 +130,7 @@
                     <IconTabFilter id="idHoursContainer" key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
                         <VBox>
                             <!-- TABLE 1 -->
-                            <Table id="idPendingLogsTable" items="{logs}" mode="MultiSelect">
+                            <Table id="idPendingLogsTable" items="{logs}">
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <Title text="{i18n>HoursPendingTitle}" />
@@ -194,16 +194,16 @@
                     </IconTabFilter>
 
                     <IconTabFilter id="idAnalyticsContainer" key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
-                        <VBox class="sapUiSmallMargin">
+                        <VBox width="70%" class="sapUiSmallMargin">
                             <Title text="{i18n>SpentPerPositionTitle}" level="H3" />
-                            <Table id="idSpentPositionTable" items="{/SpentPerPositionView}">
+                            <Table id="idSpentPositionTable" width="40%" class="sapUiSmallMarginBottom" items="{/SpentPerPositionView}">
                                 <columns>
-                                    <Column><Text text="{i18n>PositionName}" /></Column>
-                                    <Column hAlign="End"><Text text="{i18n>HoursPerPosition}" /></Column>
-                                    <Column hAlign="End"><Text text="{i18n>CostPerPosition}" /></Column>
+                                    <Column width="40%"><Text text="{i18n>PositionName}" /></Column>
+                                    <Column hAlign="End" width="40%"><Text text="{i18n>HoursPerPosition}" /></Column>
+                                    <Column hAlign="End" width="40%"><Text text="{i18n>CostPerPosition}" /></Column>
                                 </columns>
                                 <items>
-                                    <ColumnListItem>
+                                    <ColumnListItem id="idPositionItemTemplate">
                                         <cells>
                                             <Text text="{position}" />
                                             <Text text="{totalHours} h" />
@@ -212,21 +212,34 @@
                                     </ColumnListItem>
                                 </items>
                             </Table>
-                            <!--
+                            
                             <Title text="{i18n>BudgetProjectionTitle}" level="H3" class="sapUiMediumMarginTop" />
-                                <form:SimpleForm id="idBudgetProjectionForm" editable="false" layout="ResponsiveGridLayout">
+                                <form:SimpleForm id="idBudgetProjectionForm" 
+                                    editable="false" 
+                                    layout="ResponsiveGridLayout" 
+                                    labelSpanL="3" 
+                                    labelSpanM="3"
+                                    columnsL="1" 
+                                    columnsM="1"
+                                    emptySpanL="4" 
+                                    emptySpanM="4">
+
                                     <Label text="{i18n>CurrentSpentAnalytic}" />
                                     <Text text="{currentSpent} €" />
+
+                                    <Label text="{i18n>TotalApprovedHoursAnalytic}" />
+                                    <Text text="{totalApprovedHours} h" />
+
+                                    <Label text="{i18n>AverageHourlyCost}" />
+                                    <Text text="{averageHourlyCost} €/h" />
 
                                     <Label text="{i18n>PendingToApproveValue}" />
                                     <Text text="{pendingSpentQuantity} €" />
 
-                                    <Label text="{i18n>ProjectedRemaining}" />
-                                    <ObjectStatus 
-                                        text="{projectedSpentBudget} €" 
-                                        state="{= ${projectedSpentBudget} >= 0 ? 'Success' : 'Error' }"/>
+                                    <Label text="{i18n>ProjectedRemaining}" /> 
+                                    <Text text="{projectedSpentBudget} €" />
                                 </form:SimpleForm>
-                                -->
+                                
                         </VBox>
                     </IconTabFilter>
 

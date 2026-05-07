@@ -146,21 +146,20 @@ service ManagersService {
     @readonly
     entity SpentPerPositionView        as
         select from db.LoggedHours {
-            key project.ID                                as projectID,
-            key employee.position.nameDescription         as position,
-                project.name                              as projectName,
-                employee.position.billing                 as billingPerHour,
+            key (
+                    project.ID || '-' || employee.position.ID
+                )                                         as rowKey     : String,
+                project.ID                                as projectID,
+                employee.position.nameDescription         as position,
                 sum(quantity)                             as totalHours : Double,
                 sum(quantity * employee.position.billing) as totalCost  : Decimal(15, 2)
         }
         where
-                status.ID                         = 'A'
-            and project.managerOnCharge.loginName = $user.id
+            status.ID = 'A'
         group by
             project.ID,
-            project.name,
-            employee.position.nameDescription,
-            employee.position.billing;
+            employee.position.ID,
+            employee.position.nameDescription;
 
     //Project budget projection on what the budget will be when all hours set by the employees are approved
 
@@ -180,7 +179,12 @@ service ManagersService {
                         else 0 end)   as pendingSpentQuantity   : Decimal(15, 2),
 
                 (project.initialBudget - sum(case when status.ID = 'A'or status.ID = 'P' then(quantity * employee.position.billing)
-                                                else 0 end)) as projectedSpentBudget : Decimal(15, 2)
+                                                else 0 end)) as projectedSpentBudget : Decimal(15, 2),
+                
+                sum(case status.ID when 'A' then quantity else 0 end) as totalApprovedHours : Double,
+
+                round((sum(case status.ID when 'A' then (quantity * employee.position.billing) else 0 end) / 
+                    nullif(sum(case status.ID when 'A' then quantity else 0 end), 0)), 2) as averageHourlyCost : Decimal(15, 2)
         }
         where
             project.managerOnCharge.loginName = $user.id
