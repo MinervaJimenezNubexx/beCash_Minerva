@@ -13,42 +13,47 @@
         </headerContent>
 
         <content>
-            <Table id="projectsTable"
-                   items="{
-                       path: '/Projects',
-                       parameters: {
-                           $expand: 'status'
-                       }
-                   }"
-                   noDataText="{i18n>NoProjectsAssigned}"
-                   growing="true" 
-                   growingThreshold="20">
-                
-                <columns>
-                    <Column><Text text="{i18n>ProjectName}" /></Column>
-                    <Column hAlign="End"><Text text="{i18n>Budget}" /></Column>
-                    <Column hAlign="Center"><Text text="{i18n>Status}" /></Column>
-                </columns>
+            <HBox width="100%" justifyContent="Center">
+                <VBox width="70%" class= "sapUiSmallMarginTop">
+                    <Title text="{i18n>ProjectsTitle2}" level="H2" class= "sapUiSmallMarginBottom"/>
+                    <Table id="projectsTable"
+                        items="{
+                            path: '/Projects',
+                            parameters: {
+                                $expand: 'status'
+                            }
+                        }"
+                        noDataText="{i18n>NoProjectsAssigned}"
+                        growing="true" 
+                        growingThreshold="20">
+                        
+                        <columns>
+                            <Column width="40%"><Text text="{i18n>ProjectName}" /></Column>
+                            <Column width="40%"><Text text="{i18n>Budget}" /></Column>
+                            <Column width="40%"><Text text="{i18n>Status}" /></Column>
+                        </columns>
 
-                <items>
-                    <ColumnListItem type="Navigation" press=".onPressProject">
-                        <cells>
-                            <ObjectIdentifier title="{name}" />
-                            
-                            <ObjectNumber number="{initialBudget}" unit="€" />
-                            
-                            <ObjectStatus 
-                                text="{status/description}" 
-                                state="{= 
-                                    ${status_ID} === 'O' || ${status_ID} === 'D' ? 'Success' : 
-                                    ${status_ID} === 'Q' || ${status_ID} === 'T' ? 'Information' : 
-                                    ${status_ID} === 'C' ? 'Error' : 
-                                    'None' 
-                                }" />
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
+                        <items>
+                            <ColumnListItem type="Navigation" press=".onPressProject">
+                                <cells>
+                                    <ObjectIdentifier title="{name}" />
+                                    
+                                    <ObjectNumber number="{initialBudget}" unit="€" />
+                                    
+                                    <ObjectStatus 
+                                        text="{status/description}" 
+                                        state="{= 
+                                            ${status_ID} === 'O' || ${status_ID} === 'D' ? 'Success' : 
+                                            ${status_ID} === 'Q' || ${status_ID} === 'T' ? 'Information' : 
+                                            ${status_ID} === 'C' ? 'Error' : 
+                                            'None' 
+                                        }" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </VBox>
+            </HBox>
         </content>
     </Page>
 </mvc:View>

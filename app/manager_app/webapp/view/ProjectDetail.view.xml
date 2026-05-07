@@ -194,7 +194,7 @@
                     </IconTabFilter>
 
                     <IconTabFilter id="idAnalyticsContainer" key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
-                        <VBox width="70%" class="sapUiSmallMargin">
+                        <VBox width="50%" class="sapUiSmallMargin">
                             <Title text="{i18n>SpentPerPositionTitle}" level="H3" />
                             <Table id="idSpentPositionTable" width="40%" class="sapUiSmallMarginBottom" items="{/SpentPerPositionView}">
                                 <columns>
