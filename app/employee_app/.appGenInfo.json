@@ -1,0 +1,23 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu May 07 2026 09:57:25 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/employees/",
+    "appName": "employee_app",
+    "appTitle": "Employee App",
+    "appDescription": "An SAP Fiori application.",
+    "appNamespace": "com.nbx",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.147.2",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": false,
+    "generatorVersion": "1.23.0",
+    "template": "Basic V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/com.nbx.employeeapp/index.html"
+  }
+}
