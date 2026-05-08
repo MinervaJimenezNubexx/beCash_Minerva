@@ -17,12 +17,20 @@
                 type="Emphasized" 
                 press=".onChangeStatus"
                 visible="{= %{projectStatus} !== 'C' }" />
+
+            <Button 
+                id="changeBudgetButton" 
+                text="{i18n>changeBudgetButton}" 
+                icon="sap-icon://lead" 
+                type="Emphasized" 
+                press=".onChangeBudget"
+                visible="{= %{projectStatus} !== 'C' }" />
         </headerContent>
 
         <content>
             <ObjectHeader
                 id="objHeader"
-                title="{projectName}"
+                title="{name}"
                 number="{
                     path: 'initialBudget',
                     type: 'sap.ui.model.type.Float',
@@ -31,30 +39,30 @@
                 numberUnit="€">
                 
                 <statuses>
-                    <ObjectStatus title="{i18n>StatusInfo}" text="{status_description}" state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
+                    <ObjectStatus title="{i18n>StatusInfo}" text="{status/description}" state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
                     <ObjectStatus 
                         title="{i18n>remainingBudget}" 
-                        text="{remainingBudget} €" 
-                        state="{= ${remainingBudget} >= 0 ? 'Success' : 'Error' }" />
+                        text="{finances/remainingBudget} €" 
+                        state="{= ${finances/remainingBudget} >= 0 ? 'Success' : 'Error' }" />
                     <ObjectStatus 
                         title= "{i18n>projectedRemainingBudget}"
-                        text="{projectedRemainingBudget} €"
+                        text="{finances/projectedRemainingBudget} €"
                         state="{= 
-                            ${projectedConsumptionPercent} > 100 ? 'Error' : 
-                            ${projectedConsumptionPercent} >= 80 ? 'Warning' : 
+                            ${finances/projectedConsumptionPercent} > 100 ? 'Error' : 
+                            ${finances/projectedConsumptionPercent} >= 80 ? 'Warning' : 
                             'Success' 
                         }" 
                         icon="{= 
-                            ${projectedConsumptionPercent} > 100 ? 'sap-icon://error' : 
-                            ${projectedConsumptionPercent} >= 80 ? 'sap-icon://message-warning' : 
+                            ${finances/projectedConsumptionPercent} > 100 ? 'sap-icon://error' : 
+                            ${finances/projectedConsumptionPercent} >= 80 ? 'sap-icon://message-warning' : 
                             'sap-icon://sys-enter-2' 
                         }"/>
                 </statuses>
                 
                 <attributes>
-                    <ObjectAttribute title="{i18n>approvedHours}" text="{totalApprovedHours} h" />
-                    <ObjectAttribute title="{i18n>totalSpent}" text="{totalSpent} €" />
-                    <ObjectAttribute title="{i18n>projectedSpent}" text="{projectedSpent} €" />
+                    <ObjectAttribute title="{i18n>approvedHours}" text="{finances/totalApprovedHours} h" />
+                    <ObjectAttribute title="{i18n>totalSpent}" text="{finances/totalSpent} €" />
+                    <ObjectAttribute title="{i18n>projectedSpent}" text="{finances/projectedSpent} €" />
                 </attributes>
             </ObjectHeader>
 
@@ -63,19 +71,19 @@
                     <IconTabFilter key="info" text="{i18n>ProjectInfo}" icon="sap-icon://hint">
                         <VBox id="idInfoContainer" class="sapUiSmallMargin">
                             <Label text="{i18n>ProjectNameInfo}:" />
-                            <Text text="{projectName}" />
+                            <Text text="{name}" />
 
                             <Label text="{i18n>ClientInfo}:" />
-                            <Text text="{clientName}" />
+                            <Text text="{client/name}" />
                             
                             <Label text="{i18n>BudgetInfo}:" />
                             <Text text="{initialBudget}" />
 
                             <Label text="{i18n>ManagerInfo}:" />
-                            <Text text="{managerFirstName} {managerLastName}" />
+                            <Text text="{managerOnCharge/firstName} {managerOnCharge/lastName}" />
 
                             <Label text="{i18n>StatusInfo2}:" />
-                            <Text text="{status_description}" />
+                            <Text text="{status/description}" />
                             
                             <Label text="{i18n>CloseDateInfo}:" />
                             <Text text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }"/>
@@ -86,8 +94,7 @@
                     </IconTabFilter>
 
                     <IconTabFilter key="team" text="{i18n>TeamInfo}" icon="sap-icon://group">
-                        <Table id="idTeamTable" items="{employeesAssigned}"> 
-
+                        <Table id="idTeamTable" items="{path: 'employeesAssigned', filters: [{path: 'isActiveOnThisProject', operator: 'EQ', value1: true}]}"> 
                             <headerToolbar>
                                 <OverflowToolbar>
                                     <Title text="{i18n>assignedEmployeesTitle}" />
@@ -111,9 +118,9 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{firstName} {lastName}" />
-                                        <Text text="{email}" />
-                                        <Text text="{position}" />
+                                        <Text text="{employee/firstName} {employee/lastName}" />
+                                        <Text text="{employee/email}" />
+                                        <Text text="{employee/position/nameDescription}" />
                                         <Button 
                                             icon="sap-icon://sys-minus" 
                                             text= "{i18n>removeEmployeeBtn}"
@@ -129,8 +136,7 @@
 
                     <IconTabFilter id="idHoursContainer" key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
                         <VBox>
-                            <!-- TABLE 1 -->
-                            <Table id="idPendingLogsTable" items="{logs}">
+                            <Table id="idPendingLogsTable" items="{details/logs}">
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <Title text="{i18n>HoursPendingTitle}" />
@@ -164,8 +170,7 @@
                                 </items>
                             </Table>
 
-                            <!-- TABLE 2 -->
-                            <Table id="idResolvedLogsTable" items="{logs}">
+                            <Table id="idResolvedLogsTable" items="{details/logs}">
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <Title text="{i18n>ResolvedHoursTableTitle}" />
@@ -194,13 +199,13 @@
                     </IconTabFilter>
 
                     <IconTabFilter id="idAnalyticsContainer" key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
-                        <VBox width="50%" class="sapUiSmallMargin">
-                            <Title text="{i18n>SpentPerPositionTitle}" level="H3" />
-                            <Table id="idSpentPositionTable" width="40%" class="sapUiSmallMarginBottom" items="{/SpentPerPositionView}">
+                        <VBox width="70%">
+                            <Title text="{i18n>SpentPerPositionTitle}" level="H3" class="sapUiSmallMarginBottom" />
+                            <Table id="idSpentPositionTable" width="100%" class="sapUiSmallMarginBottom" items="{/SpentPerPositionView}">
                                 <columns>
                                     <Column width="40%"><Text text="{i18n>PositionName}" /></Column>
-                                    <Column hAlign="End" width="40%"><Text text="{i18n>HoursPerPosition}" /></Column>
-                                    <Column hAlign="End" width="40%"><Text text="{i18n>CostPerPosition}" /></Column>
+                                    <Column width="40%"><Text text="{i18n>HoursPerPosition}" /></Column>
+                                    <Column width="40%"><Text text="{i18n>CostPerPosition}" /></Column>
                                 </columns>
                                 <items>
                                     <ColumnListItem id="idPositionItemTemplate">
@@ -214,16 +219,15 @@
                             </Table>
                             
                             <Title text="{i18n>BudgetProjectionTitle}" level="H3" class="sapUiMediumMarginTop" />
-                                <form:SimpleForm id="idBudgetProjectionForm" 
-                                    editable="false" 
-                                    layout="ResponsiveGridLayout" 
-                                    labelSpanL="3" 
-                                    labelSpanM="3"
-                                    columnsL="1" 
-                                    columnsM="1"
-                                    emptySpanL="4" 
-                                    emptySpanM="4">
-
+                            <form:SimpleForm id="idBudgetProjectionForm" 
+                                binding="{budget}"
+                                editable="false" 
+                                layout="ResponsiveGridLayout" 
+                                labelSpanL="3" 
+                                labelSpanM="3"
+                                columnsL="1" 
+                                columnsM="1">
+                                <form:content>
                                     <Label text="{i18n>CurrentSpentAnalytic}" />
                                     <Text text="{currentSpent} €" />
 
@@ -237,9 +241,11 @@
                                     <Text text="{pendingSpentQuantity} €" />
 
                                     <Label text="{i18n>ProjectedRemaining}" /> 
-                                    <Text text="{projectedSpentBudget} €" />
-                                </form:SimpleForm>
-                                
+                                    <ObjectStatus 
+                                        text="{projectedSpentBudget} €" 
+                                        state="{= Number(${projectedSpentBudget}) >= 0 ? 'Success' : 'Error' }" />
+                                </form:content>
+                            </form:SimpleForm>
                         </VBox>
                     </IconTabFilter>
 

@@ -10,56 +10,26 @@ sap.ui.define([
     return Controller.extend("com.nbx.managerapp.controller.ProjectDetail", {
 
         onInit: function () {
-            let oRouter = UIComponent.getRouterFor(this);
-            oRouter.getRoute("RouteProjectDetail").attachPatternMatched(this._onObjectMatched, this);
+            let oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteProjectDetail").attachMatched(this.onObjectMatched, this);
 
             this._o18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
         },
 
-        _onObjectMatched: function (oEvent) {
+        onObjectMatched: function (oEvent) {
             let sProjectId = oEvent.getParameter("arguments").projectId;
+            if (!sProjectId) return;
 
             this.getView().bindElement({
-                path: "/Projects(" + sProjectId + ")"
-            });
-
-            let oObjHeader = this.byId("objHeader");
-            oObjHeader.bindElement({
-                path: "/ManagerProjectFinancesView(" + sProjectId + ")"
-            });
-
-            let oIconTabFilterINFO = this.byId("idInfoContainer");
-            oIconTabFilterINFO.bindElement({
-                path: "/ProjectDetailsView(" + sProjectId + ")"
-            });
-
-            let oIconTabFilterTEAM = this.byId("idTeamTable");
-            oIconTabFilterTEAM.bindElement({
-                path: "/ProjectTeamView(" + sProjectId + ")",
+                path: "/Projects(" + sProjectId + ")",
                 parameters: {
-                    "$select": "projectStatus,projectManager_ID",
-                    "$expand": "employeesAssigned($filter=isActiveOnThisProject eq true)"
+                    "$expand": "finances,details($expand=logs),budget,employeesAssigned($expand=employee($expand=position))"
                 }
             });
 
-            this.applyLogsFilters();
-
-            let oHoursContainer = this.byId("idHoursContainer");
-            oHoursContainer.bindElement({
-                path: "/ProjectDetailsView(" + sProjectId + ")",
-                parameters: {
-                    "$expand": "logs"
-                },
-                events: {
-                    change: function () {
-                        this.applyLogsFilters();
-                    }.bind(this)
-                }
-            });
-            
-            
             let oSpentPerPositionTable = this.byId("idSpentPositionTable"),
                 oTemplate = this.byId("idPositionItemTemplate");
+
             oSpentPerPositionTable.unbindItems();
             oSpentPerPositionTable.bindItems({
                 path: "/SpentPerPositionView",
@@ -67,10 +37,7 @@ sap.ui.define([
                 template: oTemplate
             });
 
-            let oBudgetForm = this.byId("idBudgetProjectionForm");
-            oBudgetForm.bindElement({
-                path: "/ProjectBudgetProjectionView(projectID='" + sProjectId + "')"
-            });
+            this.applyLogsFilters();
         },
 
         applyLogsFilters: function () {
@@ -131,6 +98,31 @@ sap.ui.define([
 
                 sap.m.MessageBox.error(sErrorMsg);
             });
+        },
+
+        onChangeBudget: function (){
+            if (!this.oChangeBudgetDialog) {
+                this.oChangeBudgetDialog = sap.ui.core.Fragment.load({
+                    id: this.getView().getId(),
+                    name: "com.nbx.managerapp.view.fragment.ChangeBudgetDialog",
+                    controller: this
+                }).then(function (oDialog) {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                }.bind(this));
+            }
+            this.oChangeBudgetDialog.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        onConfirmChangeBudget: function () {
+            
+        },
+
+        onCancelChangeBudget: function () {
+            this.byId("changeBudgetDialog").close();
+            this.byId("newChangedBudget").setValue("");
         },
 
         onRemoveEmployee: function (oEvent) {

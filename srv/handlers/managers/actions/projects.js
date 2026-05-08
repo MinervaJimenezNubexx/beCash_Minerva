@@ -151,10 +151,40 @@ async function advanceStatus(req) {
     }
 }
 
+async function updateProjectBudget(req) {
+    try {
+        const Projects = req.target;
+        let projectId = typeof req.params[0] === 'object' ? req.params[0].ID : req.params[0];
+
+        if (!projectId) {
+            return req.reject(400, 'PROJECT_NOT_IDENTIFIED_ERROR');
+        }
+
+        const project = await SELECT.one(Projects).where({ ID: projectId });
+
+        if (!project) {
+            return req.reject(404, 'PROJECT_NOT_FOUND_ERROR');
+        }
+
+        let newBudget = req.data.initialBudget;
+
+        if (newBudget === undefined || newBudget === null) {
+            return req.reject(400, 'NEW_BUDGET_REQUIRED_ERROR');
+        }
+
+        await UPDATE(Projects).set({ initialBudget: newBudget }).where({ ID: projectId });
+        return;
+
+        } catch (error) {
+        console.error('UPDATE_STATUS_CRITICAL_ERROR', error);
+        return req.reject(500, 'UPDATE_STATUS_SYSTEM_ERROR');
+    }
+}
 
 module.exports = {
     resolveEmployeeHoursByDateRange,
     managerAddEmployeeToProject,
     managerRemoveEmployeeFromProject,
-    advanceStatus
+    advanceStatus,
+    updateProjectBudget
 };

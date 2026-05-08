@@ -56,10 +56,12 @@ module.exports = cds.service.impl(async function (srv) {
     //Bound Actions
     srv.on("resolveEmployeeHoursByDateRange", handlers.managers.actions.projects.resolveEmployeeHoursByDateRange); //done, only for managers
     
-    srv.on("managerAddEmployeeToProject", handlers.managers.actions.projects.managerAddEmployeeToProject) //done, only for managers
+    srv.on("managerAddEmployeeToProject", handlers.managers.actions.projects.managerAddEmployeeToProject); //done, only for managers
 
-    srv.on("managerRemoveEmployeeFromProject", handlers.managers.actions.projects.managerRemoveEmployeeFromProject) //done, only for managers
+    srv.on("managerRemoveEmployeeFromProject", handlers.managers.actions.projects.managerRemoveEmployeeFromProject); //done, only for managers
 
-    srv.on("advanceStatus", handlers.managers.actions.projects.advanceStatus) //done, only for managers
+    srv.on("advanceStatus", handlers.managers.actions.projects.advanceStatus); //done, only for managers
+
+    srv.on("updateProjectBudget", handlers.managers.actions.projects.updateProjectBudget); //done
 
 })

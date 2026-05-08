@@ -15,13 +15,20 @@ service ManagersService {
         };
 
     @restrict: [{
+        grant: ['READ'],
+        to   : 'manager'
+    }]
+    entity Positions                   as select from db.Positions;
+
+    @restrict: [{
         grant: [
             'READ',
             'CREATE',
             'resolveEmployeeHoursByDateRange',
             'managerAddEmployeeToProject',
             'managerRemoveEmployeeFromProject',
-            'advanceStatus'
+            'advanceStatus',
+            'updateProjectBudget'
         ],
         to   : 'manager',
         where: 'managerOnCharge.loginName = $user.id'
@@ -30,7 +37,10 @@ service ManagersService {
     entity Projects                    as
         select from db.Projects {
             *,
-            status.ID as projectStatus : String
+            status.ID as projectStatus : String,
+            finances : Association to one ManagerProjectFinancesView on finances.ID = $self.ID,
+            details  : Association to one ProjectDetailsView on details.ID = $self.ID,
+            budget   : Association to one ProjectBudgetProjectionView on budget.projectID = $self.ID
         }
         actions {
 
@@ -51,6 +61,8 @@ service ManagersService {
             };
 
             action advanceStatus();
+
+            action updateProjectBudget(initialBudget: Decimal(15, 2));
         };
 
     @restrict: [{
