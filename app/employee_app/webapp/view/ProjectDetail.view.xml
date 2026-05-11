@@ -1,0 +1,33 @@
+<mvc:View
+    controllerName="com.nbx.employeeapp.controller.ProjectDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+    <Page id="detailPage" title="{i18n>DetailTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <ObjectHeader 
+                id="objHeader" 
+                title="{name}">
+                
+                <statuses>
+                    <ObjectStatus 
+                        title="{i18n>StatusInfo}" 
+                        text="{status/description}" 
+                        state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
+                </statuses>
+                
+                <attributes>
+                    <ObjectAttribute title="{i18n>ClientInfo}" text="{client/name}" />
+                    
+                    <ObjectAttribute title="{i18n>ManagerInfo}" text="{managerOnCharge/firstName} {managerOnCharge/lastName}" />
+                    
+                    <ObjectAttribute title="{i18n>CloseDateInfo}" text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }" />
+                </attributes>
+            </ObjectHeader>
+        </content>
+    </Page>
+</mvc:View>

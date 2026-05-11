@@ -3,12 +3,27 @@ using {my.beCash as db} from '../db/schema';
 @requires: 'employee'
 service EmployeesService {
 
-    /* @cds.redirection.target
-    entity Employees                   as
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'employee'
+    }]
+    entity Employees                as
         select from db.Employees {
             *,
             firstName || ' ' || lastName as employeeName : String
-        }; */
+        };
+
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'employee'
+    }]
+    entity Clients                  as select from db.Clients;
+
+    @restrict: [{
+        grant: ['READ'],
+        to   : 'employee'
+    }]
+    entity PjStatus                 as select from db.PjStatus;
 
     @restrict: [{
         grant: ['READ'],
@@ -71,18 +86,18 @@ service EmployeesService {
             project.name;
 
     @readonly
-    entity ProjectDetailsView          as
+    entity ProjectDetailsView       as
         select from db.Projects as P
         left join db.LoggedHours as L
             on  L.project.ID = P.ID
             and L.status.ID  = 'A'
         {
-            key P.ID                 as ID,
-                P.name               as projectName,
-                P.client.name        as clientName,
+            key P.ID                        as ID,
+                P.name                      as projectName,
+                P.client.name               as clientName,
                 P.initialBudget,
-                P.status.ID          as status_ID,
-                P.status.description as status_description,
+                P.status.ID                 as status_ID,
+                P.status.description        as status_description,
                 P.closedAt,
                 P.managerOnCharge.firstName as manager,
                 P.reportSentToClient
