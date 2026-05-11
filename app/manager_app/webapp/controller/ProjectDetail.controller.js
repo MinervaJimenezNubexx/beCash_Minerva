@@ -117,7 +117,32 @@ sap.ui.define([
         },
 
         onConfirmChangeBudget: function () {
-            
+            let oInput = this.byId("newChangedBudget"),
+                sNewBudget = oInput.getValue(),
+                fNewBudget = parseFloat(sNewBudget);
+
+            if (!sNewBudget || isNaN(fNewBudget) || fNewBudget <= 0) {
+                sap.m.MessageBox.warning(this._o18n.getText("NoNewBudgetError"));
+                return;
+            }
+
+            let oContext = this.getView().getBindingContext();
+            if (!oContext) return;
+
+            let oAction = oContext.getModel().bindContext("ManagersService.updateProjectBudget(...)", oContext);
+            oAction.setParameter("initialBudget", fNewBudget);
+
+            this.getView().setBusy(true);
+            oAction.execute().then(function () {
+                this.getView().setBusy(false);
+
+                sap.m.MessageToast.show(this._o18n.getText("BudgetUpdatedSuccess"));
+                oContext.refresh();
+                this.onCancelChangeBudget();
+            }.bind(this)).catch(function (oError) {
+                this.getView().setBusy(false);
+                sap.m.MessageBox.error(oError.message || this._o18n.getText("BudgetUpdateError"));
+            }.bind(this));
         },
 
         onCancelChangeBudget: function () {

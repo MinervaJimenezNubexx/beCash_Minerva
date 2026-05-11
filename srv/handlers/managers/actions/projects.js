@@ -152,32 +152,45 @@ async function advanceStatus(req) {
 }
 
 async function updateProjectBudget(req) {
+    const ProjectsTable = 'my.beCash.Projects';
+    let projectId = typeof req.params[0] === 'object' ? req.params[0].ID : req.params[0];
+
+    if (!projectId) {
+        return req.reject(400, 'PROJECT_NOT_IDENTIFIED_ERROR');
+    }
+
+    let newBudget = req.data.initialBudget;
+
+    if (newBudget === undefined || newBudget === null) {
+        return req.reject(400, 'NEW_BUDGET_REQUIRED_ERROR');
+    }
+
+    if (newBudget === undefined || newBudget === null) return;
+
+    const MIN_BUDGET = 5000,
+        MAX_BUDGET = 10000000;
+
+    if (newBudget < MIN_BUDGET || newBudget > MAX_BUDGET) {
+        return req.error(500, 'UNREASONABLE_BUDGET_ERROR', [MIN_BUDGET, MAX_BUDGET]);
+    }
+        
     try {
-        const Projects = req.target;
-        let projectId = typeof req.params[0] === 'object' ? req.params[0].ID : req.params[0];
-
-        if (!projectId) {
-            return req.reject(400, 'PROJECT_NOT_IDENTIFIED_ERROR');
-        }
-
-        const project = await SELECT.one(Projects).where({ ID: projectId });
+        const project = await SELECT.one(ProjectsTable).where({ ID: projectId });
 
         if (!project) {
             return req.reject(404, 'PROJECT_NOT_FOUND_ERROR');
         }
 
-        let newBudget = req.data.initialBudget;
-
-        if (newBudget === undefined || newBudget === null) {
-            return req.reject(400, 'NEW_BUDGET_REQUIRED_ERROR');
+        if (project.status_ID === 'C') {
+            return req.reject(403, 'PROJECT_CLOSED_BUDGET_ERROR'); 
         }
 
-        await UPDATE(Projects).set({ initialBudget: newBudget }).where({ ID: projectId });
+        await UPDATE(ProjectsTable).set({ initialBudget: newBudget }).where({ ID: projectId });
         return;
 
         } catch (error) {
-        console.error('UPDATE_STATUS_CRITICAL_ERROR', error);
-        return req.reject(500, 'UPDATE_STATUS_SYSTEM_ERROR');
+        console.error('UPDATE_BUDGET_CRITICAL_ERROR', error);
+        return req.reject(500, 'UPDATE_BUDGET_SYSTEM_ERROR');
     }
 }
 

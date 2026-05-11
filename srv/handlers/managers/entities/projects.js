@@ -26,8 +26,8 @@ function validateReasonableBudget(req) {
 
     if (budget === undefined || budget === null) return;
 
-    const MIN_BUDGET = 1000;
-    const MAX_BUDGET = 10000000;
+    const MIN_BUDGET = 5000,
+        MAX_BUDGET = 10000000;
 
     if (budget < MIN_BUDGET || budget > MAX_BUDGET) {
         return req.error(500, 'UNREASONABLE_BUDGET_ERROR', [MIN_BUDGET, MAX_BUDGET]);

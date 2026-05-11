@@ -238,3 +238,23 @@ Content-Type: application/json
 ### See projects
 GET {{server}}{{adminService}}/Projects
 Authorization: Basic {{userAdmin}}:{{password}}
+
+
+### Manager advances status of a project
+POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.advanceStatus
+Authorization: Basic {{userManager}}:{{password}}
+
+### Get Projects
+
+GET {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)
+Authorization: Basic {{userManager}}:{{password}}
+
+### Manager updates budget of a project
+POST {{server}}{{managerService}}/Projects(aaaa1111-aaaa-1111-aaaa-1111aaaa1111)/ManagersService.updateProjectBudget
+Authorization: Basic {{userManager}}:{{password}}
+Content-Type: application/json
+
+{
+    "initialBudget": 10000
+}
+
