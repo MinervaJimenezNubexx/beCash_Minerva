@@ -1,3 +1,9 @@
+const {
+    projectStatusConstant,
+    loggedHoursStatusConstant,
+    hoursRejectionReasonConstant
+} = require('../../../src/domain/constants');
+
 async function resolveEmployeeHoursByDateRange(req) {
     const project_ID = req.params[0]?.ID || req.params[0],
         { startDate, endDate, status_ID, rejectionReason_ID } = req.data;
@@ -5,7 +11,7 @@ async function resolveEmployeeHoursByDateRange(req) {
     if (!project_ID || !startDate || !endDate || !status_ID) {
         return req.error(400, 'MISSING_PARAMETERS_ERROR');
     }
-    if (status_ID === 'R' && !rejectionReason_ID) {
+    if (status_ID === loggedHoursStatusConstant.REJECTED && !rejectionReason_ID) {
         return req.error(400, 'REJECTION_REASON_REQUIRED_ERROR');
     }
 
@@ -23,17 +29,17 @@ async function resolveEmployeeHoursByDateRange(req) {
 
     const updateData = { status_ID: status_ID };
 
-    if (status_ID === 'R') {
+    if (status_ID === loggedHoursStatusConstant.REJECTED) {
         updateData.rejectionReason_ID = rejectionReason_ID;
-    } else if (status_ID === 'A') {
-        updateData.rejectionReason_ID = 'NR';
+    } else if (status_ID === loggedHoursStatusConstant.APPROVED) {
+        updateData.rejectionReason_ID = hoursRejectionReasonConstant.NOT_REJECTED;
     }
 
     const updatedCount = await UPDATE('my.beCash.LoggedHours')
         .set(updateData)
         .where({
             project_ID: project_ID,
-            status_ID: 'P',
+            status_ID: loggedHoursStatusConstant.PENDING,
             imputationDate: { 'between': startDate, 'and': endDate }
         });
 
@@ -125,18 +131,18 @@ async function advanceStatus(req) {
 
         let nextStatus;
         switch (project.status_ID) {
-            case 'O': nextStatus = 'D'; break;
-            case 'D': nextStatus = 'Q'; break;
-            case 'Q': nextStatus = 'T'; break;
-            case 'T':
+            case projectStatusConstant.OPEN: nextStatus = projectStatusConstant.DEVELOPMENT; break;
+            case projectStatusConstant.DEVELOPMENT: nextStatus = projectStatusConstant.QUALITY; break;
+            case projectStatusConstant.QUALITY: nextStatus = projectStatusConstant.TESTING; break;
+            case projectStatusConstant.TESTING:
                 closingDate = new Date().toISOString();
                 await UPDATE(Projects).set({ closedAt: closingDate }).where({ ID: projectId });
                 await UPDATE('my.beCash.LoggedHours')
-                    .set({ status_ID: 'A', rejectionReason_ID: 'NR' })
-                    .where({ project_ID: projectId, status_ID: 'P' });
-                nextStatus = 'C';
+                    .set({ status_ID: loggedHoursStatusConstant.APPROVED, rejectionReason_ID: hoursRejectionReasonConstant.NOT_REJECTED })
+                    .where({ project_ID: projectId, status_ID: loggedHoursStatusConstant.PENDING });
+                nextStatus = projectStatusConstant.CLOSED;
                 break;
-            case 'C':
+            case projectStatusConstant.CLOSED:
                 return req.reject(400, 'STATUS_CLOSED_CANNOT_BE_CHANGED');
             default:
                 return req.reject(400, 'UNKNOWN_PROJECT_STATUS_ERROR');
@@ -181,7 +187,7 @@ async function updateProjectBudget(req) {
             return req.reject(404, 'PROJECT_NOT_FOUND_ERROR');
         }
 
-        if (project.status_ID === 'C') {
+        if (project.status_ID === projectStatusConstant.CLOSED) {
             return req.reject(403, 'PROJECT_CLOSED_BUDGET_ERROR'); 
         }
 

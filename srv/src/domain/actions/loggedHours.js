@@ -1,3 +1,7 @@
+const {
+    loggedHoursStatusConstant,
+} = require('../constants');
+
 function getLastTwoWorkingDays(year, month) { // aux function
     const lastDay = new Date(year, month + 1, 0),
         dayOfWeek = lastDay.getDay();
@@ -43,10 +47,10 @@ async function sendThisMonthHours(req) {
         lastDayOfMonthStr = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
     const updatedCount = await UPDATE('my.beCash.LoggedHours')
-        .set({ status_ID: 'P' })
+        .set({ status_ID: loggedHoursStatusConstant.PENDING })
         .where({
             employee_ID: employee.ID,
-            status_ID: 'N',
+            status_ID: loggedHoursStatusConstant.NOT_SENT,
             imputationDate: { 'between': firstDayOfMonthStr, 'and': lastDayOfMonthStr }
         });
 

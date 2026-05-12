@@ -1,4 +1,8 @@
-const { day } = require("@cap-js/hana/lib/cql-functions");
+const {
+    projectStatusConstant,
+    loggedHoursStatusConstant,
+    hoursRejectionReasonConstant
+} = require('../constants');
 
 function ValidateHours(req) {
     const num = req.data.quantity;
@@ -13,7 +17,7 @@ async function ValidateActiveProject(req) {
     const projectId = req.data.project_ID;
     if (!projectId) return;
     const project = await SELECT.one('my.beCash.Projects').where({ ID: projectId });
-    if (project && project.status_ID === 'C') {
+    if (project && project.status_ID === projectStatusConstant.CLOSED) {
         req.error(400, 'NOT_VALID_SELECTED_PROJECT_ERROR')
     }
 }
@@ -22,7 +26,7 @@ async function employeeNotUpdateWhenSent(req) {
     const logId = req.params[0].ID
     if (!logId) return;
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
-    if (log && log.status_ID !== 'N') {
+    if (log && log.status_ID !== loggedHoursStatusConstant.NOT_SENT) {
         req.error(400, 'NOT_EDIT_LOG_ALREADY_SENT_ERROR')
     }
 }
@@ -40,8 +44,8 @@ async function employeeNotUpdateStatusOfLog(req) {
 }
 
 function defaultNotSentStatusOnCreateLog(req) {
-    req.data.status_ID = 'N';
-    req.data.rejectionReason_ID = 'NR';
+    req.data.status_ID = loggedHoursStatusConstant.NOT_SENT;
+    req.data.rejectionReason_ID = hoursRejectionReasonConstant.NOT_REJECTED;
 }
 
 async function blockNewIfAlreadySentThisMonth(req) {
@@ -76,7 +80,7 @@ async function blockNewIfAlreadySentThisMonth(req) {
         .where({
             employee_ID: employeeId,
             imputationDate: { 'between': firstDayStr, 'and': lastDayStr },
-            status_ID: { '!=': 'N' }
+            status_ID: { '!=': loggedHoursStatusConstant.NOT_SENT }
         });
 
     if (sentLogsExist) {

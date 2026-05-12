@@ -1,3 +1,8 @@
+const {
+    loggedHoursStatusConstant,
+    hoursRejectionReasonConstant,
+} = require('../../../src/domain/constants');
+
 async function resolveEmployeeHoursOneByOne (req){
     const { status_ID, rejectionReason_ID } = req.data;
 
@@ -11,7 +16,7 @@ async function resolveEmployeeHoursOneByOne (req){
 
     if (!status_ID) return req.error(400, 'STATUS_REQUIRED_ERROR');
 
-    if (status_ID === 'R' && !rejectionReason_ID) {
+    if (status_ID === loggedHoursStatusConstant.REJECTED && !rejectionReason_ID) {
         return req.error(400, 'REJECTION_REASON_REQUIRED_ERROR');
     }
 
@@ -21,7 +26,7 @@ async function resolveEmployeeHoursOneByOne (req){
 
     if (!currentLog) return req.error(404, 'LOG_NOT_FOUND');
 
-    if (currentLog.status_ID !== 'P') {
+    if (currentLog.status_ID !== loggedHoursStatusConstant.PENDING) {
         return req.error(400, 'ONLY_PENDING_LOGS_CAN_BE_RESOLVED');
     }
 
@@ -35,10 +40,10 @@ async function resolveEmployeeHoursOneByOne (req){
     }
 
     const updateData = { status_ID: status_ID };
-    if (status_ID === 'R') {
+    if (status_ID === loggedHoursStatusConstant.REJECTED) {
         updateData.rejectionReason_ID = rejectionReason_ID;
     } else {
-        updateData.rejectionReason_ID = 'NR';
+        updateData.rejectionReason_ID = hoursRejectionReasonConstant.NOT_REJECTED;
     }
 
     await UPDATE('my.beCash.LoggedHours').set(updateData).where({ ID: logId });
