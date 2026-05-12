@@ -8,7 +8,12 @@
         title="{i18n>MainTitle}">
         
         <headerContent>
-            
+            <Button 
+            id="btnSendHours"
+            text="{i18n>SendMonthlyHours}" 
+            type="Emphasized" 
+            icon="sap-icon://paper-plane"
+            press=".onSendMonthlyHours" />
         </headerContent>
 
         <content>
@@ -28,16 +33,13 @@
                         
                         <columns>
                             <Column width="40%"><Text text="{i18n>ProjectName}" /></Column>
-                            <Column width="40%"><Text text="{i18n>Budget}" /></Column>
-                            <Column width="40%"><Text text="{i18n>Status}" /></Column>
+                            <Column width="40%"><Text text="{i18n>StatusName}" /></Column>
                         </columns>
 
                         <items>
                             <ColumnListItem type="Navigation" press=".onPressProject">
                                 <cells>
                                     <ObjectIdentifier title="{name}" />
-                                    
-                                    <ObjectNumber number="{initialBudget}" unit="€" />
                                     
                                     <ObjectStatus 
                                         text="{status/description}" 

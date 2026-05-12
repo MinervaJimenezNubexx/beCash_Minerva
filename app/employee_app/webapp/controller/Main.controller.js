@@ -1,7 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/UIComponent"
-], (Controller, UIComponent) => {
+    "sap/ui/core/UIComponent",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast"
+], (Controller, UIComponent, MessageBox, MessageToast) => {
     "use strict";
 
     return Controller.extend("com.nbx.employeeapp.controller.Main", {
@@ -18,6 +20,32 @@ sap.ui.define([
             oRouter.navTo("RouteProjectDetail", { projectId: sProjectId });
         },
 
+        onSendMonthlyHours: function () {
+            MessageBox.confirm(this._o18n.getText("ConfirmSendHoursMsg"), {
+                title: this._o18n.getText("ConfirmSendHoursTitle"),
+                onClose: (sAction) => {
+                    if (sAction === MessageBox.Action.OK) {
+                        this.executeSendHoursAction();
+                    }
+                }
+            });
+        },
 
+        executeSendHoursAction: function () {
+            let oModel = this.getView().getModel(),
+                oActionContext = oModel.bindContext("/sendThisMonthHours(...)");
+
+
+            this.getView().setBusy(true);
+            oActionContext.execute().then(() => {
+                this.getView().setBusy(false);
+                MessageToast.show(this._o18n.getText("HoursSentSuccess"));
+                oModel.refresh();
+
+            }).catch((oError) => {
+                this.getView().setBusy(false);
+                MessageBox.error(oError.message || this._o18n.getText("ErrorSendingHours"));
+            });
+        }
     });
 });
