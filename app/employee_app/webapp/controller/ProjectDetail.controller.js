@@ -1,8 +1,10 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
-    "sap/ui/core/UIComponent"
-], (Controller, History, UIComponent) => {
+    "sap/ui/core/UIComponent",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast"
+], (Controller, History, UIComponent, MessageBox, MessageToast) => {
     "use strict";
 
     return Controller.extend("com.nbx.employeeapp.controller.ProjectDetail", {
@@ -49,6 +51,16 @@ sap.ui.define([
             oMonthSelect.setSelectedKey(sCurrentMonth);
 
             this.applyMonthFilter();
+
+            let oDraftsTable = this.byId("idDraftsTable"),
+                oDraftsBinding = oDraftsTable ? oDraftsTable.getBinding("items") : null;
+
+            if (oDraftsBinding) {
+                oDraftsBinding.filter([
+                    new sap.ui.model.Filter("project_ID", sap.ui.model.FilterOperator.EQ, sProjectId),
+                    new sap.ui.model.Filter("status_ID", sap.ui.model.FilterOperator.EQ, "N")
+                ]);
+            }
         },
 
         onMonthChange: function (oEvent) {
@@ -77,6 +89,155 @@ sap.ui.define([
                 ];
 
             oBinding.filter(aFilters);
+        },
+
+        onOpenLogDialog: function () {
+            this.bIsEdit = false;
+
+            if (!this.pDialog) {
+                this.pDialog = this.loadFragment({
+                    name: "com.nbx.employeeapp.view.fragment.LogHoursDialog"
+                });
+            }
+
+            this.pDialog.then((oDialog) => {
+                this.byId("idLogDate").setValue("");
+                this.byId("idLogHours").setValue(8);
+                oDialog.open();
+            });
+        },
+
+        onEditDraft: function (oEvent) {
+            this.bIsEdit = true;
+            this.oEditContext = oEvent.getSource().getBindingContext();
+
+            if (!this.pDialog) {
+                this.pDialog = this.loadFragment({
+                    name: "com.nbx.employeeapp.view.fragment.LogHoursDialog"
+                });
+            }
+
+            this.pDialog.then((oDialog) => {
+                this.byId("idLogDate").setValue(this.oEditContext.getProperty("imputationDate"));
+                this.byId("idLogHours").setValue(this.oEditContext.getProperty("quantity"));
+                oDialog.open();
+            });
+        },
+
+        onDeleteDraft: function (oEvent) {
+            let oContext = oEvent.getSource().getBindingContext();
+
+            MessageBox.confirm(this._o18n.getText("ConfirmDeleteDraft"), {
+                onClose: (sAction) => {
+                    if (sAction === MessageBox.Action.OK) {
+                        oContext.delete().then(() => {
+                            MessageToast.show(this._o18n.getText("DraftDeletedSucess"));
+                            this.getView().getModel().refresh();
+                        }).catch((oError) => {
+                            let sErrorMsg = oError.message;
+                            if (oError.error && oError.error.message) {
+                                sErrorMsg = oError.error.message;
+                            }
+                            MessageBox.error(sErrorMsg);
+                        });
+                    }
+                }
+            });
+        },
+
+        onCloseLogDialog: function () {
+            this.byId("idLogHoursDialog").close();
+        },
+
+        onSaveHours: function () {
+            sap.ui.getCore().getMessageManager().removeAllMessages();
+
+            let sDate = this.byId("idLogDate").getValue(),
+                fHours = this.byId("idLogHours").getValue();
+
+            if (!sDate) {
+                MessageBox.error(this._o18n.getText("SelectDateError"));
+                return;
+            }
+
+            this.getView().setBusy(true);
+            let oModel = this.getView().getModel();
+            let sGroupId = oModel.getUpdateGroupId();
+
+            if (this.bIsEdit) {
+                this.oEditContext.setProperty("imputationDate", sDate);
+                this.oEditContext.setProperty("quantity", parseFloat(fHours));
+
+                oModel.submitBatch(sGroupId).then(() => {
+                    if (this.oEditContext.hasPendingChanges()) {
+                        this.handleBackendError(this.oEditContext, this._o18n.getText("DraftUpdated"));
+                    } else {
+                        this.getView().setBusy(false);
+                        MessageToast.show(this._o18n.getText("DraftUpdated"));
+                        this.byId("idLogHoursDialog").close();
+                        oModel.refresh();
+                    }
+                });
+
+            } else {
+                let oListBinding = this.byId("idDraftsTable").getBinding("items"),
+                    oContext = oListBinding.create({
+                        imputationDate: sDate,
+                        quantity: parseFloat(fHours),
+                        project_ID: this.sCurrentProjectId
+                    });
+
+                oModel.submitBatch(sGroupId).then(() => {
+                    if (oContext.isTransient()) {
+                        this.handleBackendError(oContext, this._o18n.getText("HoursLoggedSuccess"));
+                    } else {
+                        this.getView().setBusy(false);
+                        sap.m.MessageToast.show(this._o18n.getText("HoursLoggedSuccess"));
+                        this.byId("idLogHoursDialog").close();
+                        oModel.refresh();
+                    }
+                });
+            }
+        },
+
+        handleBackendError: function (oContext, sSuccessMsg) {
+            setTimeout(() => {
+                let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData(),
+                    aErrors = aMessages.filter(m => m.type === "Error");
+
+                if (aErrors.length === 0) {
+                    this.getView().setBusy(false);
+                    MessageToast.show(sSuccessMsg);
+                    this.byId("idLogHoursDialog").close();
+                    setTimeout(() => {
+                        this.getView().getModel().refresh();
+                    }, 500);
+
+                    return;
+                }
+
+                this.getView().setBusy(false);
+                let sErrorMsg = this._o18n.getText("ValidationServerError");
+
+                let oRealMessage = aErrors.find(m =>
+                    !m.message.includes("múltiples errores") &&
+                    !m.message.includes("multiple errors")
+                );
+
+                if (oRealMessage) {
+                    sErrorMsg = oRealMessage.message;
+                } else if (aErrors.length > 0) {
+                    sErrorMsg = aErrors[aErrors.length - 1].message;
+                }
+
+                MessageBox.error(sErrorMsg);
+                if (oContext && oContext.isTransient && oContext.isTransient()) {
+                    oContext.delete().catch(() => { });
+                } else if (oContext && typeof oContext.hasPendingChanges === 'function' && oContext.hasPendingChanges()) {
+                    oContext.resetChanges();
+                }
+
+            }, 150);
         }
 
     });

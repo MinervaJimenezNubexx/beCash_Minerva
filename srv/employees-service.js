@@ -1,4 +1,3 @@
-const cds = require('@sap/cds')
 const handlers = require('./handlers')
 const src = require('./src')
 
@@ -7,14 +6,15 @@ module.exports = cds.service.impl(async function (srv) {
         ENTITIES
     */
 
-    //Logged Hours: (almost) all shared between manager and employee
+    //Logged Hours
+
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateHours); //done
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.ValidateActiveProject); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done, not for managers
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateWhenSent); //done
 
-    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done, not for managers
+    srv.before(['UPDATE'], "LoggedHours", src.domain.entities.loggedHours.employeeNotUpdateStatusOfLog); //done
 
     srv.before(['CREATE'], "LoggedHours", src.domain.entities.loggedHours.defaultNotSentStatusOnCreateLog); //done
 
@@ -29,6 +29,8 @@ module.exports = cds.service.impl(async function (srv) {
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnPastOrFututeMonths); //done
 
     srv.before(['CREATE', 'UPDATE'], "LoggedHours", src.domain.entities.loggedHours.notLogHoursOnWeekend); //done
+
+    srv.before(['DELETE'], "LoggedHours", src.domain.entities.loggedHours.onlyDeleteNotSent); //done
 
 
     /*

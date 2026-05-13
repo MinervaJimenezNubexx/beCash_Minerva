@@ -91,7 +91,7 @@
                                                 %{statusID} === 'A' ? ${i18n>ApprovedInfo} : 
                                                 %{statusID} === 'P' ? ${i18n>PendingInfo} : 
                                                 %{statusID} === 'R' ? ${i18n>RejectedInfo} : 
-                                                ${i18n>NotSent} 
+                                                ${i18n>NotSentStatusInfo} 
                                             }" 
                                             state="{= 
                                                 %{statusID} === 'A' ? 'Success' : 
@@ -169,9 +169,51 @@
                         </VBox>
                     </IconTabFilter>
 
-                    <IconTabFilter>
-                    </IconTabFilter>
+                    <IconTabFilter key="drafts" icon="sap-icon://edit" text="{i18n>DraftsTab}">
+                        <Table 
+                            id="idDraftsTable"
+                            noDataText="{i18n>NoDraftsText}"
+                            items="{
+                                path: '/LoggedHours',
+                                sorter: {
+                                    path: 'imputationDate',
+                                    descending: false
+                                }
+                            }">
+                            
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>MyDraftsTitle}" level="H3"/>
+                                    <ToolbarSpacer/>
+                                    <Button text="{i18n>LogHoursButton}" type="Emphasized" icon="sap-icon://add" press=".onOpenLogDialog"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
 
+                            <columns>
+                                <Column><Text text="{i18n>DraftDateInfo}"/></Column>
+                                <Column><Text text="{i18n>DraftHoursInfo}"/></Column>
+                                <Column><Text text="{i18n>DraftStatusInfo}"/></Column>
+                                <Column hAlign="End"><Text text="{i18n>DraftActionsInfo}"/></Column>
+                            </columns>
+                            
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{imputationDate}"/>
+                                        <ObjectNumber number="{quantity}" unit="h"/>
+                                        <ObjectStatus 
+                                            text="{status/description}" 
+                                            state="Information" 
+                                            icon="sap-icon://information"/>
+                                        <HBox justifyContent="End">
+                                            <Button icon="sap-icon://edit" type="Transparent" press=".onEditDraft" class="sapUiTinyMarginEnd"/>
+                                            <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteDraft"/>
+                                        </HBox>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
                 </items>
             </IconTabBar>
         </content>

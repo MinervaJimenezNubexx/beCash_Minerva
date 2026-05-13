@@ -4,7 +4,8 @@ const {
     hoursRejectionReasonConstant
 } = require('../constants');
 
-function ValidateHours(req) {
+async function ValidateHours(req) {
+    await injectEmployeeId(req);
     const num = req.data.quantity;
     if (!num) return;
 
@@ -14,6 +15,7 @@ function ValidateHours(req) {
 }
 
 async function ValidateActiveProject(req) {
+    await injectEmployeeId(req);
     const projectId = req.data.project_ID;
     if (!projectId) return;
     const project = await SELECT.one('my.beCash.Projects').where({ ID: projectId });
@@ -23,6 +25,7 @@ async function ValidateActiveProject(req) {
 }
 
 async function employeeNotUpdateWhenSent(req) {
+    await injectEmployeeId(req);
     const logId = req.params[0].ID
     if (!logId) return;
     const log = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
@@ -32,6 +35,7 @@ async function employeeNotUpdateWhenSent(req) {
 }
 
 async function employeeNotUpdateStatusOfLog(req) {
+    await injectEmployeeId(req);
     const logId = req.params[0].ID;
     if (!logId) return;
     const altStatus = req.data.status_ID;
@@ -49,6 +53,7 @@ function defaultNotSentStatusOnCreateLog(req) {
 }
 
 async function blockNewIfAlreadySentThisMonth(req) {
+    await injectEmployeeId(req);
     let logId = null;
     if (req.data && req.data.ID) {
         logId = req.data.ID;
@@ -89,6 +94,7 @@ async function blockNewIfAlreadySentThisMonth(req) {
 }
 
 async function checkIfEmployeeAssignedToThisProject(req) {
+    await injectEmployeeId(req);
     const employeeId = req.data.employee_ID,
     projectId = req.data.project_ID;
 
@@ -127,6 +133,7 @@ function getWeekBoundaries(dateString) { // aux function
 }
 
 async function notMoreThanEstablishedWorkHours(req) {
+    await injectEmployeeId(req);
     let logId = null;
     if (req.data && req.data.ID) {
         logId = req.data.ID;
@@ -183,6 +190,7 @@ async function notMoreThanEstablishedWorkHours(req) {
 }
 
 async function notMoreThanEightHoursPerDay(req) {
+    await injectEmployeeId(req);
     let logId = null;
     if (req.data && req.data.ID) {
         logId = req.data.ID;
@@ -198,6 +206,12 @@ async function notMoreThanEightHoursPerDay(req) {
     if (logId) {
         currentLog = await SELECT.one('my.beCash.LoggedHours').where({ ID: logId });
     }
+
+    incomingQuantity = parseFloat(incomingQuantity);
+
+    if (!employeeId || !date || isNaN(incomingQuantity)){
+        return;
+    } 
 
     if (!employeeId && currentLog) {
         employeeId = currentLog.employee_ID;
@@ -229,7 +243,8 @@ async function notMoreThanEightHoursPerDay(req) {
     }
 }
 
-function notLogHoursOnPastOrFututeMonths(req) {
+async function notLogHoursOnPastOrFututeMonths(req) {
+    await injectEmployeeId(req);
     const stringImpDate = req.data.imputationDate;
     if (!stringImpDate) return;
     const impDate = new Date(stringImpDate),
@@ -244,13 +259,35 @@ function notLogHoursOnPastOrFututeMonths(req) {
     }
 }
 
-function notLogHoursOnWeekend(req) {
+async function notLogHoursOnWeekend(req) {
+    await injectEmployeeId(req);
     const stringImpDate = req.data.imputationDate;
     if (!stringImpDate) return;
     const impDate = new Date(stringImpDate),
         dayOfTheWeek = impDate.getDay();
     if (dayOfTheWeek == 6 || dayOfTheWeek == 0) {
         req.error(400, 'NOT_LOG_ON_WEEKENDS_ERROR')
+    }
+}
+
+async function onlyDeleteNotSent(req) {
+    await injectEmployeeId(req);
+    const sLogId = req.data.ID;
+    if (!sLogId) return;
+    const oLog = await SELECT.one.from(req.target).where({ ID: sLogId });
+    if (oLog && oLog.status_ID !== loggedHoursStatusConstant.NOT_SENT) {
+        req.reject(400, 'NOT_DELETE_SENT_LOGS_ERROR');
+    }
+}
+
+async function injectEmployeeId(req) {
+    if (!req.data.employee_ID) {
+        const oEmployee = await SELECT.one.from('my.beCash.Employees').where({ loginName: req.user.id });
+        if (oEmployee) {
+            req.data.employee_ID = oEmployee.ID; 
+        } else {
+            req.reject(403, 'USER_NOT_FOUND_ERROR');
+        }
     }
 }
 
@@ -265,5 +302,6 @@ module.exports = {
     notMoreThanEstablishedWorkHours,
     notMoreThanEightHoursPerDay,
     notLogHoursOnPastOrFututeMonths,
-    notLogHoursOnWeekend
+    notLogHoursOnWeekend,
+    onlyDeleteNotSent
 };

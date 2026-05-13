@@ -48,7 +48,8 @@ service EmployeesService {
         grant: [
             'READ',
             'CREATE',
-            'UPDATE'
+            'UPDATE',
+            'DELETE'
         ],
         to   : 'employee',
         where: 'employee.loginName = $user.id'
