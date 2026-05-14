@@ -18,14 +18,15 @@
                         title="{i18n>StatusInfo}" 
                         text="{status/description}" 
                         state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
+                    <ObjectStatus
+                        title="{i18n>CloseDateInfo}"
+                        text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }"/>
                 </statuses>
                 
                 <attributes>
                     <ObjectAttribute title="{i18n>ClientInfo}" text="{client/name}" />
                     
                     <ObjectAttribute title="{i18n>ManagerInfo}" text="{managerOnCharge/firstName} {managerOnCharge/lastName}" />
-                    
-                    <ObjectAttribute title="{i18n>CloseDateInfo}" text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }" />
                 </attributes>
             </ObjectHeader>
 

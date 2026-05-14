@@ -161,16 +161,16 @@ sap.ui.define([
             }
 
             this.getView().setBusy(true);
-            let oModel = this.getView().getModel();
-            let sGroupId = oModel.getUpdateGroupId();
+            let oModel = this.getView().getModel(),
+                sGroupId = oModel.getUpdateGroupId();
 
             if (this.bIsEdit) {
                 this.oEditContext.setProperty("imputationDate", sDate);
                 this.oEditContext.setProperty("quantity", parseFloat(fHours));
 
                 oModel.submitBatch(sGroupId).then(() => {
-                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
-                    let bHasErrors = aMessages.some(m => m.type === "Error");
+                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData(),
+                        bHasErrors = aMessages.some(m => m.type === "Error");
 
                     if (bHasErrors || this.oEditContext.hasPendingChanges()) {
                         this.handleBackendError(this.oEditContext, false, "");
@@ -193,8 +193,8 @@ sap.ui.define([
                     });
 
                 oModel.submitBatch(sGroupId).then(() => {
-                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
-                    let bHasErrors = aMessages.some(m => m.type === "Error");
+                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData(),
+                        bHasErrors = aMessages.some(m => m.type === "Error");
 
                     if (oContext.isTransient() || bHasErrors) {
                         this.handleBackendError(oContext, true, this._o18n.getText("HoursLoggedSuccess"));
@@ -226,12 +226,11 @@ sap.ui.define([
                 }
 
                 this.getView().setBusy(false);
-                let sErrorMsg = this._o18n.getText("ValidationServerError");
-
-                let oRealMessage = aErrors.find(m =>
-                    !m.message.includes("múltiples errores") &&
-                    !m.message.includes("multiple errors")
-                );
+                let sErrorMsg = this._o18n.getText("ValidationServerError"),
+                    oRealMessage = aErrors.find(m =>
+                        !m.message.includes("múltiples errores") &&
+                        !m.message.includes("multiple errors")
+                    );
 
                 if (oRealMessage) {
                     sErrorMsg = oRealMessage.message;
