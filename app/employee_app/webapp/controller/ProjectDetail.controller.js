@@ -169,14 +169,19 @@ sap.ui.define([
                 this.oEditContext.setProperty("quantity", parseFloat(fHours));
 
                 oModel.submitBatch(sGroupId).then(() => {
-                    if (this.oEditContext.hasPendingChanges()) {
-                        this.handleBackendError(this.oEditContext, this._o18n.getText("DraftUpdated"));
+                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+                    let bHasErrors = aMessages.some(m => m.type === "Error");
+
+                    if (bHasErrors || this.oEditContext.hasPendingChanges()) {
+                        this.handleBackendError(this.oEditContext, false, "");
                     } else {
                         this.getView().setBusy(false);
                         MessageToast.show(this._o18n.getText("DraftUpdated"));
                         this.byId("idLogHoursDialog").close();
-                        oModel.refresh();
+                        setTimeout(() => { oModel.refresh(); }, 500);
                     }
+                }).catch(() => {
+                    this.handleBackendError(this.oEditContext, false, "");
                 });
 
             } else {
@@ -188,31 +193,35 @@ sap.ui.define([
                     });
 
                 oModel.submitBatch(sGroupId).then(() => {
-                    if (oContext.isTransient()) {
-                        this.handleBackendError(oContext, this._o18n.getText("HoursLoggedSuccess"));
+                    let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+                    let bHasErrors = aMessages.some(m => m.type === "Error");
+
+                    if (oContext.isTransient() || bHasErrors) {
+                        this.handleBackendError(oContext, true, this._o18n.getText("HoursLoggedSuccess"));
                     } else {
                         this.getView().setBusy(false);
-                        sap.m.MessageToast.show(this._o18n.getText("HoursLoggedSuccess"));
+                        MessageToast.show(this._o18n.getText("HoursLoggedSuccess"));
                         this.byId("idLogHoursDialog").close();
-                        oModel.refresh();
+                        setTimeout(() => { oModel.refresh(); }, 500);
                     }
+                }).catch(() => {
+                    this.handleBackendError(oContext, true, this._o18n.getText("HoursLoggedSuccess"));
                 });
             }
         },
 
-        handleBackendError: function (oContext, sSuccessMsg) {
+        handleBackendError: function (oContext, bIsCreate, sSuccessMsg) {
             setTimeout(() => {
                 let aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData(),
                     aErrors = aMessages.filter(m => m.type === "Error");
 
-                if (aErrors.length === 0) {
+                if (bIsCreate && aErrors.length === 0) {
                     this.getView().setBusy(false);
                     MessageToast.show(sSuccessMsg);
                     this.byId("idLogHoursDialog").close();
                     setTimeout(() => {
                         this.getView().getModel().refresh();
                     }, 500);
-
                     return;
                 }
 
@@ -228,16 +237,19 @@ sap.ui.define([
                     sErrorMsg = oRealMessage.message;
                 } else if (aErrors.length > 0) {
                     sErrorMsg = aErrors[aErrors.length - 1].message;
+                } else if (aMessages.length > 0) {
+                    sErrorMsg = aMessages[aMessages.length - 1].message;
                 }
 
                 MessageBox.error(sErrorMsg);
-                if (oContext && oContext.isTransient && oContext.isTransient()) {
+
+                if (oContext && typeof oContext.isTransient === 'function' && oContext.isTransient()) {
                     oContext.delete().catch(() => { });
                 } else if (oContext && typeof oContext.hasPendingChanges === 'function' && oContext.hasPendingChanges()) {
                     oContext.resetChanges();
                 }
 
-            }, 150);
+            }, 200);
         }
 
     });

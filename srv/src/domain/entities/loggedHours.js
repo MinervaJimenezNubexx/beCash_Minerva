@@ -245,6 +245,7 @@ async function notMoreThanEightHoursPerDay(req) {
 
 async function notLogHoursOnPastOrFututeMonths(req) {
     await injectEmployeeId(req);
+    await blockNewIfAlreadySentThisMonth(req);
     const stringImpDate = req.data.imputationDate;
     if (!stringImpDate) return;
     const impDate = new Date(stringImpDate),
