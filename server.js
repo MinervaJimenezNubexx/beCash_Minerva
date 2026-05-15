@@ -77,7 +77,7 @@ cds.on('served', async () => {
 
                     console.log(`
                         --- MONTHLY PROJECT BILLING REVIEW ---
-                        Period: ${firstDayMonth} a ${lastDayMonth}
+                        Period: ${firstDayMonth} to ${lastDayMonth}
                         Client: ${oProject.client.name}
                         Project: ${oProject.name}
                         Monthly Expense: ${nMonthTotal.toFixed(2)} €
