@@ -6,7 +6,7 @@
     <Dialog title="{i18n>CreateNewProject}" contentWidth="400px">
         <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
             
-            <Label text="{i18n>ProjectName}" required="true"/>
+            <Label text="{i18n>ProjectNameDialog}" required="true"/>
             <Input id="newProjName" placeholder="{i18n>ProjectNameExample}" />
 
             <Label text="{i18n>ProjectClient}" required="true"/>

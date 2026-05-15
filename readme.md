@@ -5,12 +5,17 @@ This is the implementation of the proposed BeCash Project for Nubexx internship 
 In this project, the objective is to implement a consistent and solid backend for a Billing and Projects tracking system, as well
 as a more simple frontend for it.
 
+To try both frontend apps, you can log in as the same user, pedro, with no password. This user has both the manager and the employee
+role, so that you can easily access both frontends without having to switch users. 
+
+If a project is closed, a final billing report will be shown on the BAS console 30 seconds after its closing time. In addition, every 2 minutes (short time interval for testing) a monthly billing report will be shown on the BAS console, with the summary made about last month's data.
+
 ## Extra Details and Features implemented
 
 - Soft deletes:
     Clients and employees cannot be deleted, so instead I deactivate them and consider the false active state as the deleted state 
     to show or not show those rows. This is also applied on a specific project context, so if an employee that already has resolved
-    hours on a specific project is removed from the team of the project, the already resolved hours won't be affected.
+    hours on a specific project is removed from the team of the project, the already sent or resolved hours won't be affected.
 
 - Automatic coherent hour and project states:
     When an hour registry is approved or created, the rejection reason is automatically set to 'Not Rejected', and when a new project
@@ -41,17 +46,24 @@ as a more simple frontend for it.
     It is also checked if an employee is assigned to the project he is trying to log hours to and if the project is not closed before successfully creating that hour registry.
 
     When a new project wants to be created, it is also checked if the initial budget for the project is a reasonable quantity, wich in
-    this case would be if the quantity is above 1000.
+    this case would be if the quantity is above 5000.
 
 - Managers are automatically assigned to the projects they create and cannot be (soft) deleted from the projects they directly manage.
 
-- Managers cannot modify hour registers that they have already been resolved, only an admin could if necessary.
+- Managers cannot modify hour registers that they have already been resolved, only an admin could, if necessary.
 
 - Managers cannot resolve hour registers from projects they are assigned to but are not managed by them.
 
 - Admins can modify hour registers, but not when they have not been sent yet, and the modification date and status is internally registered 
     when done by and admin to keep track of this unusual manual modification.
 
+- Automatic injection of the Employee_ID:
+    On the Employee App, the Employee_ID wasn't being correctly taken, so I made a function that is used at the start of every other function for the employee, that automatically injects the employee_ID by taking it based on the current logged user.
+
+- Confirmation before irreversible actions:
+    Before important actions on both the employee's and the manager's frontend, confirmation through a MessageBox.confirm is needed to prevent unintentional or mistaken irreversible actions, such as sending for approval the monthly hours, or advancing the status of a project.
+
+- 
 
 
 

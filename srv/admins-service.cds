@@ -32,6 +32,36 @@ service AdminsService {
         ],
         to   : 'admin'
     }]
+    entity LogStatus          as select from db.LogStatus;
+
+        @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'admin'
+    }]
+    entity LogRejReason          as select from db.LogRejReason;
+
+        @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'admin'
+    }]
+    entity PjStatus          as select from db.PjStatus;
+
+    @restrict: [{
+        grant: [
+            'READ',
+            'CREATE',
+            'UPDATE'
+        ],
+        to   : 'admin'
+    }]
     entity Projects          as select from db.Projects;
 
     @restrict: [{

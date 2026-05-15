@@ -69,6 +69,17 @@ sap.ui.define([
         },
 
         onChangeStatus: function () {
+            MessageBox.confirm(this._o18n.getText("ConfirmChangeStatusMsg"), {
+                title: this._o18n.getText("ConfirmChangeStatusTitle"),
+                onClose: (sAction) => {
+                    if (sAction === MessageBox.Action.OK) {
+                        this.onConfirmChangeStatus();
+                    }
+                }
+            });
+        },
+
+        onConfirmChangeStatus: function () {
             let oView = this.getView(),
                 oContext = oView.getBindingContext();
 
@@ -100,7 +111,7 @@ sap.ui.define([
             });
         },
 
-        onChangeBudget: function (){
+        onChangeBudget: function () {
             if (!this.oChangeBudgetDialog) {
                 this.oChangeBudgetDialog = sap.ui.core.Fragment.load({
                     id: this.getView().getId(),
@@ -360,9 +371,9 @@ sap.ui.define([
                 const oResults = oAction.getBoundContext().getObject();
                 let numLogs = oResults.updatedCount;
                 //console.log(numLogs)
-                if (numLogs == "0"){
+                if (numLogs == "0") {
                     sap.m.MessageToast.show(this._o18n.getText("NotLogsToResolveOnSelectedRange"));
-                }else{
+                } else {
                     sap.m.MessageBox.success(this._o18n.getText("RangeResolvedSuccessfully", [numLogs]));
                 }
                 oModel.refresh();
