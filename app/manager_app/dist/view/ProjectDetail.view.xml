@@ -1,0 +1,256 @@
+<mvc:View
+    controllerName="com.nbx.managerapp.controller.ProjectDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    
+    <Page id="detailPage" title="{i18n>projectDetailTitle}" showNavButton="true" navButtonPress=".onNavBack" >
+        
+        <headerContent>
+            <Button 
+                id="changeStatusButton" 
+                text="{i18n>nextStatusButton}" 
+                icon="sap-icon://process" 
+                type="Emphasized" 
+                press=".onChangeStatus"
+                visible="{= %{projectStatus} !== 'C' }" />
+
+            <Button 
+                id="changeBudgetButton" 
+                text="{i18n>changeBudgetButton}" 
+                icon="sap-icon://lead" 
+                type="Emphasized" 
+                press=".onChangeBudget"
+                visible="{= %{projectStatus} !== 'C' }" />
+        </headerContent>
+
+        <content>
+            <ObjectHeader
+                id="objHeader"
+                title="{name}"
+                number="{
+                    path: 'initialBudget',
+                    type: 'sap.ui.model.type.Float',
+                    formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}
+                }"
+                numberUnit="€">
+                
+                <statuses>
+                    <ObjectStatus title="{i18n>StatusInfo}" text="{status/description}" state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
+                    <ObjectStatus 
+                        title="{i18n>remainingBudget}" 
+                        text="{finances/remainingBudget} €" 
+                        state="{= ${finances/remainingBudget} >= 0 ? 'Success' : 'Error' }" />
+                    <ObjectStatus 
+                        title= "{i18n>projectedRemainingBudget}"
+                        text="{finances/projectedRemainingBudget} €"
+                        state="{= 
+                            ${finances/projectedConsumptionPercent} > 100 ? 'Error' : 
+                            ${finances/projectedConsumptionPercent} >= 80 ? 'Warning' : 
+                            'Success' 
+                        }" 
+                        icon="{= 
+                            ${finances/projectedConsumptionPercent} > 100 ? 'sap-icon://error' : 
+                            ${finances/projectedConsumptionPercent} >= 80 ? 'sap-icon://message-warning' : 
+                            'sap-icon://sys-enter-2' 
+                        }"/>
+                </statuses>
+                
+                <attributes>
+                    <ObjectAttribute title="{i18n>approvedHours}" text="{finances/totalApprovedHours} h" />
+                    <ObjectAttribute title="{i18n>totalSpent}" text="{finances/totalSpent} €" />
+                    <ObjectAttribute title="{i18n>projectedSpent}" text="{finances/projectedSpent} €" />
+                </attributes>
+            </ObjectHeader>
+
+            <IconTabBar id="iconTabBar" class="sapUiResponsiveContentPadding">
+                <items>
+                    <IconTabFilter key="info" text="{i18n>ProjectInfo}" icon="sap-icon://hint">
+                        <VBox id="idInfoContainer" class="sapUiSmallMargin">
+                            <Label text="{i18n>ProjectNameInfo}:" />
+                            <Text text="{name}" />
+
+                            <Label text="{i18n>ClientInfo}:" />
+                            <Text text="{client/name}" />
+                            
+                            <Label text="{i18n>BudgetInfo}:" />
+                            <Text text="{initialBudget}" />
+
+                            <Label text="{i18n>ManagerInfo}:" />
+                            <Text text="{managerOnCharge/firstName} {managerOnCharge/lastName}" />
+
+                            <Label text="{i18n>StatusInfo2}:" />
+                            <Text text="{status/description}" />
+                            
+                            <Label text="{i18n>CloseDateInfo}:" />
+                            <Text text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }"/>
+
+                            <Label text="{i18n>SentReportInfo}:" />
+                            <Text text="{reportSentToClient}" />
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter key="team" text="{i18n>TeamInfo}" icon="sap-icon://group">
+                        <Table id="idTeamTable" items="{path: 'employeesAssigned', filters: [{path: 'isActiveOnThisProject', operator: 'EQ', value1: true}]}"> 
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>assignedEmployeesTitle}" />
+                                    <ToolbarSpacer />
+                                    <Button 
+                                        id="addEmployeeButton" 
+                                        icon="sap-icon://add" 
+                                        text="{i18n>addEmployeeBtn}" 
+                                        press=".onAddEmployee"
+                                        visible="{= %{projectStatus} !== 'C' }" 
+                                        type="Transparent"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+
+                            <columns>
+                                <Column><Text text="{i18n>employeeName}" /></Column>
+                                <Column><Text text="{i18n>employeeEmail}" /></Column>
+                                <Column><Text text="{i18n>employeePosition}" /></Column>
+                                <Column hAlign="End"><Text text="" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{employee/firstName} {employee/lastName}" />
+                                        <Text text="{employee/email}" />
+                                        <Text text="{employee/position/nameDescription}" />
+                                        <Button 
+                                            icon="sap-icon://sys-minus" 
+                                            text= "{i18n>removeEmployeeBtn}"
+                                            type="Reject" 
+                                            press=".onRemoveEmployee"
+                                            visible="{= %{projectStatus} !== 'C' &amp;&amp; %{employeeID} !== %{projectManager_ID} }"
+                                             />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
+
+                    <IconTabFilter id="idHoursContainer" key="hours" text="{i18n>LoggedHoursInfo}" icon="sap-icon://time-entry-request">
+                        <VBox>
+                            <Table id="idPendingLogsTable" items="{details/logs}">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="{i18n>HoursPendingTitle}" />
+                                        <ToolbarSpacer />
+                                        <Button text="{i18n>ResolveRangeButton}" press=".onApproveRange" type="Emphasized" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="{i18n>EmployeeTable}" /></Column>
+                                    <Column><Text text="{i18n>DateTable}" /></Column>
+                                    <Column><Text text="{i18n>HoursTable}" /></Column>
+                                    <Column><Text text="{i18n>StatusTable}" /></Column>
+                                    <Column><Text text="{i18n>ApproveButton}" /></Column>
+                                    <Column><Text text="{i18n>RejectButton}" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{employeeName}" />
+                                            <Text text="{date}" />
+                                            <Text text="{hours}" />
+                                            <Text text="{statusDesc}" />
+                                            <HBox>
+                                                <Button icon="sap-icon://accept" press=".onApprove" type = "Success"/>
+                                            </HBox>
+                                            <HBox>
+                                                <Button icon="sap-icon://decline" press=".onReject" type= "Reject" />
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+
+                            <Table id="idResolvedLogsTable" items="{details/logs}">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="{i18n>ResolvedHoursTableTitle}" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="{i18n>EmployeeTable}" /></Column>
+                                    <Column><Text text="{i18n>DateTable}" /></Column>
+                                    <Column><Text text="{i18n>HoursTable}" /></Column>
+                                    <Column><Text text="{i18n>StatusTable}" /></Column>
+                                    <Column><Text text="{i18n>RejReasonTable}" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{employeeName}" />
+                                            <Text text="{date}" />
+                                            <Text text="{hours}" />
+                                            <Text text="{statusDesc}" />
+                                            <Text text="{rejectionReasonDesc}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter id="idAnalyticsContainer" key="analytics" text="{i18n>ReportsInfo}" icon="sap-icon://business-objects-experience">
+                        <VBox width="70%">
+                            <Title text="{i18n>SpentPerPositionTitle}" level="H3" class="sapUiSmallMarginBottom" />
+                            <Table id="idSpentPositionTable" width="100%" class="sapUiSmallMarginBottom" items="{/SpentPerPositionView}">
+                                <columns>
+                                    <Column width="40%"><Text text="{i18n>PositionName}" /></Column>
+                                    <Column width="40%"><Text text="{i18n>HoursPerPosition}" /></Column>
+                                    <Column width="40%"><Text text="{i18n>CostPerPosition}" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="idPositionItemTemplate">
+                                        <cells>
+                                            <Text text="{position}" />
+                                            <Text text="{totalHours} h" />
+                                            <ObjectNumber number="{totalCost}" unit="€" state="Information" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                            
+                            <Title text="{i18n>BudgetProjectionTitle}" level="H3" class="sapUiMediumMarginTop" />
+                            <form:SimpleForm id="idBudgetProjectionForm" 
+                                binding="{budget}"
+                                editable="false" 
+                                layout="ResponsiveGridLayout" 
+                                labelSpanL="3" 
+                                labelSpanM="3"
+                                columnsL="1" 
+                                columnsM="1">
+                                <form:content>
+                                    <Label text="{i18n>CurrentSpentAnalytic}" />
+                                    <Text text="{currentSpent} €" />
+
+                                    <Label text="{i18n>TotalApprovedHoursAnalytic}" />
+                                    <Text text="{totalApprovedHours} h" />
+
+                                    <Label text="{i18n>AverageHourlyCost}" />
+                                    <Text text="{averageHourlyCost} €/h" />
+
+                                    <Label text="{i18n>PendingToApproveValue}" />
+                                    <Text text="{pendingSpentQuantity} €" />
+
+                                    <Label text="{i18n>ProjectedRemaining}" /> 
+                                    <ObjectStatus 
+                                        text="{projectedSpentBudget} €" 
+                                        state="{= Number(${projectedSpentBudget}) >= 0 ? 'Success' : 'Error' }" />
+                                </form:content>
+                            </form:SimpleForm>
+                        </VBox>
+                    </IconTabFilter>
+
+                </items>
+            </IconTabBar>
+        </content>
+    </Page>
+</mvc:View>

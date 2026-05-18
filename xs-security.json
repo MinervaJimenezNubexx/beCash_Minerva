@@ -2,6 +2,74 @@
   "xsappname": "beCash",
   "tenant-mode": "dedicated",
   "description": "Security profile of called application",
-  "scopes": [],
-  "role-templates": []
+"scopes": [
+    {
+      "name": "$XSAPPNAME.admin",
+      "description": "Administrator Scope"
+    },
+    {
+      "name": "$XSAPPNAME.manager",
+      "description": "Manager Scope"
+    },
+    {
+      "name": "$XSAPPNAME.employee",
+      "description": "Employee Scope"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "admin",
+      "description": "Administrator Role",
+      "scope-references": [
+        "$XSAPPNAME.admin"
+      ]
+    },
+    {
+      "name": "manager",
+      "description": "Manager Role",
+      "scope-references": [
+        "$XSAPPNAME.manager",
+        "$XSAPPNAME.employee"
+      ]
+    },
+    {
+      "name": "employee",
+      "description": "Employee Role",
+      "scope-references": [
+        "$XSAPPNAME.employee"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "beCash_Admin",
+      "description": "Administrator Role Collection for beCash",
+      "role-template-references": [
+        "$XSAPPNAME.admin"
+      ]
+    },
+    {
+      "name": "beCash_Manager",
+      "description": "Manager Role Collection for beCash",
+      "role-template-references": [
+        "$XSAPPNAME.manager"
+      ]
+    },
+    {
+      "name": "beCash_Employee",
+      "description": "Employee Role Collection for beCash",
+      "role-template-references": [
+        "$XSAPPNAME.employee"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "credential-types": [
+      "binding-secret",
+      "x509"
+    ],
+    "redirect-uris": [
+      "https://*.applicationstudio.cloud.sap/**"
+    ]
+  }
 }

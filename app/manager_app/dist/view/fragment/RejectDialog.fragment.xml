@@ -1,0 +1,25 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog id="rejectDialog" title="{i18n>RejectHoursTitle}">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label text="{i18n>SelectRejectionReason}" labelFor="rejectionReasonSelect" />
+                <Select id="rejectionReasonSelect"
+                    items="{
+                        path: '/LogRejReason',
+                        filters: [{path: 'ID', operator: 'NE', value1: 'NR'}]
+                    }"
+                    width="100%">
+                    <core:Item key="{ID}" text="{description}" />
+                </Select>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="{i18n>ConfirmRejectRejectDialog}" type="Emphasized" press="onConfirmReject" />
+        </beginButton>
+        <endButton>
+            <Button text="{i18n>CancelRejectDialog}" press="onCloseRejectDialog" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

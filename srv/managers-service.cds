@@ -235,7 +235,8 @@ service ManagersService {
             Projects.status.ID,
             Projects.status.description,
             Projects.closedAt,
-            Projects.managerOnCharge,
+            Projects.managerOnCharge.firstName,
+            Projects.managerOnCharge.lastName,
             Projects.reportSentToClient
         actions {
             action resolveEmployeeHoursByDateRange(startDate: Date,

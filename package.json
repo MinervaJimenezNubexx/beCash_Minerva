@@ -26,33 +26,33 @@
       "auth": {
         "kind": "mocked",
         "users": {
-          "alice": {
+          "alice@nubexx.com": {
             "roles": [
               "admin"
             ]
           },
-          "pedro": {
+          "pedro@nubexx.com": {
             "roles": [
               "manager",
               "employee"
             ]
           },
-          "juan": {
+          "juan@nubexx.com": {
             "roles": [
               "employee"
             ]
           },
-          "maria": {
+          "maria@nubexx.com": {
             "roles": [
               "employee"
             ]
           },
-          "laura": {
+          "laura@nubexx.com": {
             "roles": [
               "employee"
             ]
           },
-          "liam": {
+          "liam@nubexx.com": {
             "roles": [
               "employee"
             ]

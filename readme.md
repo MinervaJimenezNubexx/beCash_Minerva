@@ -5,7 +5,7 @@ This is the implementation of the proposed BeCash Project for Nubexx internship 
 In this project, the objective is to implement a consistent and solid backend for a Billing and Projects tracking system, as well
 as a more simple frontend for it.
 
-To try both frontend apps, you can log in as the same user, pedro, with no password. This user has both the manager and the employee
+To try both frontend apps, you can log in as the same user, pedro@nubexx.com, with no password. This user has both the manager and the employee
 role, so that you can easily access both frontends without having to switch users. 
 
 If a project is closed, a final billing report will be shown on the BAS console 30 seconds after its closing time. In addition, every 2 minutes (short time interval for testing) a monthly billing report will be shown on the BAS console, with the summary made about last month's data.
@@ -38,6 +38,8 @@ If a project is closed, a final billing report will be shown on the BAS console 
     The projected budget shows the exact budget that will be remaining if all the hours that are pending in that moment are approved. When
     the quantity is above 20% of the total budget of the project, it is shown in green and an "OK" icon, when it is below 20%, it is shown
     in yellow with a "Warning" icon, and when the budget is being exceeded it is shown as a negative quantity, in red, and with an "Error" icon.
+
+    To test this, you can change the project budget to make it higher or lower, and accept/reject some hour logs to play with the projected budget.
 
 - Basic data validation for hour registers:
     Hours can be imputed either in whole hours or by quarters of an hour, allowing only those values, any other value is considered invalid. The system also checks that not more than 8 hours per day are being logged, and no more than the established weekly hours

@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    
+    <Dialog id="idLogHoursDialog" title="{i18n>LogHoursFragmentTitle}">
+        <content>
+            <form:SimpleForm layout="ResponsiveGridLayout" editable="true" class="sapUiSmallMarginTopBottom">
+                <Label text="{i18n>LoggingDateDialog}" required="true"/>
+                <DatePicker id="idLogDate" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" placeholder="YYYY-MM-DD"/>
+                
+                <Label text="{i18n>LoggingHoursDialog}" required="true"/>
+                <StepInput id="idLogHours" min="0.25" max="8" step="0.25" displayValuePrecision="2" value="8" description="h"/>
+            </form:SimpleForm>
+        </content>
+        <beginButton>
+            <Button text="{i18n>SaveHourLogging}" type="Emphasized" press=".onSaveHours"/>
+        </beginButton>
+        <endButton>
+            <Button text="{i18n>CancelHourLogging}" press=".onCloseLogDialog"/>
+        </endButton>
+    </Dialog>
+    
+</core:FragmentDefinition>

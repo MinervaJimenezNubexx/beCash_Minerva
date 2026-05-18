@@ -1,0 +1,59 @@
+<mvc:View
+    controllerName="com.nbx.managerapp.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m">
+    
+    <Page 
+        id="page" 
+        title="{i18n>MainTitle}">
+        
+        <headerContent>
+            <Button icon="sap-icon://add" text="{i18n>AddProject}" type="Emphasized" press=".onCreateProject" />
+        </headerContent>
+
+        <content>
+            <HBox width="100%" justifyContent="Center">
+                <VBox width="70%" class= "sapUiSmallMarginTop">
+                    <Title text="{i18n>ProjectsTitle2}" level="H2" class= "sapUiSmallMarginBottom"/>
+                    <Table id="projectsTable"
+                        items="{
+                            path: '/Projects',
+                            parameters: {
+                                $expand: 'status'
+                            }
+                        }"
+                        noDataText="{i18n>NoProjectsAssigned}"
+                        growing="true" 
+                        growingThreshold="20">
+                        
+                        <columns>
+                            <Column width="40%"><Text text="{i18n>ProjectName}" /></Column>
+                            <Column width="40%"><Text text="{i18n>Budget}" /></Column>
+                            <Column width="40%"><Text text="{i18n>Status}" /></Column>
+                        </columns>
+
+                        <items>
+                            <ColumnListItem type="Navigation" press=".onPressProject">
+                                <cells>
+                                    <ObjectIdentifier title="{name}" />
+                                    
+                                    <ObjectNumber number="{initialBudget}" unit="€" />
+                                    
+                                    <ObjectStatus 
+                                        text="{status/description}" 
+                                        state="{= 
+                                            ${status_ID} === 'O' || ${status_ID} === 'D' ? 'Success' : 
+                                            ${status_ID} === 'Q' || ${status_ID} === 'T' ? 'Information' : 
+                                            ${status_ID} === 'C' ? 'Error' : 
+                                            'None' 
+                                        }" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>

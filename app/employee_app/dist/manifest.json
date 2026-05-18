@@ -1,0 +1,137 @@
+{
+	"_version": "1.84.0",
+	"sap.app": {
+		"id": "com.nbx.employeeapp",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			]
+		},
+		"applicationVersion": {
+			"version": "0.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/generator-fiori:basic",
+			"version": "1.23.0",
+			"toolsId": "04a99413-5a18-4145-b79f-1d7d78406370"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/v4/employees/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.01"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": false,
+		"dependencies": {
+			"minUI5Version": "1.147.2",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.nbx.employeeapp.i18n.i18n",
+					"supportedLocales": [
+						""
+					]
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"transition": "slide",
+				"type": "View",
+				"viewType": "XML",
+				"path": "com.nbx.employeeapp.view",
+				"async": true,
+				"viewPath": "com.nbx.employeeapp.view"
+			},
+			"routes": [
+				{
+					"name": "RouteMain",
+					"pattern": "",
+					"target": [
+						"TargetMain"
+					]
+				},
+				{
+					"name": "RouteProjectDetail",
+					"pattern": "Projects({projectId})",
+					"target": [
+						"TargetProjectDetail"
+					]
+				}
+			],
+			"targets": {
+				"TargetMain": {
+					"id": "Main",
+					"name": "Main"
+				},
+				"TargetProjectDetail": {
+					"id": "ProjectDetail",
+					"name": "ProjectDetail"
+				}
+			}
+		},
+		"rootView": {
+			"viewName": "com.nbx.employeeapp.view.App",
+			"type": "XML",
+			"id": "App",
+			"async": true
+		},
+		"flexBundle": false
+	}
+}

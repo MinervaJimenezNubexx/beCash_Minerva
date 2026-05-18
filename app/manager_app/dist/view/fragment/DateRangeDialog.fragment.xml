@@ -1,0 +1,38 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout">
+    <Dialog id="idDateRangeDialog" title="{i18n>ResolveByRangeTitle}">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label text="{i18n>SelectDateRange}" labelFor="idDRS" />
+                <DateRangeSelection id="idDRS" 
+                    displayFormat="dd/MM/yyyy" 
+                    change=".onDateRangeChange" />
+                
+                <Label text="{i18n>FinalStatus}" labelFor="idStatusSelect" />
+                <Select id="idStatusSelect" change=".onStatusChangeRange">
+                    <core:Item key="A" text="{i18n>Approve}" />
+                    <core:Item key="R" text="{i18n>Reject}" />
+                </Select>
+
+                <VBox id="idRejectionReasonBox" visible="false">
+                    <Label text="{i18n>RejectionReason}" labelFor="idRangeRejectionSelect" />
+                    <Select id="idRangeRejectionSelect"
+                        items="{
+                            path: '/LogRejReason',
+                            filters: [{path: 'ID', operator: 'NE', value1: 'NR'}]
+                        }">
+                        <core:Item key="{ID}" text="{description}" />
+                    </Select>
+                </VBox>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="{i18n>ConfirmRangeResolve}" type="Emphasized" press="onConfirmRange" />
+        </beginButton>
+        <endButton>
+            <Button text="{i18n>CancelRangeResolve}" press="onCloseRangeDialog" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,222 @@
+<mvc:View
+    controllerName="com.nbx.employeeapp.controller.ProjectDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+    <Page id="detailPage" title="{i18n>DetailTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <ObjectHeader 
+                id="objHeader" 
+                title="{name}">
+                
+                <statuses>
+                    <ObjectStatus 
+                        title="{i18n>StatusInfo}" 
+                        text="{status/description}" 
+                        state="{= ${status_ID} === 'C' ? 'Error' : 'Success' }"/>
+                    <ObjectStatus
+                        title="{i18n>CloseDateInfo}"
+                        text="{= ${closedAt} ? ${closedAt} : ${i18n>NotClosedYet} }"/>
+                </statuses>
+                
+                <attributes>
+                    <ObjectAttribute title="{i18n>ClientInfo}" text="{client/name}" />
+                    
+                    <ObjectAttribute title="{i18n>ManagerInfo}" text="{managerOnCharge/firstName} {managerOnCharge/lastName}" />
+                </attributes>
+            </ObjectHeader>
+
+            <IconTabBar id="idIconTabBar" class="sapUiResponsiveContentPadding" headerMode="Inline">
+                <items>
+                    
+                    <IconTabFilter key="team" icon="sap-icon://group" text="{i18n>TeamTab}">
+                        <Table 
+                            id="idTeamTable"
+                            items="{
+                                path: 'employeesAssigned',
+                                parameters: { 
+                                    $expand: 'employee($expand=position)' 
+                                }
+                            }"
+                            noDataText="{i18n>NoTeamAssigned}">
+                            <columns>
+                                <Column>
+                                    <Text text="{i18n>EmployeeNameInfo}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>PositionInfo}"/>
+                                </Column>
+                                <Column demandPopin="true" minScreenWidth="Tablet">
+                                    <Text text="{i18n>EmailInfo}"/>
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{employee/firstName} {employee/lastName}"/>
+                                        <Text text="{employee/position/nameDescription}"/>
+                                        
+                                        <Text text="{employee/email}"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
+
+                    <IconTabFilter key="hoursSummary" icon="sap-icon://time-account" text="{i18n>HoursSummaryTab}">
+                        <Table 
+                            id="idHoursSummaryTable"
+                            noDataText="{i18n>NoHoursLogged}"
+                            items="{path: '/EmployeeHoursStatusView'}">
+                            
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>TotalHoursSummary}" level="H3"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+
+                            <columns>
+                                <Column><Text text="{i18n>StatusInfo}"/></Column>
+                                <Column hAlign="End"><Text text="{i18n>TotalHoursInfo}"/></Column>
+                            </columns>
+                            
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <ObjectStatus 
+                                            text="{= 
+                                                %{statusID} === 'A' ? ${i18n>ApprovedInfo} : 
+                                                %{statusID} === 'P' ? ${i18n>PendingInfo} : 
+                                                %{statusID} === 'R' ? ${i18n>RejectedInfo} : 
+                                                ${i18n>NotSentStatusInfo} 
+                                            }" 
+                                            state="{= 
+                                                %{statusID} === 'A' ? 'Success' : 
+                                                %{statusID} === 'R' ? 'Error' : 
+                                                %{statusID} === 'P' ? 'Warning' : 
+                                                'Information' 
+                                            }"/>
+                                        
+                                        <ObjectNumber 
+                                            number="{
+                                                path: 'hoursByStatus',
+                                                type: 'sap.ui.model.odata.type.Decimal',
+                                                formatOptions: { minFractionDigits: 0, maxFractionDigits: 2 }
+                                            }" 
+                                            unit="h" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
+
+                    <IconTabFilter key="monthly" icon="sap-icon://calendar" text="{i18n>MonthlyRecordsTab}">
+                        <VBox>
+                            <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                <Label text="{i18n>MonthSelector}:" class="sapUiTinyMarginEnd" design="Bold"/>
+                                <Select id="idMonthSelect" change=".onMonthChange">
+                                    <core:Item key="01" text="{i18n>Jan}"/>
+                                    <core:Item key="02" text="{i18n>Feb}"/>
+                                    <core:Item key="03" text="{i18n>Mar}"/>
+                                    <core:Item key="04" text="{i18n>Apr}"/>
+                                    <core:Item key="05" text="{i18n>May}"/>
+                                    <core:Item key="06" text="{i18n>Jun}"/>
+                                    <core:Item key="07" text="{i18n>Jul}"/>
+                                    <core:Item key="08" text="{i18n>Aug}"/>
+                                    <core:Item key="09" text="{i18n>Sep}"/>
+                                    <core:Item key="10" text="{i18n>Oct}"/>
+                                    <core:Item key="11" text="{i18n>Nov}"/>
+                                    <core:Item key="12" text="{i18n>Dec}"/>
+                                </Select>
+                            </HBox>
+
+                            <Table 
+                                id="idMonthlyTable"
+                                noDataText="{i18n>NoHoursThisMonth}"
+                                items="{
+                                    path: '/LoggedHours',
+                                    parameters: { $expand: 'status' },
+                                    sorter: [
+                                        { path: 'status_ID', descending: false },
+                                        { path: 'imputationDate', descending: false }
+                                    ]
+                                }">
+                                <columns>
+                                    <Column><Text text="{i18n>DateInfo}"/></Column>
+                                    <Column><Text text="{i18n>HoursInfo}"/></Column>
+                                    <Column><Text text="{i18n>StatusInfo}"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{imputationDate}"/>
+                                            <ObjectNumber number="{quantity}" unit="h"/>
+                                            <ObjectStatus 
+                                                text="{status/description}" 
+                                                state="{= 
+                                                    %{status_ID} === 'A' ? 'Success' : 
+                                                    %{status_ID} === 'R' ? 'Error' : 
+                                                    %{status_ID} === 'P' ? 'Warning' : 
+                                                    'Information' 
+                                                }"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter key="drafts" icon="sap-icon://edit" text="{i18n>DraftsTab}">
+                        <Table 
+                            id="idDraftsTable"
+                            noDataText="{i18n>NoDraftsText}"
+                            items="{
+                                path: '/LoggedHours',
+                                sorter: {
+                                    path: 'imputationDate',
+                                    descending: false
+                                }
+                            }">
+                            
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <Title text="{i18n>MyDraftsTitle}" level="H3"/>
+                                    <ToolbarSpacer/>
+                                    <Button text="{i18n>LogHoursButton}" type="Emphasized" icon="sap-icon://add" press=".onOpenLogDialog"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+
+                            <columns>
+                                <Column><Text text="{i18n>DraftDateInfo}"/></Column>
+                                <Column><Text text="{i18n>DraftHoursInfo}"/></Column>
+                                <Column><Text text="{i18n>DraftStatusInfo}"/></Column>
+                                <Column hAlign="End"><Text text="{i18n>DraftActionsInfo}"/></Column>
+                            </columns>
+                            
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{imputationDate}"/>
+                                        <ObjectNumber number="{quantity}" unit="h"/>
+                                        <ObjectStatus 
+                                            text="{status/description}" 
+                                            state="Information" 
+                                            icon="sap-icon://information"/>
+                                        <HBox justifyContent="End">
+                                            <Button icon="sap-icon://edit" type="Transparent" press=".onEditDraft" class="sapUiTinyMarginEnd"/>
+                                            <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteDraft"/>
+                                        </HBox>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </content>
+    </Page>
+</mvc:View>
