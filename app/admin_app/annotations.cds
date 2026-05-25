@@ -1,0 +1,1 @@
+using AdminsService as service from '../../srv/admins-service';

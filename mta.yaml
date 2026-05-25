@@ -42,6 +42,10 @@ modules:
       - comnbxemployeeapp.zip
       name: comnbxemployeeapp
       target-path: resources/
+    - artifacts:
+      - comnbxadminapp.zip
+      name: comnbxadminapp
+      target-path: resources/
 - name: comnbxmanagerapp
   type: html5
   path: app/manager_app
@@ -55,6 +59,16 @@ modules:
 - name: comnbxemployeeapp
   type: html5
   path: app/employee_app
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comnbxadminapp
+  type: html5
+  path: app/admin_app
   build-parameters:
     build-result: dist
     builder: custom

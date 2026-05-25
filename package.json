@@ -18,7 +18,8 @@
     "undeploy": "cf undeploy beCash --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-employee_app": "cds watch --open com.nbx.employeeapp/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-employee_app": "cds watch --open com.nbx.employeeapp/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-admin_app": "cds watch --open com.nbx.adminapp/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
