@@ -1,6 +1,83 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Employees"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="employeesViewID" title="{i18n>title}">
+    <Page id="employeesViewID" title="{i18n>title}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <Table 
+                id="employeesTable"
+                mode="SingleSelectLeft"
+                items="{
+                    path: '/Employees',
+                    parameters: {
+                        $expand: 'position'
+                    }
+                }"
+                class="sapUiMediumMargin"
+                width="auto">
+                
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>employeesListTitle}"/>
+                        <ToolbarSpacer />
+                        
+                        <SearchField 
+                            id="searchField" 
+                            width="350px" 
+                            placeholder="{i18n>searchEmployee}" 
+                            search=".onSearch" />
+                        
+                        <Button 
+                            id="btnCreate" 
+                            text="{i18n>btnCreate}" 
+                            icon="sap-icon://add" 
+                            type="Emphasized" 
+                            press=".onCreatePress" />
+                            
+                        <Button 
+                            id="btnActivate" 
+                            text="{i18n>btnActivate}" 
+                            icon="sap-icon://accept" 
+                            type="Accept" 
+                            press=".onActivatePress" />
+
+                        <Button 
+                            id="btnDeactivate" 
+                            text="{i18n>btnDeactivate}" 
+                            icon="sap-icon://decline" 
+                            type="Reject" 
+                            press=".onDeactivatePress" />
+                            
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column>
+                        <Text text="{i18n>employeeName}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>employeeEmail}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>employeePosition}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>employeeStatus}" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem type="Navigation" press=".onEmployeePress">
+                        <cells>
+                            <ObjectIdentifier title="{employeeName}" />
+                            <Text text="{email}" />
+                            <Text text="{position/nameDescription}" />
+                            <ObjectStatus 
+                                text="{isActive}"
+                                state="{= ${isActive} ? 'Success' : 'Error' }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
     </Page>
 </mvc:View>

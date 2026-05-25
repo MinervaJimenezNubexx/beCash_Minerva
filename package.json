@@ -29,7 +29,9 @@
         "users": {
           "alice@nubexx.com": {
             "roles": [
-              "admin"
+              "admin",
+              "manager",
+              "employee"
             ]
           },
           "pedro@nubexx.com": {

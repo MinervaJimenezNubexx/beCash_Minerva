@@ -1,6 +1,9 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Hours"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="hoursViewID" title="{i18n>title}">
+    <Page id="hoursViewID" title="{i18n>hoursViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <Text text="tabla de horas" />
+        </content>
     </Page>
 </mvc:View>

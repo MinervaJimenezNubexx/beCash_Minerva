@@ -1,6 +1,9 @@
-<mvc:View controllerName="com.nbx.adminapp.controller.EmployeeDetail"
+<mvc:View controllerName="com.nbx.adminapp.controller.Clients"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="employeesDetailViewID" title="{i18n>title}">
+    <Page id="employeeDetailViewID" title="{i18n>employeeDetailViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <Text text="detalles empleados" />
+        </content>
     </Page>
 </mvc:View>

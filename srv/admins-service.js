@@ -22,8 +22,10 @@ module.exports = cds.service.impl(async function (srv) {
 
     //Employees
     srv.on("deactivateEmployees", handlers.admins.actions.employees.deactivateEmployees); //done
+    srv.on("activateEmployees", handlers.admins.actions.employees.activateEmployees); //done
 
     //Clients
     srv.on("deactivateClients", handlers.admins.actions.clients.deactivateClients); //done
+    srv.on("activateClients", handlers.admins.actions.clients.activateClients); //done
 
 })

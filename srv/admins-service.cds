@@ -9,7 +9,8 @@ service AdminsService {
             'READ',
             'CREATE',
             'UPDATE',
-            'deactivateEmployees'
+            'deactivateEmployees',
+            'activateEmployees'
         ],
         to   : 'admin'
     }]
@@ -20,6 +21,9 @@ service AdminsService {
         }
         actions {
             action deactivateEmployees() returns {
+                msg : String
+            };
+            action activateEmployees() returns {
                 msg : String
             };
         };
@@ -69,13 +73,17 @@ service AdminsService {
             'READ',
             'CREATE',
             'UPDATE',
-            'deactivateClients'
+            'deactivateClients',
+            'activateClients'
         ],
         to   : 'admin'
     }]
     entity Clients           as select from db.Clients
         actions {
             action deactivateClients() returns {
+                msg : String
+            };
+            action activateClients() returns {
                 msg : String
             };
         };

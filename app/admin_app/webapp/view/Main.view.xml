@@ -1,6 +1,49 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="page" title="{i18n>mainViewTitle}">
+    <Page id="page" title="{i18n>mainViewTitle}" class="sapUiContentPadding">
+        <content>
+            <FlexBox wrap="Wrap" justifyContent="Center" alignItems="Center" class="sapUiTopMargin">
+                <GenericTile 
+                    class="sapUiSmallMargin"
+                    header="Gestión de Empleados" 
+                    subheader="Crear, editar y desactivar" 
+                    press=".onNavToEmployees">
+                    <TileContent>
+                        <ImageContent src="sap-icon://employee" />
+                    </TileContent>
+                </GenericTile>
+
+                <GenericTile
+                    class="sapUiSmallMargin"
+                    header="Clientes" 
+                    subheader="Proyectos y estados" 
+                    press=".onNavToClients">
+                    <TileContent>
+                        <ImageContent src="sap-icon://customer" />
+                    </TileContent>
+                </GenericTile>
+
+                <GenericTile 
+                    class="sapUiSmallMargin"
+                    header="Auditoría de Horas" 
+                    subheader="Supervisión global" 
+                    press=".onNavToHours">
+                    <TileContent>
+                        <ImageContent src="sap-icon://history" />
+                    </TileContent>
+                </GenericTile>
+
+                <GenericTile 
+                    class="sapUiSmallMargin"
+                    header="Ajustes del Sistema" 
+                    subheader="Configuración maestra" 
+                    press=".onNavToSettings">
+                    <TileContent>
+                        <ImageContent src="sap-icon://action-settings" />
+                    </TileContent>
+                </GenericTile>
+            </FlexBox>
+        </content>
     </Page>
 </mvc:View>

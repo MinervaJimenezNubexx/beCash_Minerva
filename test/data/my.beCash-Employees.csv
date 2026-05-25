@@ -1,5 +1,5 @@
 ID;firstName;lastName;email;loginName;isActive;weeklyTargetHours;position_ID
-00000000-0000-0000-0000-000000000000;Alice;Admin;alice@nubexx.com;alice@nubexx.com;false;40.00;L
+00000000-0000-0000-0000-000000000000;Alice;Admin;alice@nubexx.com;alice@nubexx.com;true;40.00;L
 22222222-2222-2222-2222-222222222222;Pedro;Jimenez;pedro@nubexx.com;pedro@nubexx.com;true;40.00;MGR
 33333333-3333-3333-3333-333333333333;Juan;Perez;juan@nubexx.com;juan@nubexx.com;true;40.00;J
 44444444-4444-4444-4444-444444444444;Maria;Gomez;maria@nubexx.com;maria@nubexx.com;true;30.00;MID

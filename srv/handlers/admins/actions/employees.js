@@ -18,6 +18,27 @@ async function deactivateEmployees(req) {
     return { msg: 'OK' };
 }
 
+async function activateEmployees(req) {
+    const employeeId = req.params[0].ID
+
+    if (!employeeId) {
+        return req.error(400, 'NO_EMPLOYEE_ID_ERROR')
+    }
+
+    const updated = await UPDATE('my.beCash.Employees')
+        .set({ isActive: true })
+        .where({ ID: employeeId });
+
+    if (updated === 0) {
+        return req.error(404, 'EMPLOYEE_NOT_FOUND_ERROR');
+    }
+
+    req.notify('EMPLOYEE_DEACTIVATED');
+
+    return { msg: 'OK' };
+}
+
 module.exports = {
-    deactivateEmployees
+    deactivateEmployees,
+    activateEmployees
 };
