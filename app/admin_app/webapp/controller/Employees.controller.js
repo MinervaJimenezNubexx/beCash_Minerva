@@ -55,6 +55,31 @@ sap.ui.define([
                 MessageBox.error(this._o18n.getText("employeeDeactivatedError"));
                 console.error(oError);
             });
+        },
+        
+        onActivatePress: function () {
+            let oTable = this.byId("employeesTable"),
+                  oSelectedItem = oTable.getSelectedItem();
+
+            if (!oSelectedItem) {
+                MessageBox.warning(this._o18n.getText("selectEmployeeWarning"));
+                return;
+            }
+
+            let oContext = oSelectedItem.getBindingContext(),
+                  oModel = this.getView().getModel(),
+                  oAction = oModel.bindContext("AdminsService.activateEmployees(...)", oContext);
+
+            oAction.execute().then(() => {
+                MessageToast.show(this._o18n.getText("employeeActivatedSuccess"));
+                oContext.requestSideEffects([
+                    { $PropertyPath: "isActive" }
+                ]);
+                oTable.removeSelections(true); 
+            }).catch((oError) => {
+                MessageBox.error(this._o18n.getText("employeeActivatedError"));
+                console.error(oError);
+            });
         }
 
     });
