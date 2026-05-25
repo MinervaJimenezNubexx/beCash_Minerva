@@ -2,8 +2,10 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
     "sap/m/MessageBox",
-    "sap/m/MessageToast"
-], function (Controller, History, MessageBox, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, History, MessageBox, MessageToast, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("com.nbx.adminapp.controller.Employees", {
@@ -34,7 +36,7 @@ sap.ui.define([
 
         onDeactivatePress: function () {
             let oTable = this.byId("employeesTable"),
-                  oSelectedItem = oTable.getSelectedItem();
+                oSelectedItem = oTable.getSelectedItem();
 
             if (!oSelectedItem) {
                 MessageBox.warning(this._o18n.getText("selectEmployeeWarning"));
@@ -42,24 +44,24 @@ sap.ui.define([
             }
 
             let oContext = oSelectedItem.getBindingContext(),
-                  oModel = this.getView().getModel(),
-                  oAction = oModel.bindContext("AdminsService.deactivateEmployees(...)", oContext);
+                oModel = this.getView().getModel(),
+                oAction = oModel.bindContext("AdminsService.deactivateEmployees(...)", oContext);
 
             oAction.execute().then(() => {
                 MessageToast.show(this._o18n.getText("employeeDeactivatedSuccess"));
                 oContext.requestSideEffects([
                     { $PropertyPath: "isActive" }
                 ]);
-                oTable.removeSelections(true); 
+                oTable.removeSelections(true);
             }).catch((oError) => {
                 MessageBox.error(this._o18n.getText("employeeDeactivatedError"));
                 console.error(oError);
             });
         },
-        
+
         onActivatePress: function () {
             let oTable = this.byId("employeesTable"),
-                  oSelectedItem = oTable.getSelectedItem();
+                oSelectedItem = oTable.getSelectedItem();
 
             if (!oSelectedItem) {
                 MessageBox.warning(this._o18n.getText("selectEmployeeWarning"));
@@ -67,19 +69,44 @@ sap.ui.define([
             }
 
             let oContext = oSelectedItem.getBindingContext(),
-                  oModel = this.getView().getModel(),
-                  oAction = oModel.bindContext("AdminsService.activateEmployees(...)", oContext);
+                oModel = this.getView().getModel(),
+                oAction = oModel.bindContext("AdminsService.activateEmployees(...)", oContext);
 
             oAction.execute().then(() => {
                 MessageToast.show(this._o18n.getText("employeeActivatedSuccess"));
                 oContext.requestSideEffects([
                     { $PropertyPath: "isActive" }
                 ]);
-                oTable.removeSelections(true); 
+                oTable.removeSelections(true);
             }).catch((oError) => {
                 MessageBox.error(this._o18n.getText("employeeActivatedError"));
                 console.error(oError);
             });
+        },
+
+        onSearch: function (oEvent) {
+            const sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue"),
+                aFilters = [];
+
+            if (sQuery && sQuery.length > 0) {
+                const oFilterName = new Filter("employeeName", FilterOperator.Contains, sQuery),
+                    oFilterEmail = new Filter("email", FilterOperator.Contains, sQuery),
+                    oCombinedFilter = new Filter({
+                        filters: [oFilterName, oFilterEmail],
+                        and: false
+                    });
+
+                aFilters.push(oCombinedFilter);
+            }
+
+            const oTable = this.byId("employeesTable"),
+                oBinding = oTable.getBinding("items");
+
+            oBinding.filter(aFilters, sap.ui.model.FilterType.Application);
+        },
+
+        onCreatePress: function (oEvent) {
+            
         }
 
     });
