@@ -1,0 +1,6 @@
+<mvc:View controllerName="com.nbx.adminapp.controller.ClientDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="clientsDetailViewID" title="{i18n>title}">
+    </Page>
+</mvc:View>

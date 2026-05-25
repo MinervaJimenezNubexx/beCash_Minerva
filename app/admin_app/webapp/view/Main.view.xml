@@ -1,6 +1,6 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    <Page id="page" title="{i18n>mainViewTitle}">
     </Page>
 </mvc:View>

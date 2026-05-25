@@ -1,0 +1,6 @@
+<mvc:View controllerName="com.nbx.adminapp.controller.Settings"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="settingsViewID" title="{i18n>title}">
+    </Page>
+</mvc:View>

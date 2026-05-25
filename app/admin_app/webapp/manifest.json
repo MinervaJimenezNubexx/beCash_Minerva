@@ -43,7 +43,7 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.148.0",
       "libs": {
@@ -94,16 +94,75 @@
       "routes": [
         {
           "name": "RouteMain",
-          "pattern": ":?query:",
-          "target": [
-            "TargetMain"
-          ]
+          "pattern": "",
+          "target": ["TargetMain"]
+        },
+        {
+          "name": "RouteEmployees",
+          "pattern": "employees",
+          "target": ["TargetEmployees"]
+        },
+        {
+          "name": "RouteEmployeeDetail",
+          "pattern": "employee/{employeeId}",
+          "target": ["TargetEmployeeDetail"]
+        },
+        {
+          "name": "RouteClients",
+          "pattern": "clients",
+          "target": ["TargetClients"]
+        },
+        {
+          "name": "RouteClientDetail",
+          "pattern": "client/{clientId}",
+          "target": ["TargetClientDetail"]
+        },
+        {
+          "name": "RouteHours",
+          "pattern": "hours",
+          "target": ["TargetHours"]
+        },
+        {
+          "name": "RouteSettings",
+          "pattern": "settings",
+          "target": ["TargetSettings"]
         }
       ],
       "targets": {
         "TargetMain": {
           "id": "Main",
-          "name": "Main"
+          "name": "Main",
+          "viewLevel": 1
+        },
+        "TargetEmployees": {
+          "id": "Employees",
+          "name": "Employees",
+          "viewLevel": 2
+        },
+        "TargetEmployeeDetail": {
+          "id": "EmployeeDetail",
+          "name": "EmployeeDetail",
+          "viewLevel": 3
+        },
+        "TargetClients": {
+          "id": "Clients",
+          "name": "Clients",
+          "viewLevel": 2
+        },
+        "TargetClientDetail": {
+          "id": "ClientDetail",
+          "name": "ClientDetail",
+          "viewLevel": 3
+        },
+        "TargetHours": {
+          "id": "Hours",
+          "name": "Hours",
+          "viewLevel": 2
+        },
+        "TargetSettings": {
+          "id": "Settings",
+          "name": "Settings",
+          "viewLevel": 2
         }
       }
     },
