@@ -6,8 +6,8 @@
             <FlexBox wrap="Wrap" justifyContent="Center" alignItems="Center" class="sapUiTopMargin">
                 <GenericTile 
                     class="sapUiSmallMargin"
-                    header="Gestión de Empleados" 
-                    subheader="Crear, editar y desactivar" 
+                    header="{i18n>mainViewEmployeesTileHeader}" 
+                    subheader="{i18n>mainViewEmployeesTileSubheader}" 
                     press=".onNavToEmployees">
                     <TileContent>
                         <ImageContent src="sap-icon://employee" />
@@ -16,8 +16,8 @@
 
                 <GenericTile
                     class="sapUiSmallMargin"
-                    header="Clientes" 
-                    subheader="Proyectos y estados" 
+                    header="{i18n>mainViewClientsTileHeader}" 
+                    subheader="{i18n>mainViewClientsTileSubheader}" 
                     press=".onNavToClients">
                     <TileContent>
                         <ImageContent src="sap-icon://customer" />
@@ -26,8 +26,8 @@
 
                 <GenericTile 
                     class="sapUiSmallMargin"
-                    header="Auditoría de Horas" 
-                    subheader="Supervisión global" 
+                    header="{i18n>mainViewHoursTileHeader}" 
+                    subheader="{i18n>mainViewHoursTileSubheader}" 
                     press=".onNavToHours">
                     <TileContent>
                         <ImageContent src="sap-icon://history" />
@@ -36,8 +36,8 @@
 
                 <GenericTile 
                     class="sapUiSmallMargin"
-                    header="Ajustes del Sistema" 
-                    subheader="Configuración maestra" 
+                    header="{i18n>mainViewSettingsTileHeader}" 
+                    subheader="{i18n>mainViewSettingsTileSubheader}" 
                     press=".onNavToSettings">
                     <TileContent>
                         <ImageContent src="sap-icon://action-settings" />
