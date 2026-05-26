@@ -16,7 +16,7 @@ sap.ui.define([
 
         onObjectMatched: function (oEvent) {
             let sEmployeeId = oEvent.getParameter("arguments").employeeId,
-                  oView = this.getView();
+                oView = this.getView();
 
             oView.bindElement({
                 path: `/Employees(${sEmployeeId})`
@@ -28,15 +28,29 @@ sap.ui.define([
 
             if (oModel.hasPendingChanges()) {
                 oModel.submitBatch(oModel.getUpdateGroupId()).then(() => {
-                    MessageToast.show(this._o18n.getText("employeeDataUpdateSuccess"));
-                    setTimeout(() => {
-                        this.onNavBack();
-                    }, 500);
+                    if (oModel.hasPendingChanges()) {
+                        let oMessageManager = sap.ui.getCore().getMessageManager(),
+                            aMessages = oMessageManager.getMessageModel().getData(),
+                            aErrors = aMessages.filter(m => m.type === "Error"),
+                            sErrorMsg = this._o18n.getText("employeeInvalidDataError");
+                        if (aErrors.length > 0) {
+                            sErrorMsg = aErrors[aErrors.length - 1].message;
+                        }
+                        MessageBox.error(this._o18n.getText("employeeDataUpdateConsoleError") + " " + sErrorMsg);
+
+                    } else {
+                        sap.ui.getCore().getMessageManager().removeAllMessages();
+                        MessageToast.show(this._o18n.getText("employeeDataUpdateSuccess"));
+                        setTimeout(() => {
+                            this.onNavBack();
+                        }, 500);
+                    }
                 }).catch((oError) => {
                     MessageBox.error(this._o18n.getText("employeeDataUpdateError"));
                     console.error(this._o18n.getText("employeeDataUpdateConsoleError", oError));
                 });
             } else {
+                sap.ui.getCore().getMessageManager().removeAllMessages();
                 MessageToast.show(this._o18n.getText("employeeDataUpdateSuccess"));
                 setTimeout(() => {
                     this.onNavBack();

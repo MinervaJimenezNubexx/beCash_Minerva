@@ -1,6 +1,32 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.ClientDetail"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="clientsDetailViewID" title="{i18n>title}">
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    
+    <Page id="clientDetailViewID" title="{i18n>clientDetailViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <HBox width="100%" justifyContent="Center" class="sapUiMediumMarginTop">
+                <form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false">
+                    
+                    <Label text="{i18n>clientName}" required="true"/>
+                    <Input value="{name}" />
+
+                    <Label text="{i18n>clientEmail}" required="true"/>
+                    <Input value="{email}" type="Email" />
+
+                    <Label text="{i18n>clientNif}" required="true"/>
+                    <Input value="{nif}" />
+
+                </form:SimpleForm>
+            </HBox>
+        </content>
+        
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="{i18n>saveButton}" type="Emphasized" press=".onSavePress" />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

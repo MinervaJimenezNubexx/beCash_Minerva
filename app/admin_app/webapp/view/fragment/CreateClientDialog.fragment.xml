@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Dialog id="createClientDialogID" title="{i18n>createClientTitle}">
+        <form:SimpleForm editable="true" layout="ResponsiveGridLayout">
+            
+            <Label text="{i18n>clientName}" required="true"/>
+            <Input id="inputClientNameID" />
+
+            <Label text="{i18n>clientEmail}" required="true"/>
+            <Input id="inputClientEmailID" type="Email" />
+
+            <Label text="{i18n>clientNif}" required="true"/>
+            <Input id="inputClientNifID" />
+
+        </form:SimpleForm>
+        <buttons>
+            <Button text="{i18n>saveButton}" type="Emphasized" press=".onSaveNewClient" />
+            <Button text="{i18n>cancelButton}" press=".onCancelCreateClient" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
