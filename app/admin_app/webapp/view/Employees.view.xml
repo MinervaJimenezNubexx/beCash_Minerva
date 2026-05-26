@@ -1,7 +1,7 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Employees"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="employeesViewID" title="{i18n>title}" showNavButton="true" navButtonPress=".onNavBack">
+    <Page id="employeesViewID" title="{i18n>employeesViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
         <content>
             <Table 
                 id="employeesTable"

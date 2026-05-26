@@ -1,11 +1,47 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/routing/History"
-], function (Controller, History) {
+    "sap/ui/core/routing/History",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (Controller, History, MessageToast, MessageBox) {
     "use strict";
 
     return Controller.extend("com.nbx.adminapp.controller.EmployeeDetail", {
         onInit: function () {
+            this._o18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            let oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteEmployeeDetail").attachPatternMatched(this.onObjectMatched, this);
+
+        },
+
+        onObjectMatched: function (oEvent) {
+            let sEmployeeId = oEvent.getParameter("arguments").employeeId,
+                  oView = this.getView();
+
+            oView.bindElement({
+                path: `/Employees(${sEmployeeId})`
+            });
+        },
+
+        onSavePress: function () {
+            let oModel = this.getView().getModel();
+
+            if (oModel.hasPendingChanges()) {
+                oModel.submitBatch(oModel.getUpdateGroupId()).then(() => {
+                    MessageToast.show(this._o18n.getText("employeeDataUpdateSuccess"));
+                    setTimeout(() => {
+                        this.onNavBack();
+                    }, 500);
+                }).catch((oError) => {
+                    MessageBox.error(this._o18n.getText("employeeDataUpdateError"));
+                    console.error(this._o18n.getText("employeeDataUpdateConsoleError", oError));
+                });
+            } else {
+                MessageToast.show(this._o18n.getText("employeeDataUpdateSuccess"));
+                setTimeout(() => {
+                    this.onNavBack();
+                }, 500);
+            }
         },
 
         onNavBack: function () {

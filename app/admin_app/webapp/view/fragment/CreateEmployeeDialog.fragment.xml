@@ -1,0 +1,39 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Dialog id="createEmployeeDialogID" title="{i18n>createEmployeeTitle}">
+        <form:SimpleForm editable="true" layout="ResponsiveGridLayout">
+            
+            <Label text="{i18n>firstName}" required="true"/>
+            <Input id="inputFirstNameID" />
+
+            <Label text="{i18n>lastName}" required="true"/>
+            <Input id="inputLastNameID" />
+
+            <Label text="{i18n>email}" required="true"/>
+            <Input id="inputEmailID" type="Email" />
+
+            <Label text="{i18n>loginName}" required="true"/>
+            <Input id="inputLoginNameID" />
+
+            <Label text="{i18n>weeklyTargetHours}"/>
+            <Input id="inputWeeklyHoursID" type="Number" />
+
+            <Label text="{i18n>position}" required="true"/>
+            <Select id="selectPositionID"
+                    forceSelection="false"
+                    items="{
+                        path: '/Positions',
+                        templateShareable: false
+                    }">
+                <core:Item key="{ID}" text="{nameDescription}" />
+            </Select>
+
+        </form:SimpleForm>
+        <buttons>
+            <Button text="{i18n>saveButton}" type="Emphasized" press=".onSaveNewEmployee" />
+            <Button text="{i18n>cancelButton}" press=".onCancelCreateEmployee" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

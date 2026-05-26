@@ -1,9 +1,49 @@
-<mvc:View controllerName="com.nbx.adminapp.controller.Clients"
+<mvc:View controllerName="com.nbx.adminapp.controller.EmployeeDetail"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    
     <Page id="employeeDetailViewID" title="{i18n>employeeDetailViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <Text text="detalles empleados" />
+            <HBox width="100%" justifyContent="Center" class="sapUiMediumMarginTop">
+                <form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false">
+                    
+                    <Label text="{i18n>firstName}" required="true"/>
+                    <Input value="{firstName}" />
+
+                    <Label text="{i18n>lastName}" required="true"/>
+                    <Input value="{lastName}" />
+
+                    <Label text="{i18n>email}" required="true"/>
+                    <Input value="{email}" type="Email" />
+
+                    <Label text="{i18n>loginName}" required="true"/>
+                    <Input value="{loginName}" />
+
+                    <Label text="{i18n>weeklyTargetHours}"/>
+                    <Input value="{
+                        path: 'weeklyTargetHours',
+                        type: 'sap.ui.model.odata.type.Decimal'
+                    }" />
+
+                    <Label text="{i18n>position}" required="true"/>
+                    <Select id="selectPositionDetail"
+                        selectedKey="{position_ID}"
+                        forceSelection="false"
+                        items="{ path: '/Positions', templateShareable: false }">
+                        <core:Item key="{ID}" text="{nameDescription}" />
+                    </Select>
+
+                </form:SimpleForm>
+            </HBox>
         </content>
+        
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="{i18n>saveButton}" type="Emphasized" press=".onSavePress" />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>
