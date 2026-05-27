@@ -1,9 +1,124 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Hours"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="hoursViewID" title="{i18n>hoursViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="hoursAuditPageID" title="{i18n>hoursViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <Text text="tabla de horas" />
+            <Table 
+                id="hoursAuditTable"
+                items="{
+                    path: '/LoggedHours',
+                    sorter: [
+                        { path: 'employee/employeeName', descending: false },
+                        { path: 'imputationDate', descending: false }
+                    ],
+                    parameters: {
+                        $expand: 'employee,project',
+                        $filter: 'status_ID ne \'N\'',
+                        $$updateGroupId: 'auditGroup'
+                    }
+                }"
+                class="sapUiMediumMargin"
+                width="auto">
+                
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>hoursAuditListTitle}"/>
+                        <ToolbarSpacer width="50px"/>
+                        <ToolbarSeparator />
+                        <Label text="{i18n>yearLabel}:" />
+                        <Select id="selectYear" change=".onTimeFilterChange" width="120px">
+                            <core:Item key="2025" text="2025" />
+                            <core:Item key="2026" text="2026" />
+                            <core:Item key="2027" text="2027" />
+                        </Select>
+                        
+                        <ToolbarSeparator />
+                        
+                        <SegmentedButton id="sbMonth" selectionChange=".onTimeFilterChange">
+                            <items>
+                                <SegmentedButtonItem key="01" text="{i18n>jan}" />
+                                <SegmentedButtonItem key="02" text="{i18n>feb}" />
+                                <SegmentedButtonItem key="03" text="{i18n>mar}" />
+                                <SegmentedButtonItem key="04" text="{i18n>apr}" />
+                                <SegmentedButtonItem key="05" text="{i18n>may}" />
+                                <SegmentedButtonItem key="06" text="{i18n>jun}" />
+                                <SegmentedButtonItem key="07" text="{i18n>jul}" />
+                                <SegmentedButtonItem key="08" text="{i18n>aug}" />
+                                <SegmentedButtonItem key="09" text="{i18n>sep}" />
+                                <SegmentedButtonItem key="10" text="{i18n>oct}" />
+                                <SegmentedButtonItem key="11" text="{i18n>nov}" />
+                                <SegmentedButtonItem key="12" text="{i18n>dec}" />
+                            </items>
+                        </SegmentedButton>
+                        <ToolbarSeparator />
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column>
+                        <Text text="{i18n>auditEmployee}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditProject}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditDate}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditHours}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditModifiedLabel}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditModDateLabel}" />
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>auditStatus}" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <ObjectIdentifier title="{employee/employeeName}" />
+                            
+                            <Text text="{project/name}" />
+                            
+                            <Text text="{
+                                path: 'imputationDate',
+                                type: 'sap.ui.model.odata.type.Date',
+                                formatOptions: { pattern: 'dd/MM/yyyy' }
+                            }" />
+                            
+                            <Text text="{quantity}" class="sapUiTinyMarginEnd"/>
+                            
+                            <CheckBox selected="{isModifiedByAdmin}" editable="false" />
+                            
+                            <Text 
+                                text="{
+                                    path: 'modificationDate',
+                                    type: 'sap.ui.model.odata.type.DateTimeOffset',
+                                    formatOptions: { pattern: 'dd/MM/yyyy HH:mm' }
+                                }" />
+
+                            <Select selectedKey="{status_ID}" change=".onStatusChange" width="100%">
+                                <core:Item key="P" text="{i18n>statusPending}" />
+                                <core:Item key="A" text="{i18n>statusApproved}" />
+                                <core:Item key="R" text="{i18n>statusRejected}" />
+                            </Select>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
         </content>
+        
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button id="btnSaveAudit" text="{i18n>saveButton}" type="Emphasized" press=".onSaveAuditPress" />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

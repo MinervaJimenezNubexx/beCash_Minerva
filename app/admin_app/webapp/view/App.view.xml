@@ -1,7 +1,9 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.App"
-    displayBlock="true"
     xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
     xmlns="sap.m">
-    <App id="app">
+    <App id="app" busy="true">
+        <pages>
+        </pages>
     </App>
 </mvc:View>

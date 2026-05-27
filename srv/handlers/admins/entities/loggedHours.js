@@ -1,3 +1,8 @@
+const {
+    loggedHoursStatusConstant,
+    hoursRejectionReasonConstant
+} = require('../../../src/domain/constants');
+
 async function modifiedByAdmin(req) {
     const logHoursId = req.params[0].ID
 
@@ -9,7 +14,7 @@ async function modifiedByAdmin(req) {
         return req.error(404, 'LOG_NOT_FOUND_ERROR')
     }
 
-    if (currentLog.status_ID === 'N') {
+    if (currentLog.status_ID === loggedHoursStatusConstant.NOT_SENT) {
         return req.error(400, 'CANT_EDIT_NOT_SENT_LOG_ERROR');
     }
 
@@ -34,8 +39,8 @@ async function modifiedByAdmin(req) {
 
     const finalStatus = req.data.status_ID || currentLog.status_ID;
 
-    if (finalStatus === 'A') {
-        req.data.rejectionReason_ID = 'NR';
+    if (finalStatus === loggedHoursStatusConstant.APPROVED) {
+        req.data.rejectionReason_ID = hoursRejectionReasonConstant.NOT_REJECTED;
     }
 
 }
