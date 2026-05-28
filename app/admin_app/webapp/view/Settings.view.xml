@@ -1,9 +1,142 @@
 <mvc:View controllerName="com.nbx.adminapp.controller.Settings"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="settingsViewID" title="{i18n>settingsTitle}" showNavButton="true" navButtonPress=".onNavBack">
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="settingsPageID" title="{i18n>settingsViewTitle}" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <Text text="ajustes"/>
+            <IconTabBar id="itbSettings" headerMode="Inline" class="sapUiResponsiveContentPadding">
+                <items>
+                    <IconTabFilter icon="sap-icon://customer-history" text="{i18n>settingsLogStatus}">
+                        <HBox width="30%">
+                            <Table 
+                                id="tableLogStatus"
+                                items="{
+                                    path: '/LogStatus',
+                                    parameters: {$$updateGroupId: 'settingsGroup'}
+                                }">
+                                <columns>
+                                    <Column>
+                                        <Text text="ID" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="{i18n>settingsDescriptionLogStatus}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{ID}" state="Information" />
+                                            <Input value="{description}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </HBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter icon="sap-icon://message-error" text="{i18n>settingsRejReason}">
+                        <HBox width="30%">
+                            <Table 
+                                id="tableLogRejReason"
+                                items="{
+                                    path: '/LogRejReason',
+                                    parameters: {$$updateGroupId: 'settingsGroup'}
+                                }">
+                                <columns>
+                                    <Column>
+                                        <Text text="ID" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="{i18n>settingsDescriptionRejReason}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{ID}" state="Information" />
+                                            <Input value="{description}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </HBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter icon="sap-icon://task" text="{i18n>settingsPjStatus}">
+                        <HBox width="30%">
+                            <Table 
+                                id="tablePjStatus"
+                                items="{
+                                    path: '/PjStatus',
+                                    parameters: {$$updateGroupId: 'settingsGroup'}
+                                }">
+                                <columns>
+                                    <Column>
+                                        <Text text="ID" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="{i18n>settingsDescriptionPjStatus}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{ID}" state="Information" />
+                                            <Input value="{description}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </HBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter icon="sap-icon://monitor-payments" text="{i18n>settingsPositions}">
+                        <HBox width="40%">
+                            <Table 
+                                id="tablePositions"
+                                items="{
+                                    path: '/Positions',
+                                    parameters: {$$updateGroupId: 'settingsGroup'}
+                                }">
+                                <columns>
+                                    <Column>
+                                        <Text text="ID" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="{i18n>settingsPositionsName}" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="{i18n>settingsPositionBilling}" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{ID}" state="Information" />
+                                            <Input value="{nameDescription}" />
+                                            <Input 
+                                                value="{
+                                                    path: 'billing',
+                                                    type: 'sap.ui.model.odata.type.Decimal',
+                                                    formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }
+                                                }" 
+                                                description="€/h" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </HBox>
+                    </IconTabFilter>
+
+                </items>
+            </IconTabBar>
         </content>
+
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button id="btnSaveSettings" text="{i18n>saveButton}" type="Emphasized" press=".onSaveSettingsPress" />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>
