@@ -29,13 +29,12 @@
         "users": {
           "alice@nubexx.com": {
             "roles": [
-              "admin",
-              "manager",
-              "employee"
+              "admin"
             ]
           },
           "pedro@nubexx.com": {
             "roles": [
+              "admin",
               "manager",
               "employee"
             ]

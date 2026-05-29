@@ -61,6 +61,9 @@ async function managerAddEmployeeToProject(req) {
     const currentManager = await SELECT.one('my.beCash.Employees').where({ loginName: req.user.id }),
         project = await SELECT.one('my.beCash.Projects')
             .where({ ID: project_ID, managerOnCharge_ID: currentManager.ID });
+        employee = await SELECT.one('my.beCash.Employees').where({ ID: employee_ID });
+        
+    if (!employee) return req.error(404, 'EMPLOYEE_NOT_FOUND_ERROR');
 
     if (!project) return req.error(403, 'CANNOT_MANAGE_THIS_PROJECT_ERROR');
 

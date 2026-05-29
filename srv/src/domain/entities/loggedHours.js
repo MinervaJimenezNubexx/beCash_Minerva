@@ -7,9 +7,9 @@ const {
 async function ValidateHours(req) {
     await injectEmployeeId(req);
     const num = req.data.quantity;
-    if (!num) return;
+    if (num === undefined || num === null) return;
 
-    if (num % 0.25 !== 0) {
+    if ((num % 0.25 !== 0) || (num === 0) || (num < 0) || (num > 8)) {
         req.error(400, 'NOT_VALID_HOURS_NUM_ERROR')
     }
 }
@@ -57,7 +57,7 @@ async function blockNewIfAlreadySentThisMonth(req) {
     let logId = null;
     if (req.data && req.data.ID) {
         logId = req.data.ID;
-    } 
+    }
     else if (req.params && req.params.length > 0) { //update
         logId = req.params[0].ID ? req.params[0].ID : req.params[0];
     }
@@ -96,7 +96,7 @@ async function blockNewIfAlreadySentThisMonth(req) {
 async function checkIfEmployeeAssignedToThisProject(req) {
     await injectEmployeeId(req);
     const employeeId = req.data.employee_ID,
-    projectId = req.data.project_ID;
+        projectId = req.data.project_ID;
 
     if (!employeeId || !projectId) return;
 
@@ -209,9 +209,9 @@ async function notMoreThanEightHoursPerDay(req) {
 
     incomingQuantity = parseFloat(incomingQuantity);
 
-    if (!employeeId || !date || isNaN(incomingQuantity)){
+    if (!employeeId || !date || isNaN(incomingQuantity)) {
         return;
-    } 
+    }
 
     if (!employeeId && currentLog) {
         employeeId = currentLog.employee_ID;
@@ -285,7 +285,7 @@ async function injectEmployeeId(req) {
     if (!req.data.employee_ID) {
         const oEmployee = await SELECT.one.from('my.beCash.Employees').where({ loginName: req.user.id });
         if (oEmployee) {
-            req.data.employee_ID = oEmployee.ID; 
+            req.data.employee_ID = oEmployee.ID;
         } else {
             req.reject(403, 'USER_NOT_FOUND_ERROR');
         }
